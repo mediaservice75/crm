@@ -1,0 +1,30 @@
+{
+    "private": true,
+    "scripts": {
+        "dev": "npm run development",
+        "development": "mix",
+        "watch": "mix watch",
+        "watch-poll": "mix watch -- --watch-options-poll=1000",
+        "hot": "mix watch --hot",
+        "prod": "npm run production",
+        "production": "mix --production"
+    },
+    "devDependencies": {
+        "axios": "^0.21",
+        "laravel-mix": "^6.0.6",
+        "lodash": "^4.17.19",
+        "postcss": "^8.1.14"
+    },
+    "dependencies": {
+        "air-datepicker": "^3.3.1",
+        "cross-env": "^7.0.3",
+        "filepond": "^4.30.4",
+        "filepond-plugin-image-preview": "^4.6.11",
+        "jquery": "^3.6.1",
+        "laravel-echo": "^1.16.1",
+        "pusher-js": "^8.4.0-rc2",
+        "select2": "^4.1.0-rc.0",
+        "sweetalert2": "^11.6.6",
+        "toastify-js": "^1.12.0"
+    }
+}
