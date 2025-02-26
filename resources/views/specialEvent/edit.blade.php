@@ -128,13 +128,14 @@
             row.innerHTML = `
                 <td>
                     <select name="sponsors[\${index}][is_general]" class="form-control">
-                        <option value="1">Генеральный</option>
                         <option value="0">Партнер</option>
+                        <option value="1">Генеральный</option>
                     </select>
                 </td>
                 <td><input type="text" name="sponsors[\${index}][name]" class="form-control" required></td>
                 <td>
                     <select name="sponsors[\${index}][responsible_manager_id]" class="form-control">
+                        <option value="" selected>Свободно</option>
                         @foreach ($users as $user)
                             <option value="{{ $user->id }}">{{ $user->name }} {{ $user->surname }}</option>
                         @endforeach
