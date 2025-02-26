@@ -171,10 +171,14 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('calendar/goal-update/{goal}', [CalendarController::class, 'updateGoal'])->name('calendar.updateGoal');
     Route::delete('calendar/goal-delete/{goal}', [CalendarController::class, 'deleteGoal'])->name('calendar.deleteGoal');
 
-
     Route::get('events', [SpecialEventController::class, 'index'])->name('special-event.index');
+    Route::get('events/create', [SpecialEventController::class, 'create'])->name('special-event.create');
+    Route::post('events', [SpecialEventController::class, 'store'])->name('special-event.store');
+    Route::get('events/{id}', [SpecialEventController::class, 'show'])->name('special-event.show');
+    Route::get('events/{id}/edit', [SpecialEventController::class, 'edit'])->name('special-event.edit');
+    Route::patch('events/{id}', [SpecialEventController::class, 'update'])->name('special-event.update');
     Route::post('events/save-table', [SpecialEventController::class, 'saveTable'])->name('special-event.save');
-
+    
     Route::get('active-ad', [ClaimController::class, 'getActiveAd'])->name('claim.activeAd');
     Route::get('active-ad/past', [ClaimController::class, 'getPastActiveAd'])->name('claim.pastActiveAd');
     Route::get('active-ad/all', [ClaimController::class, 'getActiveAdAll'])->name('claim.activeAdAll');
