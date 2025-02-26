@@ -96,14 +96,13 @@
                                                 <tr>
                                                     <td>
                                                         @if ($sponsor->is_general)
-                                                            <strong>{{ $sponsor->name }} (Генеральный)</strong>
+                                                            <strong>{{ $sponsor->name ?? 'Свободно' }} (Генеральный)</strong>
                                                         @else
-                                                            {{ $sponsor->name }}
+                                                            {{ $sponsor->name ?? 'Свободно' }}
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        {{ optional($sponsor->manager)->name }}
-                                                        {{ optional($sponsor->manager)->surname }}
+                                                        {{ $sponsor->responsible_manager }}
                                                     </td>
                                                 </tr>
                                             @endforeach

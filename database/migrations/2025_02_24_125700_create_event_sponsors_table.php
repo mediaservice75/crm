@@ -15,15 +15,15 @@ class CreateEventSponsorsTable extends Migration
     {
         Schema::create('event_sponsors', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->boolean('is_general');
+            $table->string('responsible_manager');
             $table->boolean('has_logo');
             $table->boolean('has_leaflet');
             $table->string('gratitude_to')->nullable();
             $table->boolean('has_feedback');
 
             $table->foreignId('event_id')->constrained('special_events')->onDelete('cascade');
-            $table->foreignId('responsible_manager_id')->constrained('users')->onDelete('cascade');
 
             $table->timestamps();
         });

@@ -17,7 +17,7 @@ class EventSponsor extends Model
         'has_feedback',
         'event_id',
         'gratitude_to',
-        'responsible_manager_id',
+        'responsible_manager',
     ];
 
     use HasFactory;

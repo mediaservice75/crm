@@ -67,14 +67,18 @@
                                                 <input type="hidden" name="sponsors[{{ $index }}][id]"
                                                     value="{{ $sponsor->id }}">
                                                 <input type="text" name="sponsors[{{ $index }}][name]"
-                                                    class="form-control" value="{{ $sponsor->name }}" required>
+                                                    class="form-control" value="{{ $sponsor->name }}">
                                             </td>
                                             <td>
-                                                <select name="sponsors[{{ $index }}][responsible_manager_id]"
+                                                <select name="sponsors[{{ $index }}][responsible_manager]"
                                                     class="form-control">
+                                                    <option value="Свободно"
+                                                        {{ empty($sponsor->responsible_manager) ? 'selected' : '' }}>
+                                                        Свободно
+                                                    </option>
                                                     @foreach ($users as $user)
-                                                        <option value="{{ $user->id }}"
-                                                            {{ $sponsor->responsible_manager_id == $user->id ? 'selected' : '' }}>
+                                                        <option value="{{ $user->name }} {{ $user->surname }}"
+                                                            {{ $sponsor->responsible_manager == $user->name . ' ' . $user->surname ? 'selected' : '' }}>
                                                             {{ $user->name }} {{ $user->surname }}
                                                         </option>
                                                     @endforeach
@@ -126,36 +130,36 @@
             let index = document.querySelectorAll('#sponsors-table-body tr').length;
             let row = document.createElement('tr');
             row.innerHTML = `
-                <td>
-                    <select name="sponsors[\${index}][is_general]" class="form-control">
-                        <option value="0">Партнер</option>
-                        <option value="1">Генеральный</option>
-                    </select>
-                </td>
-                <td><input type="text" name="sponsors[\${index}][name]" class="form-control" required></td>
-                <td>
-                    <select name="sponsors[\${index}][responsible_manager_id]" class="form-control">
-                        <option value="" selected>Свободно</option>
-                        @foreach ($users as $user)
-                            <option value="{{ $user->id }}">{{ $user->name }} {{ $user->surname }}</option>
-                        @endforeach
-                    </select>
-                </td>
-                <td>
-                    <input type="hidden" name="sponsors[\${index}][has_logo]" value="0">
-                    <input type="checkbox" name="sponsors[\${index}][has_logo]" value="1">
-                </td>
-                <td>
-                    <input type="hidden" name="sponsors[\${index}][has_leaflet]" value="0">
-                    <input type="checkbox" name="sponsors[\${index}][has_leaflet]" value="1">
-                </td>
-                <td><input type="text" name="sponsors[\${index}][gratitude_to]" class="form-control"></td>
-                <td>
-                    <input type="hidden" name="sponsors[\${index}][has_feedback]" value="0">
-                    <input type="checkbox" name="sponsors[\${index}][has_feedback]" value="1">
-                </td>
-                <td><button type="button" class="btn btn-danger" onclick="removeSponsorRow(this)">-</button></td>
-            `;
+        <td>
+            <select name="sponsors[${index}][is_general]" class="form-control">
+                <option value="0">Партнер</option>
+                <option value="1">Генеральный</option>
+            </select>
+        </td>
+        <td><input type="text" name="sponsors[${index}][name]" class="form-control"></td>
+        <td>
+            <select name="sponsors[${index}][responsible_manager]" class="form-control">
+                <option value="Свободно" selected>Свободно</option>
+                @foreach ($users as $user)
+                    <option value="{{ $user->name }} {{ $user->surname }}">{{ $user->name }} {{ $user->surname }}</option>
+                @endforeach
+            </select>
+        </td>
+        <td>
+            <input type="hidden" name="sponsors[${index}][has_logo]" value="0">
+            <input type="checkbox" name="sponsors[${index}][has_logo]" value="1">
+        </td>
+        <td>
+            <input type="hidden" name="sponsors[${index}][has_leaflet]" value="0">
+            <input type="checkbox" name="sponsors[${index}][has_leaflet]" value="1">
+        </td>
+        <td><input type="text" name="sponsors[${index}][gratitude_to]" class="form-control"></td>
+        <td>
+            <input type="hidden" name="sponsors[${index}][has_feedback]" value="0">
+            <input type="checkbox" name="sponsors[${index}][has_feedback]" value="1">
+        </td>
+        <td><button type="button" class="btn btn-danger" onclick="removeSponsorRow(this)">-</button></td>
+    `;
             document.getElementById('sponsors-table-body').appendChild(row);
         }
 

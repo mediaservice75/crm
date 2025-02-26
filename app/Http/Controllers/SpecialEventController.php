@@ -212,12 +212,12 @@ class SpecialEventController extends Controller
                 $sponsorModel = EventSponsor::updateOrCreate(
                     ['id' => $sponsor['id'] ?? null],
                     [
-                        'name' => $sponsor['name'] ?? '',
+                        'name' => $sponsor['name'] ?: null,
                         'is_general' => $sponsor['is_general'] ?? 0,
                         'has_logo' => $sponsor['has_logo'] ?? 0,
                         'has_leaflet' => $sponsor['has_leaflet'] ?? 0,
                         'has_feedback' => $sponsor['has_feedback'] ?? 0,
-                        'responsible_manager_id' => $sponsor['responsible_manager_id'] ?? null,
+                        'responsible_manager' => $sponsor['responsible_manager'],
                         'gratitude_to' => $sponsor['gratitude_to'] ?? '',
                         'event_id' => $event->id,
                     ]

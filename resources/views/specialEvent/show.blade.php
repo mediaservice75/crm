@@ -30,7 +30,7 @@
         }
 
         td {
-            text-align: center;
+            /* text-align: center; */
             /* Центрируем содержимое ячейки */
             vertical-align: middle;
             /* Центрируем по вертикали */
@@ -80,8 +80,7 @@
                                             </td>
                                             <td>{{ $sponsor->name }}</td>
                                             <td>
-                                                {{ optional($users->firstWhere('id', $sponsor->responsible_manager_id))->name ?? 'Не указан' }}
-                                                {{ optional($users->firstWhere('id', $sponsor->responsible_manager_id))->surname ?? '' }}
+                                                {{ $sponsor->responsible_manager ?? 'Свободно' }}
                                             </td>
                                             <td>{!! $sponsor->has_logo ? '<i class="bi bi-check-lg checkmark"></i>' : '' !!}</td>
                                             <td>{!! $sponsor->has_leaflet ? '<i class="bi bi-check-lg checkmark"></i>' : '' !!}</td>
