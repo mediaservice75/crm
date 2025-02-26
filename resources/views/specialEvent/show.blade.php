@@ -12,8 +12,6 @@
 @endsection
 
 @section('content')
-    <style>
-    </style>
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -35,9 +33,40 @@
                                 <br>
                             @endunless
                         @endforeach
-                        <div>
+                        <div class="mb-3">
                             <br>
                             <h4 class="card-title mb-1">Спонсоры</h4>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Статус</th>
+                                        <th>Наименование</th>
+                                        <th>Менеджер</th>
+                                        <th>Логотип</th>
+                                        <th>Листовка</th>
+                                        <th>Благодарность</th>
+                                        <th>Отзыв</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($event->sponsors as $sponsor)
+                                        <tr>
+                                            <td>
+                                                {!! $sponsor->is_general ? '<strong>Генеральный</strong>' : 'Партнер' !!}
+                                            </td>
+                                            <td>{{ $sponsor->name }}</td>
+                                            <td>
+                                                {{ optional($users->firstWhere('id', $sponsor->responsible_manager_id))->name ?? 'Не указан' }}
+                                                {{ optional($users->firstWhere('id', $sponsor->responsible_manager_id))->surname ?? '' }}
+                                            </td>
+                                            <td>{{ $sponsor->has_logo ? '+' : '' }}</td>
+                                            <td>{{ $sponsor->has_leaflet ? '+' : '' }}</td>
+                                            <td>{{ $sponsor->gratitude_to }}</td>
+                                            <td>{{ $sponsor->has_feedback ? '+' : '' }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

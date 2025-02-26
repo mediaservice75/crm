@@ -68,7 +68,7 @@ class SpecialEventController extends Controller
 
         $userRoleLevel = auth()->user()->role->level;
 
-        $events = SpecialEvent::with('sessions')->get();
+        $events = SpecialEvent::with('sessions', 'sponsors')->get();
 
         if ($userRoleLevel != 1 && $userRoleLevel != 2) {
             return view('specialEvent.index', compact('headers', 'rows'));
@@ -162,9 +162,10 @@ class SpecialEventController extends Controller
 
     public function show($id)
     {
-        $event = SpecialEvent::with(['sessions'])->findOrFail($id);
+        $event = SpecialEvent::with(['sessions', 'sponsors'])->findOrFail($id);
+        $users = User::all();
 
-        return view('specialEvent.show', compact('event'));
+        return view('specialEvent.show', compact('event', 'users'));
     }
 
     public function edit($id)

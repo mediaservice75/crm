@@ -26,4 +26,9 @@ class EventSponsor extends Model
     {
         return $this->belongsTo(SpecialEvent::class, 'event_id');
     }
+
+    public function manager()
+    {
+        return $this->belongsTo(User::class, 'responsible_manager_id');
+    }
 }

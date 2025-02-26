@@ -73,7 +73,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {{-- @foreach ($event->sponsors as $sponsor)
+                                            @foreach ($event->sponsors as $sponsor)
                                                 <tr>
                                                     <td>
                                                         @if ($sponsor->is_general)
@@ -82,9 +82,13 @@
                                                             {{ $sponsor->name }}
                                                         @endif
                                                     </td>
-                                                    <td>{{ $sponsor->manager }}</td>
+                                                    <td>
+                                                        <!-- Здесь получаем имя и фамилию менеджера -->
+                                                        {{ optional($sponsor->manager)->name }}
+                                                        {{ optional($sponsor->manager)->surname }}
+                                                    </td>
                                                 </tr>
-                                            @endforeach --}}
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
