@@ -27,4 +27,9 @@ class SpecialEvent extends Model
     {
         return $this->hasMany(EventSponsor::class, 'event_id');
     }
+
+    public function responsibleEmployees()
+    {
+        return $this->hasMany(EventResponsibleEmployee::class, 'event_id');
+    }
 }

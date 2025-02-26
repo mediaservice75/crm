@@ -2,6 +2,7 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
 
 @extends('layout.layout')
+
 @section('page-heading')
     <div class="row">
         <div class="col-12 col-md-4">
@@ -17,19 +18,30 @@
     <style>
         .card-body {
             font-size: 14px;
+            padding: 10px !important;
+            /* Минимальные отступы */
+        }
+
+        .table-container {
+            width: 100%;
+            /* Таблица на всю ширину */
+            margin: 0;
+            padding: 0;
         }
 
         .card-body table {
             width: 100%;
             max-width: 100%;
-            table-layout: fixed;
+            table-layout: auto;
+            /* Автоматическая ширина колонок */
             border-collapse: collapse;
-            font-size: 11px;
+            font-size: 12px;
         }
 
         .card-body th,
         .card-body td {
-            padding: 5px;
+            padding: 8px;
+            /* Уменьшенные отступы */
             text-align: left;
             border: 1px solid #ddd;
         }
@@ -37,6 +49,13 @@
         .card-body th {
             background-color: #f8f9fa;
             font-weight: bold;
+        }
+
+        .card {
+            padding: 0 !important;
+            /* Убираем padding у карточки */
+            margin: 0 !important;
+            /* Минимальные внешние отступы */
         }
     </style>
 
@@ -49,9 +68,9 @@
                             <div class="card-body">
                                 <h5 class="title mb-4">{{ $event->title }}</h5>
                                 <p>
-                                    {{ \Carbon\Carbon::parse($event->campaign_start_date)->format('d.m.Y') }}
-                                    <br>
-                                    {{ \Carbon\Carbon::parse($event->campaign_end_date)->format('d.m.Y') }}
+                                    {{ \Carbon\Carbon::parse($event->campaign_start_date)->format('d.m') }}
+                                    -
+                                    {{ \Carbon\Carbon::parse($event->campaign_end_date)->format('d.m') }}
                                 </p>
                                 @foreach ($event->sessions as $session)
                                     <p>
@@ -63,8 +82,8 @@
                                     </p>
                                 @endforeach
 
-                                <!-- Оборачиваем таблицу в контейнер -->
-                                <div class="table-container">
+                                <!-- Таблица без отступов -->
+                                <div class="table-container w-100">
                                     <table>
                                         <thead>
                                             <tr>
@@ -83,7 +102,6 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <!-- Здесь получаем имя и фамилию менеджера -->
                                                         {{ optional($sponsor->manager)->name }}
                                                         {{ optional($sponsor->manager)->surname }}
                                                     </td>

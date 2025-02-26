@@ -1,5 +1,6 @@
 @extends('layout.layout')
 @section('page-heading')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <div class="row">
         <div class="col-12 col-md-5">
             <h3>Информация о мероприятии</h3>
@@ -12,6 +13,29 @@
 @endsection
 
 @section('content')
+    <style>
+        .checkmark {
+            color: green;
+            /* Зелёный цвет */
+            font-size: 1.7rem;
+            /* Чуть больше размер */
+            font-weight: bold;
+            /* Делаем жирнее */
+            display: inline-block;
+            /* Корректное центрирование */
+            width: 100%;
+            /* Растягиваем по ширине ячейки */
+            text-align: center;
+            /* Выравниваем по центру */
+        }
+
+        td {
+            text-align: center;
+            /* Центрируем содержимое ячейки */
+            vertical-align: middle;
+            /* Центрируем по вертикали */
+        }
+    </style>
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -59,10 +83,10 @@
                                                 {{ optional($users->firstWhere('id', $sponsor->responsible_manager_id))->name ?? 'Не указан' }}
                                                 {{ optional($users->firstWhere('id', $sponsor->responsible_manager_id))->surname ?? '' }}
                                             </td>
-                                            <td>{{ $sponsor->has_logo ? '+' : '' }}</td>
-                                            <td>{{ $sponsor->has_leaflet ? '+' : '' }}</td>
+                                            <td>{!! $sponsor->has_logo ? '<i class="bi bi-check-lg checkmark"></i>' : '' !!}</td>
+                                            <td>{!! $sponsor->has_leaflet ? '<i class="bi bi-check-lg checkmark"></i>' : '' !!}</td>
                                             <td>{{ $sponsor->gratitude_to }}</td>
-                                            <td>{{ $sponsor->has_feedback ? '+' : '' }}</td>
+                                            <td>{!! $sponsor->has_feedback ? '<i class="bi bi-check-lg checkmark"></i>' : '' !!}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
