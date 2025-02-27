@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DynamicTable;
 use App\Models\EventSession;
 use App\Models\EventSponsor;
+use App\Models\Group;
 use App\Models\SpecialEvent;
 use App\Models\User;
 use App\Models\UserM;
@@ -170,9 +171,11 @@ class SpecialEventController extends Controller
 
     public function edit($id)
     {
-        $event = SpecialEvent::with('sponsors')->find($id);
+        $event = SpecialEvent::with(['sponsors', 'responsibles'])->find($id);
         $users = User::all();
-        return view('specialEvent.edit', compact('event', 'users'));
+        $groups = Group::all();
+
+        return view('specialEvent.edit', compact('event', 'users', 'groups'));
     }
 
     public function update(Request $request, $id)

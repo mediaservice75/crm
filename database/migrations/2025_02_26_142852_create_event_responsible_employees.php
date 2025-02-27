@@ -16,8 +16,8 @@ class CreateEventResponsibleEmployees extends Migration
         Schema::create('event_responsible_employees', function (Blueprint $table) {
             $table->id();
             $table->foreignId('event_id')->constrained('special_events')->onDelete('cascade');
-            $table->foreignId('group_id')->constrained('groups')->onDelete('cascade');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('group');
+            $table->string('user');
             $table->timestamps();
         });
     }
