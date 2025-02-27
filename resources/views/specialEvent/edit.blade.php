@@ -37,6 +37,42 @@
                         </div>
 
                         <div class="mb-3">
+                            <h4 class="card-title mb-1">Сессии мероприятия</h4>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Локация</th>
+                                        <th>Дата</th>
+                                        <th>Время</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($event->sessions as $index => $session)
+                                        <tr>
+                                            <td>
+                                                <input type="hidden" name="sessions[{{ $index }}][id]"
+                                                    value="{{ $session->id }}">
+                                                <input type="text" class="form-control"
+                                                    name="sessions[{{ $index }}][location]"
+                                                    value="{{ old("sessions.$index.location", $session->location) }}">
+                                            </td>
+                                            <td>
+                                                <input type="date" class="form-control"
+                                                    name="sessions[{{ $index }}][event_date]"
+                                                    value="{{ old("sessions.$index.event_date", $session->event_date) }}">
+                                            </td>
+                                            <td>
+                                                <input type="time" class="form-control"
+                                                    name="sessions[{{ $index }}][event_time]"
+                                                    value="{{ old("sessions.$index.event_time", $session->event_time) }}">
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mb-3">
                             <h4 class="card-title mb-1">Спонсоры</h4>
                             <table class="table table-bordered">
                                 <thead>

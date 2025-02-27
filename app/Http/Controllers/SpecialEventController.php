@@ -164,15 +164,16 @@ class SpecialEventController extends Controller
 
     public function show($id)
     {
-        $event = SpecialEvent::with(['sessions', 'sponsors'])->findOrFail($id);
+        $event = SpecialEvent::with(['sessions', 'sponsors', 'responsibles'])->findOrFail($id);
         $users = User::all();
+        $groups = Group::all();
 
-        return view('specialEvent.show', compact('event', 'users'));
+        return view('specialEvent.show', compact('event', 'users', 'groups'));
     }
 
     public function edit($id)
     {
-        $event = SpecialEvent::with(['sponsors', 'responsibles'])->find($id);
+        $event = SpecialEvent::with(['sessions', 'sponsors', 'responsibles'])->find($id);
         $users = User::all();
         $groups = Group::all();
 
