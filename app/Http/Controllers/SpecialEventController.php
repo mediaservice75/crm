@@ -180,6 +180,7 @@ class SpecialEventController extends Controller
 
     public function update(Request $request, $id)
     {
+        dd(request()->all());
         $event = SpecialEvent::findOrFail($id);
 
         $event->update([

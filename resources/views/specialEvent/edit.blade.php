@@ -118,6 +118,54 @@
                                 <button type="button" class="btn btn-primary" onclick="addSponsorRow()">+</button>
                             </div>
                         </div>
+
+                        <div class="mb-3">
+                            <h4 class="card-title mb-1">Ответственные сотрудники на мероприятии</h4>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Статус</th>
+                                        <th>ФИО Сотрудника</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="responsibles-table-body">
+                                    @foreach ($event->responsibles as $responsible)
+                                        <tr>
+                                            <td>
+                                                <select name="responsibles[{{ $loop->index }}][group]"
+                                                    class="form-control">
+                                                    @foreach ($groups as $group)
+                                                        <option value="{{ $group->name }}"
+                                                            {{ $responsible->group == $group->name ? 'selected' : '' }}>
+                                                            {{ $group->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name="responsibles[{{ $loop->index }}][user]"
+                                                    class="form-control">
+                                                    @foreach ($users as $user)
+                                                        <option value="{{ $user->name }} {{ $user->surname }}"
+                                                            {{ $responsible->user == $user->name . ' ' . $user->surname ? 'selected' : '' }}>
+                                                            {{ $user->name }} {{ $user->surname }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger"
+                                                    onclick="removeResponsibleRow(this)">-</button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            <div class="d-flex justify-content-center mt-3">
+                                <button type="button" class="btn btn-primary" onclick="addResponsibleRow()">+</button>
+                            </div>
+                        </div>
                         <button type="submit" class="btn btn-success">Сохранить изменения</button>
                     </form>
                 </div>
@@ -164,6 +212,46 @@
         }
 
         function removeSponsorRow(button) {
+            button.closest('tr').remove();
+        }
+
+        let groups = @json($groups);
+        let users = @json($users);
+
+        let currentIndex = @json($event->responsibles->count());
+
+        function addResponsibleRow() {
+            let index = currentIndex++;
+            let row = document.createElement('tr');
+
+            let groupOptions = groups.map(group =>
+                `<option value="${group.name}">${group.name}</option>`
+            ).join('');
+
+            let userOptions = users.map(user =>
+                `<option value="${user.name} ${user.surname}">${user.name} ${user.surname}</option>`
+            ).join('');
+
+            row.innerHTML = `
+        <td>
+            <select name="responsibles[${index}][group]" class="form-control">
+                ${groupOptions}
+            </select>
+        </td>
+        <td>
+            <select name="responsibles[${index}][user]" class="form-control">
+                ${userOptions}
+            </select>
+        </td>
+        <td>
+            <button type="button" class="btn btn-danger" onclick="removeResponsibleRow(this)">-</button>
+        </td>
+    `;
+
+            document.getElementById('responsibles-table-body').appendChild(row);
+        }
+
+        function removeResponsibleRow(button) {
             button.closest('tr').remove();
         }
     </script>
