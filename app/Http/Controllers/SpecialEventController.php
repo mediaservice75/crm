@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DynamicTable;
+use App\Models\EventResponsibleEmployee;
 use App\Models\EventSession;
 use App\Models\EventSponsor;
 use App\Models\Group;
@@ -180,7 +181,7 @@ class SpecialEventController extends Controller
 
     public function update(Request $request, $id)
     {
-        dd(request()->all());
+        // dd(request()->all());
         $event = SpecialEvent::findOrFail($id);
 
         $event->update([
@@ -234,6 +235,22 @@ class SpecialEventController extends Controller
                 ->delete();
         } else {
             EventSponsor::where('event_id', $event->id)->delete();
+        }
+
+        if ($request->has('responsibles')) {
+            $newResponsibleIds = [];
+
+            EventResponsibleEmployee::where('event_id', $event->id)->delete();
+
+            foreach ($request->input('responsibles') as $responsible) {
+                EventResponsibleEmployee::create([
+                    'event_id' => $event->id,
+                    'group' => $responsible['group'],
+                    'user' => $responsible['user'],
+                ]);
+            }
+        } else {
+            EventResponsibleEmployee::where('event_id', $event->id)->delete();
         }
 
         return redirect()->route('special-event.show', $id)->with('success', 'Изменения сохранены');

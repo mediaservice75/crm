@@ -11,7 +11,7 @@ class EventResponsibleEmployee extends Model
 
     protected $table = 'event_responsible_employees';
 
-    protected $fillable = ['event_id', 'group_id', 'user_id'];
+    protected $fillable = ['event_id', 'group', 'user'];
 
     public function event()
     {
