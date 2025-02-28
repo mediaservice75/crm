@@ -16,61 +16,30 @@
 
 @section('content')
     <style>
-        .card-body {
-            font-size: 14px;
-            padding: 10px !important;
-            /* Минимальные отступы */
-            height: auto;
-            /* Автоматическая высота карточки */
-            overflow: hidden;
-            /* Чтобы карточка не выходила за пределы */
-        }
-
         .table-container {
             width: 100%;
             overflow-x: auto;
-            /* Горизонтальная прокрутка */
-            margin: 0;
-            padding: 0;
-            border: 0.5px solid #ddd;
-            /* Добавляем рамку вокруг контейнера таблицы, если нужно */
         }
 
-        .card-body table {
+        table {
             width: 100%;
-            max-width: 100%;
             table-layout: fixed;
-            /* Фиксированное расположение колонок */
             border-collapse: collapse;
-            /* Убедитесь, что border-collapse включен */
-            font-size: 12px;
+            /* Убирает двойные границы между ячейками */
+            font-size: 10px;
         }
 
-        .card {
-            padding: 0 !important;
-            margin: 0 !important;
-            height: auto;
-            /* карточка расширяется по высоте */
-        }
-
-        .card-body th,
-        .card-body td {
+        th,
+        td {
             padding: 8px;
             text-align: left;
             border: 1px solid #ddd;
-            /* Рамки для ячеек таблицы */
+            /* Добавляем рамки для ячеек */
         }
 
-        .card-body table {
-            max-height: 400px;
-            /* Ограничение высоты таблицы, если нужно */
-            overflow-y: auto;
-            /* Вертикальная прокрутка */
-        }
-
-
-        .free {
-            color: red;
+        th {
+            background-color: #f4f4f4;
+            font-weight: bold;
         }
     </style>
 
