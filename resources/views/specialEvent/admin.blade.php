@@ -20,43 +20,54 @@
             font-size: 14px;
             padding: 10px !important;
             /* Минимальные отступы */
+            height: auto;
+            /* Автоматическая высота карточки */
+            overflow: hidden;
+            /* Чтобы карточка не выходила за пределы */
         }
 
         .table-container {
             width: 100%;
-            /* Таблица на всю ширину */
+            overflow-x: auto;
+            /* Горизонтальная прокрутка */
             margin: 0;
             padding: 0;
+            border: 0.5px solid #ddd;
+            /* Добавляем рамку вокруг контейнера таблицы, если нужно */
         }
 
         .card-body table {
             width: 100%;
             max-width: 100%;
-            table-layout: auto;
-            /* Автоматическая ширина колонок */
+            table-layout: fixed;
+            /* Фиксированное расположение колонок */
             border-collapse: collapse;
+            /* Убедитесь, что border-collapse включен */
             font-size: 12px;
+        }
+
+        .card {
+            padding: 0 !important;
+            margin: 0 !important;
+            height: auto;
+            /* карточка расширяется по высоте */
         }
 
         .card-body th,
         .card-body td {
             padding: 8px;
-            /* Уменьшенные отступы */
             text-align: left;
             border: 1px solid #ddd;
+            /* Рамки для ячеек таблицы */
         }
 
-        .card-body th {
-            background-color: #f8f9fa;
-            font-weight: bold;
+        .card-body table {
+            max-height: 400px;
+            /* Ограничение высоты таблицы, если нужно */
+            overflow-y: auto;
+            /* Вертикальная прокрутка */
         }
 
-        .card {
-            padding: 0 !important;
-            /* Убираем padding у карточки */
-            margin: 0 !important;
-            /* Минимальные внешние отступы */
-        }
 
         .free {
             color: red;
@@ -84,11 +95,15 @@
                                         <br>
                                         <b>Место:</b>
                                         {{ $session->location }}
-                                        <br>
-                                        <b>Время:</b>
-                                        {{ $session->event_time }}
+
+                                        @if (!empty($session->event_time))
+                                            <br>
+                                            <b>Время:</b>
+                                            {{ $session->event_time }}
+                                        @endif
                                     </p>
                                 @endforeach
+
 
                                 <!-- Таблица без отступов -->
                                 <div class="table-container w-100">
@@ -106,7 +121,8 @@
                                                         class="{{ !$sponsor->name || $sponsor->name == 'Свободно' ? 'text-danger opacity-75' : '' }}">
                                                         @if ($sponsor->is_general)
                                                             <strong>{{ $sponsor->name ?? 'Свободно' }}
-                                                                (Генеральный)</strong>
+                                                                (Генеральный)
+                                                            </strong>
                                                         @else
                                                             {{ $sponsor->name ?? 'Свободно' }}
                                                         @endif
