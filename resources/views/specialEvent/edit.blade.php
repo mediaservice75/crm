@@ -27,6 +27,7 @@
                         </div>
 
                         <div class="mb-3">
+                            <br>
                             <h4 class="card-title mb-1">Период рекламной кампании</h4>
                             <div class="d-flex">
                                 <input type="date" class="form-control me-2" name="campaign_start_date"
@@ -37,11 +38,12 @@
                         </div>
 
                         <div class="mb-3">
-                            <h4 class="card-title mb-1">Сессии мероприятия</h4>
+                            <br>
+                            <h4 class="card-title mb-1">Даты проведения</h4>
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Локация</th>
+                                        <th>Место</th>
                                         <th>Дата</th>
                                         <th>Время</th>
                                     </tr>
@@ -73,6 +75,7 @@
                         </div>
 
                         <div class="mb-3">
+                            <br>
                             <h4 class="card-title mb-1">Спонсоры</h4>
                             <table class="table table-bordered">
                                 <thead>
@@ -156,6 +159,7 @@
                         </div>
 
                         <div class="mb-3">
+                            <br>
                             <h4 class="card-title mb-1">Ответственные сотрудники на мероприятии</h4>
                             <table class="table table-bordered">
                                 <thead>

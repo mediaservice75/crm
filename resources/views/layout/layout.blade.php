@@ -21,7 +21,6 @@
 
     <link rel="shortcut icon" href="{{ asset('images/logo/favicon.svg') }}" type="image/x-icon">
     <link rel="shortcut icon" href="{{ asset('images/logo/favicon.png') }}" type="image/png">
-    {{--    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.0.0/index.global.min.js"></script> --}}
 
 </head>
 
@@ -81,15 +80,9 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="sidebar-menu">
                     <ul class="menu">
-                        {{--                    <li --}}
-                        {{--                        class="sidebar-item"> --}}
-                        {{--                        <a href="{{route('home')}}" class='sidebar-link'> --}}
-                        {{--                            <i class="bi bi-house-fill"></i> --}}
-                        {{--                            <span>Главная</span> --}}
-                        {{--                        </a> --}}
-                        {{--                    </li> --}}
                         <li class="sidebar-item  ">
                             <a href="{{ route('calendar.index') }}" class='sidebar-link'>
                                 <i class="bi bi-calendar-date-fill"></i>
@@ -103,9 +96,16 @@
                         </li>
 
                         <li class="sidebar-item  ">
-                            <a href="{{ route('special-event.index') }}" class='sidebar-link'>
+                            <a href="{{ route('special-event.old') }}" class='sidebar-link'>
                                 <i class="bi bi-calendar2-check-fill"></i>
                                 <span>Мероприятия</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item  ">
+                            <a href="{{ route('special-event.index') }}" class='sidebar-link'>
+                                <i class="bi bi-calendar2-check-fill"></i>
+                                <span>Мероприятия (2)</span>
                             </a>
                         </li>
 
@@ -135,6 +135,7 @@
                                 </a>
                             </li>
                         @endif
+
                         @if (auth()->user()->can('viewAny', \App\Models\Client::class))
                             <li class="sidebar-item  ">
                                 <a href="{{ route('clients.showAll') }}" class='sidebar-link'>
@@ -233,38 +234,11 @@
                                 <li class="sidebar-item">
                                     <a href="{{ route('payment.index') }}" class='sidebar-link'>
                                         <i class="bi bi-wallet-fill"></i>
-                                        <span>Оплаты{{-- <span class="badge bg-primary">{{myClaimsIsNotClosed()}}</span> --}}</span>
+                                        <span>Оплаты</span>
                                     </a>
                                 </li>
                             @endif
                         @endif
-                        {{--                    <li class="sidebar-title">Профиль</li> --}}
-
-                        {{--                    @if (auth()->user()->role->level <= 3) --}}
-                        {{--                    <li --}}
-                        {{--                        class="sidebar-item  "> --}}
-                        {{--                        <a href="{{route('users.show', ['user' => auth()->user()->id])}}" class='sidebar-link'> --}}
-                        {{--                            <i class="bi bi-piggy-bank-fill"></i> --}}
-                        {{--                            <span>Мои продажи</span> --}}
-                        {{--                        </a> --}}
-                        {{--                    </li> --}}
-                        {{--                    @endif --}}
-
-                        {{--                    <li --}}
-                        {{--                        class="sidebar-item  "> --}}
-                        {{--                        <a href="{{route('users.settings')}}" class='sidebar-link'> --}}
-                        {{--                            <i class="bi bi-gear-wide-connected"></i> --}}
-                        {{--                            <span>Настройки</span> --}}
-                        {{--                        </a> --}}
-                        {{--                    </li> --}}
-
-                        {{--                    <li --}}
-                        {{--                        class="sidebar-item  "> --}}
-                        {{--                        <a href="{{route('users.logout')}}" class='sidebar-link'> --}}
-                        {{--                            <i class="bi bi-door-open-fill"></i> --}}
-                        {{--                            <span>Выйти</span> --}}
-                        {{--                        </a> --}}
-                        {{--                    </li> --}}
 
                         @if (auth()->user()->role->level <= 2)
                             <li class="sidebar-title">Администрирование</li>
@@ -360,49 +334,6 @@
                             </a>
                         </div>
                         <div class="col-6 d-flex justify-content-end">
-                            {{--                        <ul class="navbar-nav flex-row align-items-center ms-auto me-2"> --}}
-                            {{--                            <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-2"> --}}
-                            {{--                                <a class="nav-link dropdown-toggle hide-arrow show" href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="true"> --}}
-                            {{--                                  <span class="position-relative"> --}}
-                            {{--                                    <i class="bi bi-bell"></i> --}}
-                            {{--                                    <span class="badge rounded-pill bg-danger badge-dot badge-notifications border"></span> --}}
-                            {{--                                  </span> --}}
-                            {{--                                </a> --}}
-                            {{--                                <ul class="dropdown-menu dropdown-menu-end p-0" data-bs-popper="static"> --}}
-                            {{--                                    <li class="dropdown-menu-header border-bottom"> --}}
-                            {{--                                        <div class="dropdown-header d-flex align-items-center py-3"> --}}
-                            {{--                                            <h6 class="mb-0 me-auto">Уведомления</h6> --}}
-                            {{--                                        </div> --}}
-                            {{--                                    </li> --}}
-                            {{--                                    <li class="dropdown-notifications-list scrollable-container ps ps--active-y"> --}}
-                            {{--                                        <ul class="list-group list-group-flush"> --}}
-                            {{--                                            <li class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read" style="margin-bottom: 0 !important"> --}}
-                            {{--                                                <div class="d-flex"> --}}
-                            {{--                                                    <div class="flex-grow-1 p-2"> --}}
-                            {{--                                                        <h6 class="small mb-0">Congratulation Lettie 🎉</h6> --}}
-                            {{--                                                        <small class="mb-1 d-block text-body">Won the monthly best seller gold badge</small> --}}
-                            {{--                                                        <small class="text-muted">1h ago</small> --}}
-                            {{--                                                    </div> --}}
-                            {{--                                                    <div class="flex-shrink-0 dropdown-notifications-actions"> --}}
-                            {{--                                                        <a href="#" class="dropdown-notifications-read"><span class="badge badge-dot"></span></a> --}}
-                            {{--                                                        <a href="javascript:void(0)" class="dropdown-notifications-archive"><span class="bi bi-x"></span></a> --}}
-                            {{--                                                    </div> --}}
-                            {{--                                                </div> --}}
-                            {{--                                            </li> --}}
-
-                            {{--                                        </ul> --}}
-
-                            {{--                                    <li class="border-top"> --}}
-                            {{--                                        <div class="d-grid p-4"> --}}
-                            {{--                                            <a class="btn btn-primary btn-sm d-flex" href="javascript:void(0);"> --}}
-                            {{--                                                <small class="align-middle">View all notifications</small> --}}
-                            {{--                                            </a> --}}
-                            {{--                                        </div> --}}
-                            {{--                                    </li> --}}
-                            {{--                                </ul> --}}
-                            {{--                            </li> --}}
-                            {{--                        </ul> --}}
-
                             <div class="header-top-right text-end">
                                 <div class="dropdown">
                                     <a href="#" id="topbarUserDropdown"

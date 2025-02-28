@@ -7,7 +7,9 @@
         </div>
         <div class="col-12 col-md-7 text-end">
             <a href="{{ route('special-event.index') }}" class="btn btn-sm btn-primary">Назад</a>
-            <a href="{{ route('special-event.edit', $event->id) }}" class="btn btn-sm btn-success">Редактировать</a>
+            @if (auth()->user()->role->level == 1 || auth()->user()->role->level == 2)
+                <a href="{{ route('special-event.edit', $event->id) }}" class="btn btn-sm btn-success">Редактировать</a>
+            @endif
         </div>
     </div>
 @endsection
@@ -86,6 +88,31 @@
                                             <td>{!! $sponsor->has_leaflet ? '<i class="bi bi-check-lg checkmark"></i>' : '' !!}</td>
                                             <td>{{ $sponsor->gratitude_to }}</td>
                                             <td>{!! $sponsor->has_feedback ? '<i class="bi bi-check-lg checkmark"></i>' : '' !!}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mb-3">
+                            <br>
+                            <h4 class="card-title mb-1">Ответственные сотрудники на мероприятии</h4>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Статус</th>
+                                        <th>ФИО Сотрудника</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="responsibles-table-body">
+                                    @foreach ($event->responsibles as $responsible)
+                                        <tr>
+                                            <td>
+                                                {{ $responsible->group }}
+                                            </td>
+                                            <td>
+                                                {{ $responsible->user }}
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

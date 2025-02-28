@@ -57,27 +57,35 @@
             margin: 0 !important;
             /* Минимальные внешние отступы */
         }
+
+        .free {
+            color: red;
+        }
     </style>
 
     <div class="swiper" id="swiper">
         <div class="swiper-wrapper" style="height: auto">
-            @foreach ($events as $event)
+            @foreach ($events->reverse() as $event)
                 <div class="swiper-slide">
                     <div class="card">
                         <div class="card-content">
                             <div class="card-body">
                                 <h5 class="title mb-4">{{ $event->title }}</h5>
-                                <p>
+                                <p> <b>Период:</b>
+
                                     {{ \Carbon\Carbon::parse($event->campaign_start_date)->format('d.m') }}
                                     -
                                     {{ \Carbon\Carbon::parse($event->campaign_end_date)->format('d.m') }}
                                 </p>
                                 @foreach ($event->sessions as $session)
                                     <p>
+                                        <b>Дата:</b>
                                         {{ \Carbon\Carbon::parse($session->event_date)->format('d.m.Y') }}
                                         <br>
+                                        <b>Место:</b>
                                         {{ $session->location }}
                                         <br>
+                                        <b>Время:</b>
                                         {{ $session->event_time }}
                                     </p>
                                 @endforeach
@@ -94,15 +102,18 @@
                                         <tbody>
                                             @foreach ($event->sponsors as $sponsor)
                                                 <tr>
-                                                    <td>
+                                                    <td
+                                                        class="{{ !$sponsor->name || $sponsor->name == 'Свободно' ? 'text-danger opacity-75' : '' }}">
                                                         @if ($sponsor->is_general)
-                                                            <strong>{{ $sponsor->name ?? 'Свободно' }} (Генеральный)</strong>
+                                                            <strong>{{ $sponsor->name ?? 'Свободно' }}
+                                                                (Генеральный)</strong>
                                                         @else
                                                             {{ $sponsor->name ?? 'Свободно' }}
                                                         @endif
                                                     </td>
-                                                    <td>
-                                                        {{ $sponsor->responsible_manager }}
+                                                    <td
+                                                        class="{{ !$sponsor->responsible_manager || $sponsor->responsible_manager == 'Свободно' ? 'text-danger opacity-75' : '' }}">
+                                                        {{ $sponsor->responsible_manager ?? 'Свободно' }}
                                                     </td>
                                                 </tr>
                                             @endforeach

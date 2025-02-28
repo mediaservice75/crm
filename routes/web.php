@@ -172,6 +172,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('calendar/goal-delete/{goal}', [CalendarController::class, 'deleteGoal'])->name('calendar.deleteGoal');
 
     Route::get('events', [SpecialEventController::class, 'index'])->name('special-event.index');
+    Route::get('events/old', [SpecialEventController::class, 'old'])->name('special-event.old');
     Route::get('events/create', [SpecialEventController::class, 'create'])->name('special-event.create');
     Route::post('events', [SpecialEventController::class, 'store'])->name('special-event.store');
     Route::get('events/{id}', [SpecialEventController::class, 'show'])->name('special-event.show');
