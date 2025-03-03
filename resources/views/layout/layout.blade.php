@@ -96,16 +96,9 @@
                         </li>
 
                         <li class="sidebar-item  ">
-                            <a href="{{ route('special-event.old') }}" class='sidebar-link'>
-                                <i class="bi bi-calendar2-check-fill"></i>
-                                <span>Мероприятия</span>
-                            </a>
-                        </li>
-
-                        <li class="sidebar-item  ">
                             <a href="{{ route('special-event.index') }}" class='sidebar-link'>
                                 <i class="bi bi-calendar2-check-fill"></i>
-                                <span>Мероприятия (2)</span>
+                                <span>Мероприятия</span>
                             </a>
                         </li>
 
