@@ -1,6 +1,8 @@
 @extends('layout.layout')
 
 @section('page-heading')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+
     <div class="row align-items-center">
         <div class="col-md-5">
             <h3>Редактировать мероприятие</h3>
@@ -110,7 +112,7 @@
                                             </td>
                                             <td>
                                                 <select name="sponsors[{{ $index }}][responsible_manager]"
-                                                    class="form-control">
+                                                    class="form-control select2">
                                                     <option value="Свободно"
                                                         {{ empty($sponsor->responsible_manager) ? 'selected' : '' }}>
                                                         Свободно
@@ -185,7 +187,7 @@
                                             </td>
                                             <td>
                                                 <select name="responsibles[{{ $loop->index }}][user]"
-                                                    class="form-control">
+                                                    class="form-control select2">
                                                     @foreach ($users as $user)
                                                         <option value="{{ $user->name }} {{ $user->surname }}"
                                                             {{ $responsible->user == $user->name . ' ' . $user->surname ? 'selected' : '' }}>
@@ -213,7 +215,14 @@
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
     <script>
+        $(document).ready(function() {
+            $('.select2').select2();
+        });
+
         function addSponsorRow() {
             let index = document.querySelectorAll('#sponsors-table-body tr').length;
             let row = document.createElement('tr');
@@ -226,7 +235,7 @@
         </td>
         <td><input type="text" name="sponsors[${index}][name]" class="form-control"></td>
         <td>
-            <select name="sponsors[${index}][responsible_manager]" class="form-control">
+            <select name="sponsors[${index}][responsible_manager]" class="form-control select2">
                 <option value="Свободно" selected>Свободно</option>
                 @foreach ($users as $user)
                     <option value="{{ $user->name }} {{ $user->surname }}">{{ $user->name }} {{ $user->surname }}</option>
@@ -249,6 +258,8 @@
         <td><button type="button" class="btn btn-danger" onclick="removeSponsorRow(this)">-</button></td>
     `;
             document.getElementById('sponsors-table-body').appendChild(row);
+
+            $('.select2').select2();
         }
 
         function removeSponsorRow(button) {
@@ -279,16 +290,18 @@
             </select>
         </td>
         <td>
-            <select name="responsibles[${index}][user]" class="form-control">
+            <select name="responsibles[${index}][user]" class="form-control select2">
                 ${userOptions}
             </select>
         </td>
         <td>
             <button type="button" class="btn btn-danger" onclick="removeResponsibleRow(this)">-</button>
         </td>
-    `;
+        `;
 
             document.getElementById('responsibles-table-body').appendChild(row);
+
+            $(row).find('.select2').select2();
         }
 
         function removeResponsibleRow(button) {

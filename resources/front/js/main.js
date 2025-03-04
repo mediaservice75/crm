@@ -1582,6 +1582,7 @@ if (document.getElementById('swiper')) {
         slidesPerView: 4,
         spaceBetween: 15,
         grabCursor: true,
+        touchEventsTarget: 'container',
 
         breakpoints: {
             320: { // Очень маленькие экраны (iPhone SE)
