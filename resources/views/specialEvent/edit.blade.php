@@ -198,7 +198,7 @@
                                                 <td>
                                                     <select name="responsibles[{{ $loop->index }}][user]"
                                                         class="form-control select2">
-                                                        @foreach ($users as $user)
+                                                        @foreach ($usersAll as $user)
                                                             <option value="{{ $user->name }} {{ $user->surname }}"
                                                                 {{ $responsible->user == $user->name . ' ' . $user->surname ? 'selected' : '' }}>
                                                                 {{ $user->name }} {{ $user->surname }}
@@ -278,7 +278,7 @@
         }
 
         let groups = @json($groups);
-        let users = @json($users);
+        let users = @json($usersAll);
 
         let currentIndex = @json($event->responsibles->count());
 

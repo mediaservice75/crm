@@ -196,10 +196,13 @@ class SpecialEventController extends Controller
     public function edit($id)
     {
         $event = SpecialEvent::with(['sessions', 'sponsors', 'responsibles'])->find($id);
-        $users = User::all();
+        $users = User::whereIn('role_id', [2, 4, 13])
+            ->where('isBlocked', 0)
+            ->get();
+        $usersAll = User::all();
         $groups = Group::all();
 
-        return view('specialEvent.edit', compact('event', 'users', 'groups'));
+        return view('specialEvent.edit', compact('event', 'users', 'groups', 'usersAll'));
     }
 
     public function update(Request $request, $id)
