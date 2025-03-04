@@ -42,119 +42,128 @@
                         <div class="mb-3">
                             <br>
                             <h4 class="card-title mb-1">Даты проведения</h4>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Место</th>
-                                        <th>Дата</th>
-                                        <th>Время</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($event->sessions as $index => $session)
+                            <div class="table-responsive table-bordered">
+                                <table class="table">
+                                    <thead>
                                         <tr>
-                                            <td>
-                                                <input type="hidden" name="sessions[{{ $index }}][id]"
-                                                    value="{{ $session->id }}">
-                                                <input type="text" class="form-control"
-                                                    name="sessions[{{ $index }}][location]"
-                                                    value="{{ old("sessions.$index.location", $session->location) }}">
-                                            </td>
-                                            <td>
-                                                <input type="date" class="form-control"
-                                                    name="sessions[{{ $index }}][event_date]"
-                                                    value="{{ old("sessions.$index.event_date", $session->event_date) }}">
-                                            </td>
-                                            <td>
-                                                <input type="time" class="form-control"
-                                                    name="sessions[{{ $index }}][event_time]"
-                                                    value="{{ old("sessions.$index.event_time", $session->event_time) }}">
-                                            </td>
+                                            <th>Место</th>
+                                            <th>Дата</th>
+                                            <th>Время</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($event->sessions as $index => $session)
+                                            <tr>
+                                                <td>
+                                                    <input type="hidden" name="sessions[{{ $index }}][id]"
+                                                        value="{{ $session->id }}">
+                                                    <input type="text" class="form-control"
+                                                        name="sessions[{{ $index }}][location]"
+                                                        value="{{ old("sessions.$index.location", $session->location) }}">
+                                                </td>
+                                                <td>
+                                                    <input type="date" class="form-control"
+                                                        name="sessions[{{ $index }}][event_date]"
+                                                        value="{{ old("sessions.$index.event_date", $session->event_date) }}">
+                                                </td>
+                                                <td>
+                                                    <input type="time" class="form-control"
+                                                        name="sessions[{{ $index }}][event_time]"
+                                                        value="{{ old("sessions.$index.event_time", $session->event_time) }}">
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
 
                         <div class="mb-3">
                             <br>
                             <h4 class="card-title mb-1">Спонсоры</h4>
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Статус</th>
-                                        <th>Наименование</th>
-                                        <th>Менеджер</th>
-                                        <th>Логотип</th>
-                                        <th>Листовка</th>
-                                        <th>Благодарность</th>
-                                        <th>Отзыв</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="sponsors-table-body">
-                                    @foreach ($event->sponsors as $index => $sponsor)
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
                                         <tr>
-                                            <td>
-                                                <select name="sponsors[{{ $index }}][is_general]"
-                                                    class="form-control">
-                                                    <option value="1" {{ $sponsor->is_general ? 'selected' : '' }}>
-                                                        Генеральный</option>
-                                                    <option value="0" {{ !$sponsor->is_general ? 'selected' : '' }}>
-                                                        Партнер</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input type="hidden" name="sponsors[{{ $index }}][id]"
-                                                    value="{{ $sponsor->id }}">
-                                                <input type="text" name="sponsors[{{ $index }}][name]"
-                                                    class="form-control" value="{{ $sponsor->name }}">
-                                            </td>
-                                            <td>
-                                                <select name="sponsors[{{ $index }}][responsible_manager]"
-                                                    class="form-control select2">
-                                                    <option value="Свободно"
-                                                        {{ empty($sponsor->responsible_manager) ? 'selected' : '' }}>
-                                                        Свободно
-                                                    </option>
-                                                    @foreach ($users as $user)
-                                                        <option value="{{ $user->name }} {{ $user->surname }}"
-                                                            {{ $sponsor->responsible_manager == $user->name . ' ' . $user->surname ? 'selected' : '' }}>
-                                                            {{ $user->name }} {{ $user->surname }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input type="hidden" name="sponsors[{{ $index }}][has_logo]"
-                                                    value="0">
-                                                <input type="checkbox" name="sponsors[{{ $index }}][has_logo]"
-                                                    value="1" {{ $sponsor->has_logo ? 'checked' : '' }}>
-                                            </td>
-                                            <td>
-                                                <input type="hidden" name="sponsors[{{ $index }}][has_leaflet]"
-                                                    value="0">
-                                                <input type="checkbox" name="sponsors[{{ $index }}][has_leaflet]"
-                                                    value="1" {{ $sponsor->has_leaflet ? 'checked' : '' }}>
-                                            </td>
-                                            <td>
-                                                <input type="text" name="sponsors[{{ $index }}][gratitude_to]"
-                                                    class="form-control" value="{{ $sponsor->gratitude_to }}">
-                                            </td>
-                                            <td>
-                                                <input type="hidden" name="sponsors[{{ $index }}][has_feedback]"
-                                                    value="0">
-                                                <input type="checkbox" name="sponsors[{{ $index }}][has_feedback]"
-                                                    value="1" {{ $sponsor->has_feedback ? 'checked' : '' }}>
-                                            </td>
-                                            <td>
-                                                <button type="button" class="btn btn-danger"
-                                                    onclick="removeSponsorRow(this)">-</button>
-                                            </td>
+                                            <th>Статус</th>
+                                            <th>Наименование</th>
+                                            <th>Менеджер</th>
+                                            <th>Логотип</th>
+                                            <th>Листовка</th>
+                                            <th>Благодарность</th>
+                                            <th>Отзыв</th>
+                                            <th></th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody id="sponsors-table-body">
+                                        @foreach ($event->sponsors as $index => $sponsor)
+                                            <tr>
+                                                <td>
+                                                    <select name="sponsors[{{ $index }}][is_general]"
+                                                        class="form-control">
+                                                        <option value="1"
+                                                            {{ $sponsor->is_general ? 'selected' : '' }}>
+                                                            Генеральный</option>
+                                                        <option value="0"
+                                                            {{ !$sponsor->is_general ? 'selected' : '' }}>
+                                                            Партнер</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="hidden" name="sponsors[{{ $index }}][id]"
+                                                        value="{{ $sponsor->id }}">
+                                                    <input type="text" name="sponsors[{{ $index }}][name]"
+                                                        class="form-control" value="{{ $sponsor->name }}">
+                                                </td>
+                                                <td>
+                                                    <select name="sponsors[{{ $index }}][responsible_manager]"
+                                                        class="form-control select2">
+                                                        <option value="Свободно"
+                                                            {{ empty($sponsor->responsible_manager) ? 'selected' : '' }}>
+                                                            Свободно
+                                                        </option>
+                                                        @foreach ($users as $user)
+                                                            <option value="{{ $user->name }} {{ $user->surname }}"
+                                                                {{ $sponsor->responsible_manager == $user->name . ' ' . $user->surname ? 'selected' : '' }}>
+                                                                {{ $user->name }} {{ $user->surname }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="hidden" name="sponsors[{{ $index }}][has_logo]"
+                                                        value="0">
+                                                    <input type="checkbox" name="sponsors[{{ $index }}][has_logo]"
+                                                        value="1" {{ $sponsor->has_logo ? 'checked' : '' }}>
+                                                </td>
+                                                <td>
+                                                    <input type="hidden" name="sponsors[{{ $index }}][has_leaflet]"
+                                                        value="0">
+                                                    <input type="checkbox"
+                                                        name="sponsors[{{ $index }}][has_leaflet]" value="1"
+                                                        {{ $sponsor->has_leaflet ? 'checked' : '' }}>
+                                                </td>
+                                                <td>
+                                                    <input type="text"
+                                                        name="sponsors[{{ $index }}][gratitude_to]"
+                                                        class="form-control" value="{{ $sponsor->gratitude_to }}">
+                                                </td>
+                                                <td>
+                                                    <input type="hidden"
+                                                        name="sponsors[{{ $index }}][has_feedback]" value="0">
+                                                    <input type="checkbox"
+                                                        name="sponsors[{{ $index }}][has_feedback]" value="1"
+                                                        {{ $sponsor->has_feedback ? 'checked' : '' }}>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger"
+                                                        onclick="removeSponsorRow(this)">-</button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                             <div class="d-flex justify-content-center mt-3">
                                 <button type="button" class="btn btn-primary" onclick="addSponsorRow()">+</button>
                             </div>
@@ -163,47 +172,49 @@
                         <div class="mb-3">
                             <br>
                             <h4 class="card-title mb-1">Ответственные сотрудники на мероприятии</h4>
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Статус</th>
-                                        <th>ФИО Сотрудника</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="responsibles-table-body">
-                                    @foreach ($event->responsibles as $responsible)
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
                                         <tr>
-                                            <td>
-                                                <select name="responsibles[{{ $loop->index }}][group]"
-                                                    class="form-control">
-                                                    @foreach ($groups as $group)
-                                                        <option value="{{ $group->name }}"
-                                                            {{ $responsible->group == $group->name ? 'selected' : '' }}>
-                                                            {{ $group->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select name="responsibles[{{ $loop->index }}][user]"
-                                                    class="form-control select2">
-                                                    @foreach ($users as $user)
-                                                        <option value="{{ $user->name }} {{ $user->surname }}"
-                                                            {{ $responsible->user == $user->name . ' ' . $user->surname ? 'selected' : '' }}>
-                                                            {{ $user->name }} {{ $user->surname }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <button type="button" class="btn btn-danger"
-                                                    onclick="removeResponsibleRow(this)">-</button>
-                                            </td>
+                                            <th>Статус</th>
+                                            <th>ФИО Сотрудника</th>
+                                            <th></th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody id="responsibles-table-body">
+                                        @foreach ($event->responsibles as $responsible)
+                                            <tr>
+                                                <td>
+                                                    <select name="responsibles[{{ $loop->index }}][group]"
+                                                        class="form-control">
+                                                        @foreach ($groups as $group)
+                                                            <option value="{{ $group->name }}"
+                                                                {{ $responsible->group == $group->name ? 'selected' : '' }}>
+                                                                {{ $group->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="responsibles[{{ $loop->index }}][user]"
+                                                        class="form-control select2">
+                                                        @foreach ($users as $user)
+                                                            <option value="{{ $user->name }} {{ $user->surname }}"
+                                                                {{ $responsible->user == $user->name . ' ' . $user->surname ? 'selected' : '' }}>
+                                                                {{ $user->name }} {{ $user->surname }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger"
+                                                        onclick="removeResponsibleRow(this)">-</button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                             <div class="d-flex justify-content-center mt-3">
                                 <button type="button" class="btn btn-primary" onclick="addResponsibleRow()">+</button>
                             </div>

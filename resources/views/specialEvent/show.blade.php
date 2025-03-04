@@ -59,39 +59,42 @@
                                 <br>
                             @endunless
                         @endforeach
+                        
                         <div class="mb-3">
                             <br>
                             <h4 class="card-title mb-1">Спонсоры</h4>
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Статус</th>
-                                        <th>Наименование</th>
-                                        <th>Менеджер</th>
-                                        <th>Логотип</th>
-                                        <th>Листовка</th>
-                                        <th>Благодарность</th>
-                                        <th>Отзыв</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($event->sponsors as $sponsor)
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
                                         <tr>
-                                            <td>
-                                                {!! $sponsor->is_general ? '<strong>Генеральный</strong>' : 'Партнер' !!}
-                                            </td>
-                                            <td>{{ $sponsor->name }}</td>
-                                            <td>
-                                                {{ $sponsor->responsible_manager ?? 'Свободно' }}
-                                            </td>
-                                            <td>{!! $sponsor->has_logo ? '<i class="bi bi-check-lg checkmark"></i>' : '' !!}</td>
-                                            <td>{!! $sponsor->has_leaflet ? '<i class="bi bi-check-lg checkmark"></i>' : '' !!}</td>
-                                            <td>{{ $sponsor->gratitude_to }}</td>
-                                            <td>{!! $sponsor->has_feedback ? '<i class="bi bi-check-lg checkmark"></i>' : '' !!}</td>
+                                            <th>Статус</th>
+                                            <th>Наименование</th>
+                                            <th>Менеджер</th>
+                                            <th>Логотип</th>
+                                            <th>Листовка</th>
+                                            <th>Благодарность</th>
+                                            <th>Отзыв</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($event->sponsors as $sponsor)
+                                            <tr>
+                                                <td>
+                                                    {!! $sponsor->is_general ? '<strong>Генеральный</strong>' : 'Партнер' !!}
+                                                </td>
+                                                <td>{{ $sponsor->name }}</td>
+                                                <td>
+                                                    {{ $sponsor->responsible_manager ?? 'Свободно' }}
+                                                </td>
+                                                <td>{!! $sponsor->has_logo ? '<i class="bi bi-check-lg checkmark"></i>' : '' !!}</td>
+                                                <td>{!! $sponsor->has_leaflet ? '<i class="bi bi-check-lg checkmark"></i>' : '' !!}</td>
+                                                <td>{{ $sponsor->gratitude_to }}</td>
+                                                <td>{!! $sponsor->has_feedback ? '<i class="bi bi-check-lg checkmark"></i>' : '' !!}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
 
                         <div class="mb-3">
