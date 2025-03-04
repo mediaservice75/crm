@@ -25,7 +25,6 @@
             width: 100%;
             table-layout: fixed;
             border-collapse: collapse;
-            /* Убирает двойные границы между ячейками */
             font-size: 10px;
         }
 
@@ -34,7 +33,6 @@
             padding: 8px;
             text-align: left;
             border: 1px solid #ddd;
-            /* Добавляем рамки для ячеек */
         }
 
         th {

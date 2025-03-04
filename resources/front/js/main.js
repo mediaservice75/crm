@@ -8,12 +8,12 @@ import * as FilePond from 'filepond';
 import 'filepond/dist/filepond.min.css';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
-import {DataTable} from "../extensions/simple-datatables";
+import { DataTable } from "../extensions/simple-datatables";
 import th from "air-datepicker/locale/th";
 
 
 import Echo from 'laravel-echo';
-import {wind} from "../extensions/feather-icons/feather";
+import { wind } from "../extensions/feather-icons/feather";
 import Pusher from 'pusher-js';
 window.Pusher = Pusher;
 window.axios = require('axios');
@@ -501,7 +501,7 @@ if (currentUrl.includes('distribution')) {
         }
     });
 
-    $(document).on( "change", ".user_id", function() {
+    $(document).on("change", ".user_id", function () {
         // $(".user_id").change(function () {
         let item = $(this);
         let user = $(this).val();
@@ -715,7 +715,7 @@ $("input[type=checkbox]").change(function () {
 
 });
 
-$("#anotherUserC").change( function() {
+$("#anotherUserC").change(function () {
 
     if ($(this).prop("checked")) {
         $(".users-form").removeClass('d-none');
@@ -724,7 +724,7 @@ $("#anotherUserC").change( function() {
     }
 });
 
-$("#anotherCreatedAt").change( function() {
+$("#anotherCreatedAt").change(function () {
 
     if ($(this).prop("checked")) {
         $(".created-at-block").removeClass('d-none');
@@ -970,7 +970,7 @@ if (document.getElementById('plan-table')) {
         },
         yaxis: {
             labels: {
-                formatter: function(val, index) {
+                formatter: function (val, index) {
                     return RUMoneyFormat.format(val.toFixed(2)) + ' р.';
                 }
             }
@@ -1101,7 +1101,7 @@ if (document.getElementById('plan-statistics')) {
 
     var url = '/plan/statistics/remoteData';
 
-    $.getJSON(url, {month: paramMonth}, function (response) {
+    $.getJSON(url, { month: paramMonth }, function (response) {
 
 
         if (Object.keys(response.data).length === 0) {
@@ -1300,7 +1300,7 @@ if (document.getElementById('plan-user')) {
 
     var url = '/users/remoteData';
 
-    $.getJSON(url, {month: paramMonth, id: id}, function (response) {
+    $.getJSON(url, { month: paramMonth, id: id }, function (response) {
         chart.updateOptions({
             series: [
                 {
@@ -1387,7 +1387,7 @@ $(document).on("click", ".delFile", function (event) {
     })
 });
 
-$(".datatables").each(function( index ) {
+$(".datatables").each(function (index) {
     let dataTable = new simpleDatatables.DataTable($(this)[0], {
         searchable: true,
         fixedHeight: false,
@@ -1561,7 +1561,7 @@ $('#invoice-complete').click(function () {
         type: "POST",
         data: {
             'id': id,
-            'number_invoice' : number_invoice
+            'number_invoice': number_invoice
         },
         success: function (response) {
             if (response == 'success') location.reload();
@@ -1580,26 +1580,32 @@ if (document.getElementById('swiper')) {
     const swiper = new Swiper('.swiper', {
         direction: 'horizontal',
         slidesPerView: 4,
-        spaceBetween: 30,
+        spaceBetween: 15,
         grabCursor: true,
 
         breakpoints: {
-            480: {
+            320: { // Очень маленькие экраны (iPhone SE)
                 slidesPerView: 1,
+                spaceBetween: 10,
             },
-            640: {
+            480: { // Обычные мобильные (iPhone 14 Pro Max и др.)
+                slidesPerView: 1,
+                spaceBetween: 15,
+            },
+            768: { // Планшеты
                 slidesPerView: 2,
                 spaceBetween: 20,
             },
-            768: {
-                slidesPerView: 4,
-                spaceBetween: 40,
+            1024: { // Маленькие ноутбуки
+                slidesPerView: 3,
+                spaceBetween: 25,
             },
-            1280: {
-                slidesPerView: 5,
-                spaceBetween: 50,
+            1280: { // Большие экраны
+                slidesPerView: 4,
+                spaceBetween: 30,
             },
         },
+
         scrollbar: {
             el: '.swiper-scrollbar',
         },
