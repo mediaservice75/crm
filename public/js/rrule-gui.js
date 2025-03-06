@@ -1,5 +1,4 @@
 /******/ (() => { // webpackBootstrap
-var __webpack_exports__ = {};
 /*!****************************************************************!*\
   !*** ./resources/front/extensions/calendar/rrule/rrule-gui.js ***!
   \****************************************************************/
@@ -285,7 +284,6 @@ function resetOptions() {
   $('input[id="end-no"]').prop('checked', true).change();
   // $('#count').reset();
 }
-
 function rruleGenerate() {
   // Produce RRULE state to feed to rrule.js
   rrule = "";
@@ -319,7 +317,6 @@ $(document).ready(function () {
   //     return false;
   // });
 });
-
 $('input[name="event-recurring"]').change(function () {
   resetOptions();
   if ($(this).prop('checked') == true) {
