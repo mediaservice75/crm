@@ -1,5 +1,7 @@
 {
     "/js/rrule-gui.js": "/js/rrule-gui.js",
+    "/js/sw.js": "/js/sw.js",
+    "/js/events-table.js": "/js/events-table.js",
     "/js/main.js": "/js/main.js",
     "/js/custom-calendar.js": "/js/custom-calendar.js",
     "/css/all.css": "/css/all.css",

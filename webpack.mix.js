@@ -36,9 +36,10 @@ mix.styles([
 
 
 mix.combine([
+    'resources/front/js/imask.js',
+    'resources/js/bootstrap.js',
     'resources/front/js/bootstrap.js',
     'resources/front/js/app.js',
-    'resources/front/js/imask.js',
 ], 'public/js/all.js');
 
 mix.combine([
@@ -82,15 +83,22 @@ mix.combine([
     'resources/front/extensions/toastify-js/src/toastify.js',
 ], 'public/js/toastify.js');
 
+mix.js([
+    'resources/front/js/sw.js',
+], 'public/js/sw.js');
+
+mix.js([
+    'resources/front/js/events-table.js',
+], 'public/js/events-table.js');
 
 mix.js([
     'resources/front/js/main.js',
 ], 'public/js/main.js');
 
-mix.js([
-    'resources/front/js/custom-calendar.js',
-], 'public/js/custom-calendar.js');
 
+mix.js([
+    'resources/front/js/custom-calendar2.js',
+], 'public/js/custom-calendar.js');
 
 
 mix.copyDirectory('resources/front/fonts', 'public/fonts');

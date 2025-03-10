@@ -712,24 +712,26 @@ $("#saveTable").click(function () {
 var quill;
 var currentCell;
 $(document).ready(function () {
-  quill = new Quill('#quillEditorContainer', {
-    theme: 'snow',
-    modules: {
-      toolbar: [['bold', 'italic', 'underline'], [{
-        'color': []
-      }, {
-        'background': []
-      }], [{
-        'font': []
-      }], [{
-        'align': []
-      }], ['link', 'video', 'formula'], [{
-        'list': 'ordered'
-      }, {
-        'list': 'bullet'
-      }]]
-    }
-  });
+  if (document.getElementById('editableTable')) {
+    quill = new Quill('#quillEditorContainer', {
+      theme: 'snow',
+      modules: {
+        toolbar: [['bold', 'italic', 'underline'], [{
+          'color': []
+        }, {
+          'background': []
+        }], [{
+          'font': []
+        }], [{
+          'align': []
+        }], ['link', 'video', 'formula'], [{
+          'list': 'ordered'
+        }, {
+          'list': 'bullet'
+        }]]
+      }
+    });
+  }
   $(document).on('click', '.editable-cell', function () {
     currentCell = $(this);
     var cellContent = currentCell.find('.content').html();
