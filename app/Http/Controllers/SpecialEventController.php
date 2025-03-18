@@ -56,12 +56,12 @@ class SpecialEventController extends Controller
 
         $userRoleLevel = auth()->user()->role->level;
 
-        $events = SpecialEvent::with('sessions', 'sponsors')->get();
+        $events = SpecialEvent::with('sessions', 'sponsors')->where('is_archived', false)->get();
 
-        if ($userRoleLevel != 1 && $userRoleLevel != 2) {
-            return view('specialEvent.index', compact('headers', 'rows', 'events'));
-        } else {
+        if ($userRoleLevel == 1 || $userRoleLevel == 2) {
             return view('specialEvent.admin', compact('headers', 'rows', 'users', 'events'));
+        } else {
+            return view('specialEvent.index', compact('headers', 'rows', 'events'));
         }
     }
 
@@ -279,5 +279,19 @@ class SpecialEventController extends Controller
         }
 
         return redirect()->route('special-event.show', $id)->with('success', 'Изменения сохранены');
+    }
+
+    public function archive()
+    {
+        $events = SpecialEvent::with('sessions', 'sponsors')->where('is_archived', true)->get();
+        return view('specialEvent.archive', compact('events'));
+    }
+
+    public function archiveEvent($id)
+    {
+        $event = SpecialEvent::findOrFail($id);
+        $event->update(['is_archived' => true]);
+
+        return redirect()->route('special-event.index')->with('success', 'Мероприятие перемещено в архив');
     }
 }

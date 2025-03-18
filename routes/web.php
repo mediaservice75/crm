@@ -8,7 +8,6 @@ use App\Http\Controllers\GoalController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\HistoryClientController;
 use App\Http\Controllers\LprController;
-use App\Http\Controllers\MailController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RequisitesClient;
@@ -24,31 +23,12 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ZipController;
 use App\Http\Controllers\CalendarController;
-use App\Mail\Feedback;
-use App\Models\RequisiteClient;
-use App\Models\StatusClaim;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
-//Broadcast::routes(['middleware' => ['auth']]);
-
 
 Route::get('/pusher', function () {
     $claim = '123';
     event(new ClaimCreated($claim));
-//    return view('pusher');
 });
 
 Route::get('/', function () {
@@ -59,9 +39,7 @@ Route::get('/', function () {
     }
 })->name('home');
 
-
 Route::middleware(['auth'])->group(function () {
-
     Route::post('clients/typing', [ClientController::class, 'typing'])->name('clients.typing');
     Route::get('clients/kanban', [ClientController::class, 'kanban'])->name('clients.kanban');
     Route::get('clients/fast-add', [ClientController::class, 'createFast'])->name('clients.createFast');
@@ -97,8 +75,8 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('status-client', StatusC::class);
         Route::resource('status-claim', StatusClaimController::class);
         Route::resource('status-payment', StatusPaymentController::class);
-
     });
+
     Route::resource('history-client', HistoryClientController::class);
 
     Route::get('plan/count-days', [SalesPlanController::class, 'countDays'])->name('plan.countDays');
@@ -172,14 +150,16 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('calendar/goal-delete/{goal}', [CalendarController::class, 'deleteGoal'])->name('calendar.deleteGoal');
 
     Route::get('events', [SpecialEventController::class, 'index'])->name('special-event.index');
+    Route::get('events/archive', [SpecialEventController::class, 'archive'])->name('special-event.archive');
     Route::get('events/old', [SpecialEventController::class, 'old'])->name('special-event.old');
     Route::get('events/create', [SpecialEventController::class, 'create'])->name('special-event.create');
     Route::post('events', [SpecialEventController::class, 'store'])->name('special-event.store');
     Route::get('events/{id}', [SpecialEventController::class, 'show'])->name('special-event.show');
     Route::get('events/{id}/edit', [SpecialEventController::class, 'edit'])->name('special-event.edit');
     Route::patch('events/{id}', [SpecialEventController::class, 'update'])->name('special-event.update');
+    Route::patch('events/{id}/archive', [SpecialEventController::class, 'archiveEvent'])->name('special-event.archiveEvent');
     Route::post('events/save-table', [SpecialEventController::class, 'saveTable'])->name('special-event.save');
-    
+
     Route::get('active-ad', [ClaimController::class, 'getActiveAd'])->name('claim.activeAd');
     Route::get('active-ad/past', [ClaimController::class, 'getPastActiveAd'])->name('claim.pastActiveAd');
     Route::get('active-ad/all', [ClaimController::class, 'getActiveAdAll'])->name('claim.activeAdAll');
@@ -194,9 +174,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/get-services-by-group', [ServiceController::class, 'servicesByGroup'])->name('services.servicesByGroup');
     Route::post('/get-package-by-service', [ServiceController::class, 'packageByService'])->name('services.packageByService');
     Route::delete('/claim/file-delete/{file}', [ClaimController::class, 'deleteFile'])->name('claim.deleteFile');
-
-
-
 
     Route::get('/logout', [UserController::class, 'logout'])->name('users.logout');
 });

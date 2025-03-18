@@ -8,6 +8,9 @@
         <div class="col-12 col-md-4">
             <h3>Мероприятия</h3>
         </div>
+        <div class="col-12 col-md-8 text-end">
+            <a href="{{ route('special-event.archive') }}" class="btn btn-sm btn-secondary">Архив</a>
+        </div>
     </div>
 @endsection
 
@@ -103,7 +106,8 @@
                                                         class="{{ !$sponsor->name || $sponsor->name == 'Свободно' ? 'text-danger opacity-75' : '' }}">
                                                         @if ($sponsor->is_general)
                                                             <strong>{{ $sponsor->name ?? 'Свободно' }}
-                                                                (Генеральный)</strong>
+                                                                (Генеральный)
+                                                            </strong>
                                                         @else
                                                             {{ $sponsor->name ?? 'Свободно' }}
                                                         @endif

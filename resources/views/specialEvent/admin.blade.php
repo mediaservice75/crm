@@ -9,7 +9,8 @@
             <h3>Мероприятия</h3>
         </div>
         <div class="col-12 col-md-8 text-end">
-            <a href="{{ route('special-event.create') }}" class="btn btn-sm btn-success">Добавить</a>
+            <a href="{{ route('special-event.archive') }}" class="btn btn-sm btn-secondary">Архив</a>
+            <a href="{{ route('special-event.create') }}" class="btn btn-sm btn-success">Добавить мероприятие</a>
         </div>
     </div>
 @endsection
@@ -66,7 +67,7 @@
                                         @if (!empty($session->event_time))
                                             <br>
                                             <b>Время:</b>
-                                            {{ $session->event_time }}
+                                            {{ \Carbon\Carbon::parse($session->event_time)->format('H:i') }}
                                         @endif
                                     </p>
                                 @endforeach

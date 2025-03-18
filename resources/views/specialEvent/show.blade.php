@@ -7,8 +7,16 @@
         </div>
         <div class="col-12 col-md-7 text-end">
             <a href="{{ route('special-event.index') }}" class="btn btn-sm btn-primary">Назад</a>
-            @if (auth()->user()->role->level == 1 || auth()->user()->role->level == 2)
+            @if (!$event->is_archived && (auth()->user()->role->level == 1 || auth()->user()->role->level == 2))
                 <a href="{{ route('special-event.edit', $event->id) }}" class="btn btn-sm btn-success">Редактировать</a>
+
+                <form action="{{ route('special-event.archiveEvent', $event->id) }}" method="POST" style="display: inline;">
+                    @csrf
+                    @method('PATCH')
+                    <button type="submit" class="btn btn-sm btn-secondary" onclick="return confirm('Вы уверены?')">
+                        Перенестив архив
+                    </button>
+                </form>
             @endif
         </div>
     </div>
@@ -18,24 +26,15 @@
     <style>
         .checkmark {
             color: green;
-            /* Зелёный цвет */
             font-size: 1.7rem;
-            /* Чуть больше размер */
             font-weight: bold;
-            /* Делаем жирнее */
             display: inline-block;
-            /* Корректное центрирование */
             width: 100%;
-            /* Растягиваем по ширине ячейки */
             text-align: center;
-            /* Выравниваем по центру */
         }
 
         td {
-            /* text-align: center; */
-            /* Центрируем содержимое ячейки */
             vertical-align: middle;
-            /* Центрируем по вертикали */
         }
     </style>
     <div class="row">
@@ -59,7 +58,7 @@
                                 <br>
                             @endunless
                         @endforeach
-                        
+
                         <div class="mb-3">
                             <br>
                             <h4 class="card-title mb-1">Спонсоры</h4>
