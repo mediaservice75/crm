@@ -14,7 +14,7 @@
                     @csrf
                     @method('PATCH')
                     <button type="submit" class="btn btn-sm btn-secondary" onclick="return confirm('Вы уверены?')">
-                        Перенестив архив
+                        Перенести в архив
                     </button>
                 </form>
             @endif
