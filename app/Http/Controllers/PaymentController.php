@@ -125,6 +125,7 @@ class PaymentController extends Controller
     }
 
     public function paidListClaims($id) {
+        $claim = Claim::findOrFail($id);
 
         $historiesPaidClaims = HistoryPayment::where('claim_id', $id)
             ->orderBy('created_at', 'desc')
@@ -132,7 +133,7 @@ class PaymentController extends Controller
 
         session(['previous_url' => url()->current()]);
 
-        return view('payment.paid-claims', compact('historiesPaidClaims'));
+        return view('payment.paid-claims', compact('historiesPaidClaims', 'claim'));
     }
 
     public function deletePaidClaims($id) {

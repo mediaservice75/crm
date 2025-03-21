@@ -26,7 +26,7 @@
                                     <tr>
                                         <th>Заявка №</th>
                                         <th>Дата</th>
-                                        {{-- <th>Номер счёта</th> --}}
+                                        <th>Номер счёта</th>
                                         <th>Статус</th>
                                         <th>Сумма оплаты</th>
                                         <th class="text-center">Удалить</th>
@@ -37,6 +37,11 @@
                                         <tr>
                                             <td>{{ $item->claim_id }}</td>
                                             <td>{{ $item->getDate() }}</td>
+                                            @if ($item->claim && $item->claim->number_invoice)
+                                                <td>{{ $item->claim->number_invoice }}</td>
+                                            @else
+                                                <td class="text-danger">Номер счета не найден</td>
+                                            @endif
                                             {{-- @dd($item)
                                             @if ($item->number_invoice)
                                                 <td>{{ $item->number_invoice }}</td>
