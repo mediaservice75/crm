@@ -64,7 +64,7 @@ if (!function_exists('countExpiredGoal')) {
     {
         $count = \App\Models\Goal::where('status', 2)
             ->where('user_id', \Illuminate\Support\Facades\Auth::user()->id)
-//            ->where('isReadExpired', '=', '0')
+            //            ->where('isReadExpired', '=', '0')
             ->count();
         return $count;
     }
@@ -93,7 +93,7 @@ if (!function_exists('getCountClaimsWithoutUser')) {
         return \App\Models\Service::whereNull('user_id')
             ->where('group_id', Auth::user()->role->group_id)
             ->count();
-//        ('user_id', \Illuminate\Support\Facades\Auth::user()->id)->count();
+        //        ('user_id', \Illuminate\Support\Facades\Auth::user()->id)->count();
     }
 }
 
@@ -147,7 +147,6 @@ if (!function_exists('claimsIsRead')) {
                 }
             }
         }
-
     }
 }
 
@@ -167,7 +166,6 @@ if (!function_exists('claimsGroupIsRead')) {
                 }
             }
         }
-
     }
 }
 
@@ -187,14 +185,11 @@ if (!function_exists('myClaimsIsNotClosed')) {
         }
 
         return Claim::where('isClose', 0)
-            ->where(function($query) use ($ids) {
+            ->where(function ($query) use ($ids) {
                 $query->where('user_id', Auth::user()->id)
                     ->orWhereIn('id', $ids);
             })
             ->count();
-
-
-
     }
 }
 
@@ -203,7 +198,6 @@ if (!function_exists('myClaimsIsClosed')) {
     {
         return Claim::where('user_id', Auth::user()->id)
             ->where('isClose', 1)->count();
-
     }
 }
 
@@ -211,7 +205,6 @@ if (!function_exists('getCountCreatedClaims')) {
     function getCountCreatedClaims()
     {
         return Claim::where('creator', Auth::user()->id)->count();
-
     }
 }
 
@@ -261,7 +254,7 @@ if (!function_exists('getCountCompletePayment')) {
 if (!function_exists('convertMonth')) {
     function convertMonth($month)
     {
-        $month = $month.'-01';
+        $month = $month . '-01';
         return Str::title(Carbon::parse($month)->translatedFormat('F')) . " " . Carbon::parse($month)->format('Y');
     }
 }
@@ -318,8 +311,8 @@ if (!function_exists('getCountActiveAds')) {
     function getCountActiveAds()
     {
         return Claim::whereHas('activeAd', function ($q) {
-                $q->where('end_date', '>=', now()->second(0)->minute(0)->hour(0));
-            })
+            $q->where('end_date', '>=', now()->second(0)->minute(0)->hour(0));
+        })
             ->where('creator', Auth::user()->id)
             ->count();
     }
@@ -337,7 +330,8 @@ if (!function_exists('getCountExActiveAds')) {
 }
 
 if (!function_exists('getDiffDate')) {
-    function getDiffDate($end) {
+    function getDiffDate($end)
+    {
 
         $end = \Carbon\Carbon::make($end);
         if (($end->day == now()->day) && ($end->month == now()->month)) {
@@ -348,11 +342,11 @@ if (!function_exists('getDiffDate')) {
             return $end->diffForHumans();
         }
     }
-
 }
 
 if (!function_exists('getUserById')) {
-    function getUserById($id) {
+    function getUserById($id)
+    {
         $user = \App\Models\UserM::firstWhere('id', $id);
         if ($user) return $user->getFullName();
         else return 'Пользователь не найден!';
@@ -360,13 +354,15 @@ if (!function_exists('getUserById')) {
 }
 
 if (!function_exists('money')) {
-    function money($value) {
-        return number_format($value, 2, '.',' ');
+    function money($value)
+    {
+        return number_format($value, 2, '.', ' ');
     }
 }
 
 if (!function_exists('checkUserAccessToClaim')) {
-    function checkUserAccessToClaim($claim_id, $user_id) {
+    function checkUserAccessToClaim($claim_id, $user_id)
+    {
 
         $claimUser = ClaimUsers::where('claim_id', $claim_id)
             ->where('user_id', $user_id)
@@ -377,12 +373,12 @@ if (!function_exists('checkUserAccessToClaim')) {
         } else {
             return true;
         }
-
     }
 }
 
 if (!function_exists('getPaymentsClaim')) {
-    function getPaymentsClaim($claim_id) {
+    function getPaymentsClaim($claim_id)
+    {
         $claim = HistoryPayment::with('status')
             ->whereHas('status', function ($q) {
                 $q->where('name', 'Частично оплачен');
@@ -394,29 +390,30 @@ if (!function_exists('getPaymentsClaim')) {
     }
 }
 if (!function_exists('getDebtSum')) {
-    function getDebtSum() {
+    function getDebtSum()
+    {
 
         $res = '';
 
         $debtClaims = Claim::with('historiesPayment')
-            ->whereHas('historiesPayment', function ($q)  {
+            ->whereHas('historiesPayment', function ($q) {
                 $q->with('status')
                     ->whereHas('status', function ($w) {
                         $w->where('name', "Долг");
                     });
             })
-            ->where('notInclude',0)
+            ->where('notInclude', 0)
             ->select(DB::raw('id'))
             ->get();
 
         $paidClaims = Claim::with('historiesPayment')
-            ->whereHas('historiesPayment', function ($q)  {
+            ->whereHas('historiesPayment', function ($q) {
                 $q->with('status')
                     ->whereHas('status', function ($w) {
                         $w->where('name', "Оплачен");
                     });
             })
-            ->where('notInclude',0)
+            ->where('notInclude', 0)
             ->select(DB::raw('id'))
             ->get();
 
@@ -429,13 +426,13 @@ if (!function_exists('getDebtSum')) {
         });
 
         $sumDebtClaims = Claim::with('historiesPayment')
-            ->whereHas('historiesPayment', function ($q)  {
+            ->whereHas('historiesPayment', function ($q) {
                 $q->with('status')
                     ->whereHas('status', function ($w) {
                         $w->where('name', "Долг");
                     });
             })
-            ->where('notInclude',0)
+            ->where('notInclude', 0)
             ->whereNotIn('id', $idPaidClaims)
             ->select(DB::raw('SUM(amount) as total_amount'))
             ->get();
@@ -451,13 +448,13 @@ if (!function_exists('getDebtSum')) {
 
 
         $res .= '<p class="fw-bold mb-0"><b class="text-primary">Долг: </b>';
-        if($sumDebtClaims->first()->total_amount == null)
+        if ($sumDebtClaims->first()->total_amount == null)
             $res .= '0 руб';
         else {
             $res .= money($sumDebtClaims->first()->total_amount) . ' руб.';
             if ($sumPartPaid->first()->total_amount != null) {
-                $res .= ' (из них частично оплачено: '. money($sumPartPaid->first()->total_amount) . ' руб.)';
-                $res .= ' = Итого: '. money($sumDebtClaims->first()->total_amount - $sumPartPaid->first()->total_amount) . ' руб.';
+                $res .= ' (из них частично оплачено: ' . money($sumPartPaid->first()->total_amount) . ' руб.)';
+                $res .= ' = Итого: ' . money($sumDebtClaims->first()->total_amount - $sumPartPaid->first()->total_amount) . ' руб.';
             }
         }
 
@@ -465,36 +462,35 @@ if (!function_exists('getDebtSum')) {
         $res .= '</p>';
 
         return $res;
-
     }
 }
 
 if (!function_exists('getDebtSumByUser')) {
-    function getDebtSumByUser($user_id) {
-
+    function getDebtSumByUser($user_id)
+    {
         $res = '';
 
         $debtClaims = Claim::with('historiesPayment')
-            ->whereHas('historiesPayment', function ($q)  {
+            ->whereHas('historiesPayment', function ($q) {
                 $q->with('status')
                     ->whereHas('status', function ($w) {
                         $w->where('name', "Долг");
                     });
             })
             ->where('creator', $user_id)
-            ->where('notInclude',0)
+            ->where('notInclude', 0)
             ->select(DB::raw('id'))
             ->get();
 
         $paidClaims = Claim::with('historiesPayment')
-            ->whereHas('historiesPayment', function ($q)  {
+            ->whereHas('historiesPayment', function ($q) {
                 $q->with('status')
                     ->whereHas('status', function ($w) {
                         $w->where('name', "Оплачен");
                     });
             })
             ->where('creator', $user_id)
-            ->where('notInclude',0)
+            ->where('notInclude', 0)
             ->select(DB::raw('id'))
             ->get();
 
@@ -507,7 +503,7 @@ if (!function_exists('getDebtSumByUser')) {
         });
 
         $sumDebtClaims = Claim::with('historiesPayment')
-            ->whereHas('historiesPayment', function ($q)  {
+            ->whereHas('historiesPayment', function ($q) {
                 $q->with('status')
                     ->whereHas('status', function ($w) {
                         $w->where('name', "Долг");
@@ -515,7 +511,7 @@ if (!function_exists('getDebtSumByUser')) {
             })
             ->whereNotIn('id', $idPaidClaims)
             ->where('creator', $user_id)
-            ->where('notInclude',0)
+            ->where('notInclude', 0)
             ->select(DB::raw('SUM(amount) as total_amount'))
             ->get();
 
@@ -532,28 +528,24 @@ if (!function_exists('getDebtSumByUser')) {
             ->select(DB::raw(' SUM(amount) as total_amount'))
             ->get();
 
-
-        $res .= '<p class="fw-bold mb-0"><b class="text-primary">Долг: </b>';
-        if($sumDebtClaims->first()->total_amount == null)
+        $res .= '<p class="fw-bold mb-1"><b class="text-primary">Долг (с предыдущего месяца): </b>';
+        if ($sumDebtClaims->first()->total_amount == null)
             $res .= '0 руб';
         else {
-            $res .= money($sumDebtClaims->first()->total_amount) . ' руб.';
             if ($sumPartPaid->first()->total_amount != null) {
-                $res .= ' (из них частично оплачено: '. money($sumPartPaid->first()->total_amount) . ' руб.)';
-                $res .= ' = Итого: '. money($sumDebtClaims->first()->total_amount - $sumPartPaid->first()->total_amount) . ' руб.';
+                $res .= money($sumDebtClaims->first()->total_amount - $sumPartPaid->first()->total_amount) . ' ₽';
             }
         }
-
 
         $res .= '</p>';
 
         return $res;
-
     }
 }
 
 if (!function_exists('getWorkingDays')) {
-    function getWorkingDays($month) {
+    function getWorkingDays($month)
+    {
         $res = [];
         $days = SalesPlanMonth::where('month', $month)->first();
         if ($days) {
@@ -569,16 +561,17 @@ if (!function_exists('getWorkingDays')) {
 }
 
 if (!function_exists('getCountPastDays')) {
-    function getCountPastDays($month) {
+    function getCountPastDays($month)
+    {
         $countPastDays = 0;
         $today = Carbon::now()->format('Y-m-d');
         $days = SalesPlanMonth::where('month', $month)->first();
         if ($days) {
             $days = explode('|', $days->selected_days);
             foreach ($days as $day) {
-               if (Carbon::createFromDate($day) <= Carbon::createFromDate($today)) {
-                   $countPastDays++;
-               }
+                if (Carbon::createFromDate($day) <= Carbon::createFromDate($today)) {
+                    $countPastDays++;
+                }
             }
         }
 
@@ -588,7 +581,8 @@ if (!function_exists('getCountPastDays')) {
 
 
 if (!function_exists('checkAnotherUser')) {
-    function checkAnotherUser($claim_id) {
+    function checkAnotherUser($claim_id)
+    {
 
         $claim = Claim::where('id', $claim_id)->first();
 
@@ -601,12 +595,12 @@ if (!function_exists('checkAnotherUser')) {
                 return true;
             }
         }
-
     }
 }
 
 if (!function_exists('createPusherNotification')) {
-    function createPusherNotification($claim_id, $user_id, $text, $url) {
+    function createPusherNotification($claim_id, $user_id, $text, $url)
+    {
 
         try {
             \App\Models\PusherNotification::create([
@@ -617,12 +611,9 @@ if (!function_exists('createPusherNotification')) {
             ]);
 
             return true;
-
         } catch (Exception $exception) {
 
             return false;
-
         }
-
     }
 }
