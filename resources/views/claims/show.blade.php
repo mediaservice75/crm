@@ -42,11 +42,11 @@
                                         </span>
                                     @endif
                                 </h4>
+                                {{-- <small>{{$claim->getCreateDate()}}</small> --}}
                                 <form action="{{route('claim.claimAccept', ['claim' => $claim->id])}}" method="POST">
                                     @csrf
                                     <button type="submit" class="btn btn-success">Принять заявку для выполнения</button>
                                 </form>
-                                <small>{{$claim->getCreateDate()}}</small>
                             </div>
                             <div class="badges">
                                 @if($claim->service->isRequiredMaterial)
@@ -69,7 +69,8 @@
                                 @endif
                             </div>
 
-                            <p class="mt-3 mb-0"><b class="text-primary">Клиент:</b> {{$claim->client->name}}</p>
+                            <p class="mt-1 mb-0"><b class="text-primary">Дата:</b> {{$claim->getCreateDate()}}</p>
+                            <p class="mt-1 mb-0"><b class="text-primary">Клиент:</b> {{$claim->client->name}}</p>
                             <p class="mt-1 mb-0"><b class="text-primary">Стоимость:</b> {{money($claim->amount)}} р.</p>
                             <p class="mt-1 mb-0"><b class="text-primary">Выполнить до:</b> {{$claim->getDeadline()}}</p>
                             @if ($claim->comment)
