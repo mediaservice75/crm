@@ -145,7 +145,8 @@
                                     {{ money($sumPaid->first()->total_amount) }} ₽
                                 @endif
                                 <span class="percent-text">(@if ($sumPlan == 0)
-                                        0%@else{{ round(($sumPaid->first()->total_amount / $sumPlan) * 100, 2) }}%@endif)</span>
+                                        0%@else{{ round(($sumPaid->first()->total_amount / $sumPlan) * 100, 2) }}%
+                                    @endif)</span>
                             </p>
                             @php
                                 $paidAmount = $sumPaid->first()->total_amount ?? 0;
@@ -170,10 +171,12 @@
                                         ₽</span>
                                 @endif
                                 <span class="everyDayPlan">
-                                (@if (count(getWorkingDays($planMonth)) == 0)<span class="text-danger">План не установлен</span>
-                                @else<span
-                                        id="everyDayPlan">{{ money($sumPlan / count(getWorkingDays($planMonth))) }}₽</span>@endif/День)
-                            </span>
+                                    (@if (count(getWorkingDays($planMonth)) == 0)
+                                        <span class="text-danger">План не установлен</span>
+                                    @else<span
+                                            id="everyDayPlan">{{ money($sumPlan / count(getWorkingDays($planMonth))) }}₽</span>
+                                    @endif/день)
+                                </span>
                             </p>
                             <p class="fw-bold mb-0"><b class="text-primary">Заявок создано на:</b>
                                 @if ($sumClaims->first()->total_amount == null)

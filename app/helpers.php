@@ -447,14 +447,14 @@ if (!function_exists('getDebtSum')) {
             ->get();
 
 
-        $res .= '<p class="fw-bold mb-0"><b class="text-primary">Долг: </b>';
+        $res .= '<p class="fw-bold mb-0"><b class="text-primary">Долг за прошлый период: </b>';
         if ($sumDebtClaims->first()->total_amount == null)
             $res .= '0 руб';
         else {
-            $res .= money($sumDebtClaims->first()->total_amount) . ' руб.';
+            // $res .= money($sumDebtClaims->first()->total_amount) . ' руб.';
             if ($sumPartPaid->first()->total_amount != null) {
-                $res .= ' (из них частично оплачено: ' . money($sumPartPaid->first()->total_amount) . ' руб.)';
-                $res .= ' = Итого: ' . money($sumDebtClaims->first()->total_amount - $sumPartPaid->first()->total_amount) . ' руб.';
+                // $res .= ' (из них частично оплачено: ' . money($sumPartPaid->first()->total_amount) . ' руб.)';
+                $res .= money($sumDebtClaims->first()->total_amount - $sumPartPaid->first()->total_amount) . ' ₽';
             }
         }
 
@@ -528,7 +528,7 @@ if (!function_exists('getDebtSumByUser')) {
             ->select(DB::raw(' SUM(amount) as total_amount'))
             ->get();
 
-        $res .= '<p class="fw-bold mb-1"><b class="text-primary">Долг (с предыдущего месяца): </b>';
+        $res .= '<p class="fw-bold mb-1"><b class="text-primary">Долг за прошлый период: </b>';
         if ($sumDebtClaims->first()->total_amount == null)
             $res .= '0 руб';
         else {
