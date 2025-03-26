@@ -42,6 +42,10 @@
                                         </span>
                                     @endif
                                 </h4>
+                                <form action="{{route('claim.claimAccept', ['claim' => $claim->id])}}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-success">Принять заявку для выполнения</button>
+                                </form>
                                 <small>{{$claim->getCreateDate()}}</small>
                             </div>
                             <div class="badges">
@@ -501,7 +505,6 @@
                     </div>
                 @endif
                 @endif
-
             </div>
         </div>
     @endsection
