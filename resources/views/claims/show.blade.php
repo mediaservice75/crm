@@ -34,7 +34,7 @@
                             <div class="d-flex w-100 justify-content-between mb-2">
                                 <h4 class="card-title">
                                     Заявка №{{$claim->id}} - {{$claim->service->name}} <span
-                                        class="ms-2 badge bg-{{$claim->histories->first()->status->color}}"> {{$claim->histories->first()->status->name}}</span>
+                                        class="ms- badge bg-{{$claim->histories->first()->status->color}}"> {{$claim->histories->first()->status->name}}</span>
 
                                     @if($claim->notInclude)
                                         <span class="ms-1 badge bg-danger">
@@ -42,7 +42,6 @@
                                         </span>
                                     @endif
                                 </h4>
-                                {{-- <small>{{$claim->getCreateDate()}}</small> --}}
                                 <form action="{{route('claim.claimAccept', ['claim' => $claim->id])}}" method="POST">
                                     @csrf
                                     <button type="submit" class="btn btn-success">Принять заявку для выполнения</button>
@@ -68,7 +67,7 @@
                                     <span class="badge bg-success me-2">Счет</span>
                                 @endif
                             </div>
-
+                            <br>
                             <p class="mt-1 mb-0"><b class="text-primary">Дата:</b> {{$claim->getCreateDate()}}</p>
                             <p class="mt-1 mb-0"><b class="text-primary">Клиент:</b> {{$claim->client->name}}</p>
                             <p class="mt-1 mb-0"><b class="text-primary">Стоимость:</b> {{money($claim->amount)}} р.</p>
