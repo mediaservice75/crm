@@ -96,7 +96,7 @@
                                 @endif
                             </p>
                             <p class="mb-1 fw-bold">
-                                <b class="text-primary">Сумма на сегодня ({{ \Carbon\Carbon::now()->format('d.m.Y') }}):
+                                <b class="text-primary">План на {{ \Carbon\Carbon::now()->format('d.m.Y') }}:
                                 </b>
                                 @if (count(getWorkingDays($planMonth)) == 0)
                                     <span class="text-danger">График работы не установлен</span>
@@ -112,6 +112,23 @@
                                 @else
                                     {{ money($sumClaims->first()->total_amount) }} ₽
                                 @endif
+                            </p>
+                            <p class="fw-bold mb-1">
+                                <b class="text-primary">Разница (план - заявок создано):</b>
+                                @php
+                                    // Получаем числовые значения
+                                    $totalAmount = $sumClaims->first()->total_amount;
+                                    $workingDaysCount = count(getWorkingDays($planMonth));
+                                    $pastDaysCount = getCountPastDays($planMonth);
+                                    $plannedAmount = ($sumPlan / $workingDaysCount) * $pastDaysCount;
+
+                                    // Вычисляем разницу
+                                    $difference = $totalAmount - $plannedAmount;
+                                @endphp
+
+                                <span class="{{ $difference >= 0 ? 'text-success' : 'text-warning' }}">
+                                    {{ money($difference) }}
+                                </span>
                             </p>
                             <hr>
                             @php echo getDebtSum() @endphp
