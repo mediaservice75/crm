@@ -1,1 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 34" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" xmlns:v="https://vecta.io/nano"><path d="M3 27.472c0 4.409 6.18 5.552 13.5 5.552 7.281 0 13.5-1.103 13.5-5.513s-6.179-5.552-13.5-5.552c-7.281 0-13.5 1.103-13.5 5.513z" fill="#435ebe" fill-rule="nonzero"/><circle cx="16.5" cy="8.8" r="8.8" fill="#41bbdd"/></svg>
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+ "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+ width="1778.000000pt" height="1547.000000pt" viewBox="0 0 1778.000000 1547.000000"
+ preserveAspectRatio="xMidYMid meet">
+
+<g transform="translate(0.000000,1547.000000) scale(0.100000,-0.100000)"
+fill="#000000" stroke="none">
+<path d="M7 15463 c-4 -3 -7 -3484 -7 -7735 l0 -7728 7735 0 7735 0 0 2315 0
+2316 -27 -15 c-102 -53 -424 -249 -450 -274 l-33 -30 0 -1901 0 -1901 -7220 0
+-7220 0 0 7220 0 7220 7220 0 7220 0 0 -2013 c0 -1595 3 -2017 13 -2030 6 -9
+120 -84 252 -166 l240 -150 3 2427 c1 1335 0 2433 -3 2440 -3 9 -1558 12
+-7728 12 -4248 0 -7727 -3 -7730 -7z"/>
+<path d="M8470 7736 c0 -2957 3 -5376 6 -5376 8 0 9250 5343 9277 5362 15 12
+-567 351 -4600 2683 -2540 1468 -4633 2678 -4650 2688 l-33 19 0 -5376z"/>
+</g>
+</svg>
