@@ -24,7 +24,7 @@
         "laravel-echo": "^1.16.1",
         "pusher-js": "^8.4.0-rc2",
         "select2": "^4.1.0-rc.0",
-        "sweetalert2": "^11.6.6",
+        "sweetalert2": "^11.4.8",
         "toastify-js": "^1.12.0"
     }
 }
