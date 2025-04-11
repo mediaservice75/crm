@@ -623,12 +623,12 @@
             padding-right: 28px !important;
         }
     </style>
-    <style>
+    {{-- <style>
         #calendar {
             height: 500px;
             overflow: hidden;
         }
-    </style>
+    </style> --}}
 
 
 @endsection
