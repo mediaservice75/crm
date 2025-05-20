@@ -79,7 +79,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Комменатрий: </label>
+                        <label>Комментарий: </label>
                         <textarea
                             class="form-control @if($errors->has('comment')) is-invalid @endif"
                             id="comment" name="comment" rows="3"
