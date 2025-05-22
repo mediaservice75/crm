@@ -619,7 +619,7 @@
                                             <style>
                                                 @media (max-width: 767.98px) {
                                                     #comment {
-                                                        min-height: 200px !important;
+                                                        min-height: 400px !important;
                                                     }
                                                 }
                                             </style>
