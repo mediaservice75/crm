@@ -113,16 +113,18 @@
                                     {{ money($sumClaims->first()->total_amount) }} ₽
                                 @endif
                             </p>
+                            <hr>
+
+                            {{-- Разница (план на сегодня - заявок создано) --}}
                             <p class="fw-bold mb-1">
-                                <b class="text-primary">Разница (план - заявок создано):</b>
+                                <b class="text-primary">Разница (план на {{ \Carbon\Carbon::now()->format('d.m.Y') }} -
+                                    заявок создано):</b>
                                 @php
-                                    // Получаем числовые значения
                                     $totalAmount = $sumClaims->first()->total_amount;
                                     $workingDaysCount = count(getWorkingDays($planMonth));
                                     $pastDaysCount = getCountPastDays($planMonth);
                                     $plannedAmount = ($sumPlan / $workingDaysCount) * $pastDaysCount;
 
-                                    // Вычисляем разницу
                                     $difference = $totalAmount - $plannedAmount;
                                 @endphp
 
@@ -130,9 +132,23 @@
                                     {{ money($difference) }}
                                 </span>
                             </p>
+
+                            {{-- Разница (Общий план - заявок создано) --}}
+                            <p class="fw-bold mb-1">
+                                <b class="text-primary">Разница (Общий план - заявок создано):</b>
+                                @php
+                                    $difference = $sumClaims->first()->total_amount - $sumPlan;
+                                @endphp
+                                <span class="{{ $difference >= 0 ? 'text-success' : 'text-warning' }}">
+                                    {{ money($difference) }}
+                                </span>
+                            </p>
                             <hr>
+
+                            {{-- Долг за прошлый период --}}
                             @php echo getDebtSum() @endphp
 
+                            {{-- Таблица поступлений --}}
                             <table class="table table-lg table-hover statistic-table" id="datatables">
                                 <thead>
                                     <tr>
