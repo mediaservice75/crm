@@ -9,6 +9,14 @@
                 <span class="badge custom-bg-{{ $listStatusesClient->first()->status->color }} fs-6"><b>Текущий статус
                         клиента</b> - {{ $listStatusesClient->first()->status->name }}</span>
             @endif
+            <span class="badge fs-6 @if ($client->edo) custom-bg-success @else custom-bg-danger @endif">
+                <i class="bi bi-cloud"></i>
+                @if ($client->edo)
+                    <b>ЭДО: Да</b>
+                @else
+                    <b>ЭДО: Нет</b>
+                @endif
+            </span>
         </div>
         <div class="col-12 col-md-6 text-end">
             <a href="{{ route('lpr.createLpr', ['client_id' => $client->id]) }}"

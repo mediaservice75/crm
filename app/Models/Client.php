@@ -23,7 +23,8 @@ class Client extends Model
         'website',
         'user_id',
         'isAllow',
-        'comment'
+        'comment',
+        'edo'
     ];
 
     protected $dates = ['deleted_at'];

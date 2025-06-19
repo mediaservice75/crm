@@ -55,29 +55,29 @@ class ClientController extends Controller
             $search = '%' . $request->input('search') . '%';
         }
 
-//        if (Auth::user()->role->level <= 2) {
-//            $clients = Client::where(function ($q) use ($search) {
-//                    $q->where('name', 'like', $search);
-//                    $q->orWhere('phone', 'like', $search);
-//                    $q->orWhere('address', 'like', $search);
-//                    $q->orWhere('email', 'like', $search);
-//                })
-//                ->where('isAllow', 1)
-//                ->paginate(9);
-//        } else {
-            $clients = Client::where('user_id', Auth::user()->id)
-                ->where(function ($q) use ($search) {
-                    $q->where('name', 'like', $search);
-                    $q->orWhere('phone', 'like', $search);
-                    $q->orWhere('address', 'like', $search);
-                    $q->orWhere('email', 'like', $search);
-                })
-                ->where('isAllow', 1);
+        //        if (Auth::user()->role->level <= 2) {
+        //            $clients = Client::where(function ($q) use ($search) {
+        //                    $q->where('name', 'like', $search);
+        //                    $q->orWhere('phone', 'like', $search);
+        //                    $q->orWhere('address', 'like', $search);
+        //                    $q->orWhere('email', 'like', $search);
+        //                })
+        //                ->where('isAllow', 1)
+        //                ->paginate(9);
+        //        } else {
+        $clients = Client::where('user_id', Auth::user()->id)
+            ->where(function ($q) use ($search) {
+                $q->where('name', 'like', $search);
+                $q->orWhere('phone', 'like', $search);
+                $q->orWhere('address', 'like', $search);
+                $q->orWhere('email', 'like', $search);
+            })
+            ->where('isAllow', 1);
 
 
 
-            $clients = $clients->paginate(12)->withQueryString();
-//        }
+        $clients = $clients->paginate(12)->withQueryString();
+        //        }
 
 
         return view('clients.index', compact('clients'));
@@ -185,8 +185,6 @@ class ClientController extends Controller
             $request->session()->flash('error', 'При добавлении данных произошла ошибка 😢');
             return back();
         }
-
-
     }
 
     /**
@@ -259,7 +257,7 @@ class ClientController extends Controller
         if (Auth::user()->cannot('view', $client)) {
             abort(403);
         }
-//        session()->forget('previous_url');
+        //        session()->forget('previous_url');
         session(['previous_url' => url()->current()]);
         $users = Group::with('roles.users')
             ->where('name', 'Отдел продаж')
@@ -268,10 +266,10 @@ class ClientController extends Controller
         $statusClient = StatusClient::where('isVisible', 1)->get();
         $listStatusesClient = HistoryClient::where('client_id', $id)->orderBy('id', 'desc')->get();
         $groups = Group::all();
-//        $claims = Claim::where('client_id', $id)->get();
-//        $listStatusesClaims = HistoryClaim::where('client_id', $id)->orderBy('id', 'desc')->get();
+        //        $claims = Claim::where('client_id', $id)->get();
+        //        $listStatusesClaims = HistoryClaim::where('client_id', $id)->orderBy('id', 'desc')->get();
         $claims = Claim::where('client_id', $id)->with('histories')->orderBy('created_at', 'desc')->get();
-//        $services =
+        //        $services =
         return view('clients.show', compact('client', 'statusClient', 'listStatusesClient', 'groups', 'claims', 'users'));
     }
 
@@ -284,9 +282,9 @@ class ClientController extends Controller
     public function edit($id)
     {
         $client = Client::firstWhere('id', $id);
-//        if (Auth::user()->cannot('update', $client)) {
-//            abort(403);
-//        }
+        //        if (Auth::user()->cannot('update', $client)) {
+        //            abort(403);
+        //        }
 
         return view('clients.edit', compact('client'));
     }
@@ -300,12 +298,7 @@ class ClientController extends Controller
      */
     public function update(StoreClients $request, $id)
     {
-
-//        dd($request);
         $client = Client::firstWhere('id', $id);
-//        if (Auth::user()->cannot('update', $client)) {
-//            abort(403);
-//        }
 
         $inn = null;
         if ($request->input('inn') != null) {
@@ -341,10 +334,14 @@ class ClientController extends Controller
                 $request->merge(['date_of_birth' => $date]);
             }
 
+            $data = $request->all();
+            if (!isset($data['edo'])) {
+                $data['edo'] = 0;
+            }
+
             $client->update($request->all());
             DB::commit();
 
-            $data = [];
             if ($request->hasFile('logo')) {
                 Storage::delete($client->logo);
                 $folder = date("Y-m-d");
@@ -400,7 +397,7 @@ class ClientController extends Controller
             abort(403);
         }
 
-//        dd($request);
+        //        dd($request);
 
         $search = '%';
         if ($request->input('search')) {
@@ -419,39 +416,39 @@ class ClientController extends Controller
             $search = '%' . $request->input('search') . '%';
         }
 
-//        if (Auth::user()->role->level <= 2) {
-//            $clients = Client::where(function ($q) use ($search) {
-//                    $q->where('name', 'like', $search);
-//                    $q->orWhere('phone', 'like', $search);
-//                    $q->orWhere('address', 'like', $search);
-//                    $q->orWhere('email', 'like', $search);
-//                })
-//                ->where('isAllow', 1)
-//                ->paginate(9);
-//        } else {
+        //        if (Auth::user()->role->level <= 2) {
+        //            $clients = Client::where(function ($q) use ($search) {
+        //                    $q->where('name', 'like', $search);
+        //                    $q->orWhere('phone', 'like', $search);
+        //                    $q->orWhere('address', 'like', $search);
+        //                    $q->orWhere('email', 'like', $search);
+        //                })
+        //                ->where('isAllow', 1)
+        //                ->paginate(9);
+        //        } else {
 
-//            $clients = DB::table('clients')
-//                ->join('users', 'users.id', '=', 'clients.user_id')
-//                ->where('clients.name', 'like', $search)
-//                ->orWhere('clients.phone', 'like', $search)
-//                ->orWhere('clients.address', 'like', $search)
-//                ->orWhere('clients.email', 'like', $search)
-//                ->orWhere('users.name', 'like', $search)
-//                ->orWhere('users.surname', 'like', $search)
-//                ->orWhere('users.patron', 'like', $search)
-//                ->where('isAllow', '=', 1)
-//                ->select('clients.*', 'users.*');
-//        dd($clients);
+        //            $clients = DB::table('clients')
+        //                ->join('users', 'users.id', '=', 'clients.user_id')
+        //                ->where('clients.name', 'like', $search)
+        //                ->orWhere('clients.phone', 'like', $search)
+        //                ->orWhere('clients.address', 'like', $search)
+        //                ->orWhere('clients.email', 'like', $search)
+        //                ->orWhere('users.name', 'like', $search)
+        //                ->orWhere('users.surname', 'like', $search)
+        //                ->orWhere('users.patron', 'like', $search)
+        //                ->where('isAllow', '=', 1)
+        //                ->select('clients.*', 'users.*');
+        //        dd($clients);
 
-            $clients = Client::where(function ($q) use ($search) {
-                    $q->where('clients.name', 'like', $search);
-                    $q->orWhere('clients.phone', 'like', $search);
-                    $q->orWhere('clients.address', 'like', $search);
-                    $q->orWhere('clients.email', 'like', $search);
-                })
-                ->select('users.*', 'clients.*')
-                ->leftJoin('users', 'users.id', '=', 'clients.user_id')
-                ->where('isAllow', 1);
+        $clients = Client::where(function ($q) use ($search) {
+            $q->where('clients.name', 'like', $search);
+            $q->orWhere('clients.phone', 'like', $search);
+            $q->orWhere('clients.address', 'like', $search);
+            $q->orWhere('clients.email', 'like', $search);
+        })
+            ->select('users.*', 'clients.*')
+            ->leftJoin('users', 'users.id', '=', 'clients.user_id')
+            ->where('isAllow', 1);
 
         if ($request->input('free-client') and !$request->input('search')) {
             $clients->whereNull('clients.user_id');
@@ -461,7 +458,7 @@ class ClientController extends Controller
                 ->orWhere('users.patron', 'like', $search);
         }
 
-            $clients = $clients->paginate(30)->withQueryString();
+        $clients = $clients->paginate(30)->withQueryString();
 
 
         // $clients = Client::where('isAllow', 1)->paginate(30)->withQueryString();
@@ -503,7 +500,8 @@ class ClientController extends Controller
     // ********** COMPLETE ************
     // ----------**********------------
 
-    public function distribution(Request $request) {
+    public function distribution(Request $request)
+    {
         if (Auth::user()->cannot('allowClient', Client::class)) {
             abort(403);
         }
@@ -525,17 +523,17 @@ class ClientController extends Controller
             $search = '%' . $request->input('search') . '%';
         }
 
-//        $clients = Client::where(function ($q) use ($search) {
-//                $q->where('name', 'like', $search);
-//                $q->orWhere('phone', 'like', $search);
-//                $q->orWhere('address', 'like', $search);
-//                $q->orWhere('email', 'like', $search);
-//            })
-//            ->where('isAllow', 1);
-//
-//        if ($request->input('free-client')) {
-//            $clients->whereNull('user_id');
-//        }
+        //        $clients = Client::where(function ($q) use ($search) {
+        //                $q->where('name', 'like', $search);
+        //                $q->orWhere('phone', 'like', $search);
+        //                $q->orWhere('address', 'like', $search);
+        //                $q->orWhere('email', 'like', $search);
+        //            })
+        //            ->where('isAllow', 1);
+        //
+        //        if ($request->input('free-client')) {
+        //            $clients->whereNull('user_id');
+        //        }
         $clients = Client::where(function ($q) use ($search) {
             $q->where('clients.name', 'like', $search);
             $q->orWhere('clients.phone', 'like', $search);
@@ -556,8 +554,8 @@ class ClientController extends Controller
 
         $clients = $clients->paginate(12)->withQueryString();
 
-//        $clients = Client::where('isAllow', 1)
-//            ->paginate(12)->withQueryString();
+        //        $clients = Client::where('isAllow', 1)
+        //            ->paginate(12)->withQueryString();
         $users = UserM::where('isBlocked', 0)->get();
 
         return view('clients.distribution', compact('clients', 'users'));
@@ -567,11 +565,12 @@ class ClientController extends Controller
     // ********** COMPLETE ************
     // ----------**********------------
 
-    public function distributionUpdate($id, Request $request) {
+    public function distributionUpdate($id, Request $request)
+    {
 
-//        if (Auth::user()->cannot('viewAny', ActiveAd::class)) {
-//            abort(403);
-//        }
+        //        if (Auth::user()->cannot('viewAny', ActiveAd::class)) {
+        //            abort(403);
+        //        }
 
         $client = Client::find($id);
         if (!$client) {
@@ -594,17 +593,15 @@ class ClientController extends Controller
         if ($client->user_id) {
             $user = "<span>" . $client->user->getFullName() . "</span>";
             $client->user->notify(new NotifyUser('Вас назаничили ответстенным для клиента', 'https://crm-mediaservice.ru/clients/' . $client->id, $client));
-
         } else {
             $user = '<span class="text-success">Свободный клиент</span>';
         }
 
         return response()->json($user);
-
-
     }
 
-    public function kanban() {
+    public function kanban()
+    {
 
         $statusClients = StatusClient::orderBy('order', 'asc')->get();
         $allData = array();
@@ -612,7 +609,7 @@ class ClientController extends Controller
 
         foreach ($statusClients as $key => $statusClient) {
 
-            $i = $key+1;
+            $i = $key + 1;
 
             $allData[$i] = array('name' => $statusClient->name);
 
@@ -624,7 +621,6 @@ class ClientController extends Controller
                     unset($clients[$index]);
                 }
             }
-
         }
 
 
@@ -632,10 +628,11 @@ class ClientController extends Controller
     }
 
 
-    public function typing(Request $request) {
+    public function typing(Request $request)
+    {
 
         $res = '';
-        $clients = Client::where('name', 'LIKE', '%'.$request->client.'%')->get();
+        $clients = Client::where('name', 'LIKE', '%' . $request->client . '%')->get();
         $res .= '<h5>Результаты поиска:</h5>';
 
         if (count($clients) == 0) {
@@ -643,7 +640,7 @@ class ClientController extends Controller
         } else {
             $res .= '<ul>';
             foreach ($clients as $client) {
-                $res .= '<li><a target="_blank" href="/clients/'.$client->id.'" >'.$client->name.'</a></li>';
+                $res .= '<li><a target="_blank" href="/clients/' . $client->id . '" >' . $client->name . '</a></li>';
             }
             $res .= '</ul>';
         }
