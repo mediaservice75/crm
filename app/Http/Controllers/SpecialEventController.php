@@ -196,7 +196,7 @@ class SpecialEventController extends Controller
     public function edit($id)
     {
         $event = SpecialEvent::with(['sessions', 'sponsors', 'responsibles'])->find($id);
-        $users = User::whereIn('role_id', [2, 4, 13])
+        $users = User::whereIn('role_id', [2, 4, 13, 9])
             ->where('isBlocked', 0)
             ->get();
         $usersAll = User::all();

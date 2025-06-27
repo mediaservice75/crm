@@ -20,6 +20,14 @@
 
 
 @section('content')
+    <style>
+        #calendar {
+            height: 650px;
+            /* Фиксированная высота */
+            overflow-y: auto;
+            /* Прокрутка при необходимости */
+        }
+    </style>
 
     <div class="modal fade" id="createGoal" tabindex="-1" aria-labelledby="createGoalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-xl modal-dialog-centered">
