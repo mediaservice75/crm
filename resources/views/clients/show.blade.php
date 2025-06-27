@@ -12,9 +12,9 @@
             <span class="badge fs-6 @if ($client->edo) custom-bg-success @else custom-bg-danger @endif">
                 <i class="bi bi-cloud"></i>
                 @if ($client->edo)
-                    <b>ЭДО: Да</b>
+                    <b>Работает по ЭДО</b>
                 @else
-                    <b>ЭДО: Нет</b>
+                    <b>Не работает по ЭДО</b>
                 @endif
             </span>
         </div>
@@ -28,8 +28,9 @@
             <a href="{{ route('clients.edit', ['client' => $client->id]) }}"
                 class="btn btn-sm icon btn-primary me-2 mb-2"><i class="bi bi-pencil"></i>
                 Редактировать</a>
-            <a href="{{ route('clients.index') }}" class="btn icon btn-sm btn-primary mb-2"><i class="bi bi-arrow-left"></i>
-                Вернуться назад</a>
+            <a href="{{ route('clients.index') }}" class="btn btn-sm icon btn-primary me-2 mb-2">
+                <i class="bi bi-arrow-left"></i> Назад
+            </a>
         </div>
     </div>
 @endsection
