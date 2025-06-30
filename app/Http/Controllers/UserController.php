@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\StoreUser;
-use App\Mail\TestMail;
 use App\Mail\UserRegistration;
 use App\Models\Category;
 use App\Models\Claim;
@@ -14,8 +13,6 @@ use App\Models\HistoryPayment;
 use App\Models\Role;
 use App\Models\SalesPlan;
 use App\Models\UserM;
-use App\Notifications\RemindClient;
-use http\Client\Curl\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -29,10 +26,6 @@ class UserController extends Controller
 
     public function login()
     {
-        //        dd(DB::table('users')->where('id', '=', '1')->update([
-        //            'password' => Hash::make('1111'),
-        //            'email' => 'admin@info.ru'
-        //        ]));
         return view('users.login');
     }
 
@@ -57,11 +50,6 @@ class UserController extends Controller
         return redirect()->route('users.login');
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
 
@@ -70,23 +58,12 @@ class UserController extends Controller
         return view('users.index', compact('users'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $roles = Role::all();
         return view('users.create', compact('roles'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StoreUser $request)
     {
         DB::beginTransaction();
@@ -123,12 +100,6 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id, Request $request)
     {
         if (auth()->user()->role->level != 1 && auth()->user()->role->level != 2 && auth()->user()->id != $id && auth()->user()->role->level != 5) {
@@ -196,11 +167,9 @@ class UserController extends Controller
                     ->where('created_at', '<', $start)
                     ->where('notInclude', 0);
             })
-            //            ->groupBy('claim_id')
             ->select(DB::raw('claim_id'))
             ->get();
 
-        //        dd($claimsNotPaid);
         $ids = [];
         if ($claimsNotPaid) {
             foreach ($claimsNotPaid as $claim2) {
@@ -208,29 +177,78 @@ class UserController extends Controller
             }
         }
 
-        //        dd($ids);
-
         $userClaims = Claim::where('creator', $id)
-            //            ->where('created_at', '>=', $start)
             ->where('created_at', '<=', $end)
             ->whereNotIn('id', $ids)
             ->where('notInclude', 0)
             ->get();
 
-        //        dd($userClaims);
 
         $user = UserM::firstWhere('id', $id);
 
+        // НОВАЯ ПЕРЕМЕННАЯ: Суммы оплат за последние 12 месяцев
+        $sumPaidLastYear = HistoryPayment::where('created_at', '>=', date('Y-m-01 00:00:00', strtotime('-12 months')))
+            ->where('created_at', '<=', date('Y-m-31 23:59:59'))
+            ->with('status')
+            ->whereHas('status', function ($w) {
+                $w->where('name', "Частично оплачен")
+                    ->orWhere('name', "Оплачен");
+            })
+            ->with('claim')
+            ->whereHas('claim', function ($q) use ($id) {
+                $q->where('creator', $id);
+            })
+            ->select(
+                DB::raw('SUM(amount) as total_amount'),
+                DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month')
+            )
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item->month => $item->total_amount];
+            })
+            ->toArray();
 
-        return view('users.show', compact('userClaims', 'user', 'sumPlan', 'sumClaims', 'sumPaid', 'id', 'salesByCategory', 'planMonth'));
+        // Заполняем пропущенные месяцы нулями
+        $lastYearRealIncome = [];
+        for ($i = 12; $i >= 0; $i--) {
+            $month = date('Y-m', strtotime("-$i months"));
+            $lastYearRealIncome[$month] = $sumPaidLastYear[$month] ?? 0;
+        }
+
+        // НОВАЯ ПЕРЕМЕННАЯ: Суммы заявок за последние 12 месяцев
+        $sumClaimsLastYear = DB::table('claims')
+            ->whereNotNull('creator')
+            ->where('creator', $id)
+            ->where('notInclude', 0)
+            ->whereNull('deleted_at')
+            ->where('created_at', '>=', date('Y-m-01 00:00:00', strtotime('-12 months')))
+            ->where('created_at', '<=', date('Y-m-31 23:59:59'))
+            ->select(
+                DB::raw('SUM(amount) as total_amount'),
+                DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month')
+            )
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item->month => $item->total_amount];
+            })
+            ->toArray();
+
+        // Заполняем пропущенные месяцы нулями
+        $lastYearClaimsIncome = [];
+        for ($i = 12; $i >= 0; $i--) {
+            $month = date('Y-m', strtotime("-$i months"));
+            $lastYearClaimsIncome[$month] = $sumClaimsLastYear[$month] ?? 0;
+        }
+
+        // dd($lastYearClaimsIncome);
+
+        return view('users.show', compact('userClaims', 'user', 'sumPlan', 'sumClaims', 'sumPaid', 'id', 'salesByCategory', 'planMonth', 'lastYearRealIncome', 'lastYearClaimsIncome'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $roles = Role::all();
@@ -238,13 +256,6 @@ class UserController extends Controller
         return view('users.edit', compact('roles'))->with('user', $user);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(StoreUser $request, $id)
     {
         $userOld = UserM::firstWhere('id', $id);
@@ -289,12 +300,6 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $user = UserM::find($id);
@@ -312,10 +317,8 @@ class UserController extends Controller
         }
     }
 
-
     public function getClaimsPayment(Request $request)
     {
-
         $start = date('Y-m-01') . ' 00:00:00';
         $end = date('Y-m-31') . ' 23:59:59';
         $planMonth = date('Y-m-01');
@@ -326,7 +329,6 @@ class UserController extends Controller
             $end = $request->input('month') . '-31 23:59:59';
             $planMonth = $request->input('month') . '-01';
         }
-
 
         $sumPlan = SalesPlan::orderBy('month', 'desc')
             ->where('month', $planMonth)
@@ -356,27 +358,6 @@ class UserController extends Controller
             ->select(DB::raw('SUM(amount) as total_amount'))
             ->get();
 
-        //        $paidClaims = Claim::with('historiesPayment')
-        //            ->whereHas('historiesPayment', function ($q) use ($start, $end) {
-        //                $q->where('created_at', '>=', $start)
-        //                    ->where('created_at', '<=', $end)
-        //                    ->with('status')
-        //                    ->whereHas('status', function ($w) {
-        //                        $w->where('name', "Оплачен");
-        //                    });
-        //            })
-        //            ->select('creator', DB::raw('SUM(amount) as total_amount'))
-        //            ->groupBy('creator')
-        //            ->get();
-        //
-        //        $fio = $paidClaims->mapWithKeys(function ($item, $key) {
-        //            return [$key => $item->creatorUser->getFullName()];
-        //        });
-        //
-        //        $multipliedPaidClaims = $paidClaims->mapWithKeys(function ($item, $key) {
-        //            return [$key => $item->total_amount];
-        //        });
-
         if (!$sumClaims->first()->total_amount) {
             $sumClaims = 0;
         } else {
@@ -395,8 +376,6 @@ class UserController extends Controller
             'claims' => array($sumClaims),
         );
 
-        //        $res = array($sumPlan, $sumPaid, $sumClaims);
-
         return json_encode($res);
     }
 
@@ -411,12 +390,8 @@ class UserController extends Controller
 
     public function getSalesByCategoryAjax(Request $request)
     {
-
         $start = $request->month . '-01 00:00:00';
         $end = $request->month . '-31 23:59:59';
-        //        $start = '2022-12-00 00:00:00';
-        //        $end = '2022-12-32 00:00:00';
-        //        $request->user_id = 1;
 
         $categories = Category::all();
 
@@ -455,33 +430,6 @@ class UserController extends Controller
                 ];
             }
         }
-        //
-        //        $categoriesAllSum = DB::table('categories')
-        //            ->leftJoin('services', 'categories.id', '=', 'services.category_id')
-        //            ->leftJoin('claims', 'services.id', '=', 'claims.service_id')
-        //            ->leftJoin('history_payments', 'claims.id', '=', 'history_payments.claim_id')
-        //            ->select('categories.id',
-        //                'categories.name',
-        //                DB::raw('sum(claims.amount) as claims_amount'))
-        //            ->whereNull('categories.deleted_at')
-        ////            ->where('claims.created_at', '>=', $start)
-        ////            ->where('claims.created_at', '<=', $end)
-        //            ->where('claims.notInclude', 0)
-        //            ->where('claims.creator', '=', $request->user_id)
-        //            ->where('history_payments.status_id', '=', 4)
-        //            ->where('history_payments.created_at', '>=', $start)
-        //            ->where('history_payments.created_at', '<=', $end)
-        //            ->groupBy('categories.id', 'categories.name')
-        //            ->get();
-
-        //        dd($categoriesAllSum);
-
-
-        //        $categories = Category::all();
-        //
-        //        $categoriesAllSum = $categoriesAllSum->mapWithKeys(function ($item, $key) {
-        //            return [$item->id => $item];
-        //        });
 
         $allData = array();
         foreach ($categories as $key => $category) {
@@ -520,33 +468,6 @@ class UserController extends Controller
                     ->get();
                 $allData[$i]['users'][] = $paid;
             }
-
-
-
-            //            $claims = DB::table('categories')
-            //                ->leftJoin('services', 'categories.id', '=', 'services.category_id')
-            //                ->leftJoin('claims', 'services.id', '=', 'claims.service_id')
-            //                ->leftJoin('history_payments', 'claims.id', '=', 'history_payments.claim_id')
-            //                ->leftJoin('clients', 'clients.id', '=', 'claims.client_id')
-            //                ->leftJoin('requisites_clients', 'clients.id', '=', 'requisites_clients.client_id')
-            //                ->select(
-            //                    'clients.name',
-            //                    'requisites_clients.fullName',
-            //                    'claims.amount',
-            //                )
-            //                ->whereNull('categories.deleted_at')
-            //                ->where('categories.id', $category->id)
-            ////                ->where('claims.created_at', '>=', $start)
-            ////                ->where('claims.created_at', '<=', $end)
-            //                ->where('claims.notInclude', 0)
-            //                ->where('claims.creator', '=', $request->user_id)
-            //                ->where('history_payments.status_id', '=', 4)
-            //                ->where('history_payments.created_at', '>=', $start)
-            //                ->where('history_payments.created_at', '<=', $end)
-            //                ->get();
-
-            //            $allData[$i]['users'] = $claims;
-
         }
 
         $sum = 0;
@@ -697,14 +618,6 @@ class UserController extends Controller
             return back();
         }
     }
-    //
-    //if ($request->hasFile('photo')) {
-    //$folder = date("Y-m-d");
-    //$data['photo'] = $request->file('photo')->store("images/{$folder}");
-    //$user->photo = $data['photo'];
-    //$user->save();
-    //DB::commit();
-    //}
 
     public function repeatPassword(Request $request, $id)
     {

@@ -293,4 +293,119 @@
     <div id="data" class="row">
         {!! $salesByCategory !!}
     </div>
+
+    <div class=" col-lg-12 col-md-12">
+        <div class="card">
+            <div class="card-content">
+                <div class="card-body">
+                    <h4 class="card-title mb-4 ">График заявок и поступлений за предыдущий год</h4>
+                    <canvas id="incomeChart" height="50"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var ctx = document.getElementById('incomeChart').getContext('2d');
+
+            // Красивые цвета
+            const incomeColor = '#28a745'; // Хороший зеленый (как bootstrap success)
+            const claimsColor = '#343a40'; // Темный серый/черный (как bootstrap dark)
+
+            var monthNames = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+            var labels = Object.keys({!! json_encode($lastYearRealIncome) !!}).map(function(month) {
+                var parts = month.split('-');
+                return monthNames[parseInt(parts[1]) - 1] + ' ' + parts[0];
+            });
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                            label: 'Поступления',
+                            data: Object.values({!! json_encode($lastYearRealIncome) !!}),
+                            borderColor: incomeColor,
+                            backgroundColor: incomeColor + '20', // Добавляем прозрачность 20%
+                            borderWidth: 3,
+                            tension: 0.2,
+                            fill: false,
+                            pointBackgroundColor: incomeColor,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'Заявок создано на',
+                            data: Object.values({!! json_encode($lastYearClaimsIncome) !!}),
+                            borderColor: claimsColor,
+                            backgroundColor: claimsColor + '20', // Добавляем прозрачность 20%
+                            borderWidth: 3,
+                            tension: 0.2,
+                            fill: false,
+                            borderDash: [4, 4], // Пунктирная линия
+                            pointBackgroundColor: claimsColor,
+                            pointRadius: 3,
+                            pointHoverRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' +
+                                        context.raw.toLocaleString('ru-RU', {
+                                            style: 'currency',
+                                            currency: 'RUB',
+                                            minimumFractionDigits: 0
+                                        });
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    size: 13
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString('ru-RU', {
+                                        style: 'currency',
+                                        currency: 'RUB',
+                                        minimumFractionDigits: 0
+                                    });
+                                },
+                                padding: 10
+                            },
+                            grid: {
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 @endsection
