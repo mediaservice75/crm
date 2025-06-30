@@ -304,15 +304,20 @@
             </div>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Регистрируем плагин для подписей данных
+            Chart.register(ChartDataLabels);
+
             var ctx = document.getElementById('incomeChart').getContext('2d');
 
-            // Красивые цвета
-            const incomeColor = '#28a745'; // Хороший зеленый (как bootstrap success)
-            const claimsColor = '#343a40'; // Темный серый/черный (как bootstrap dark)
+            // Цвета
+            const incomeColor = '#28a745'; // Зеленый
+            const claimsColor = '#343a40'; // Темный серый/черный
 
             var monthNames = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
             var labels = Object.keys({!! json_encode($lastYearRealIncome) !!}).map(function(month) {
@@ -328,45 +333,60 @@
                             label: 'Поступления',
                             data: Object.values({!! json_encode($lastYearRealIncome) !!}),
                             borderColor: incomeColor,
-                            backgroundColor: incomeColor + '20', // Добавляем прозрачность 20%
+                            backgroundColor: incomeColor + '20',
                             borderWidth: 3,
                             tension: 0.2,
                             fill: false,
                             pointBackgroundColor: incomeColor,
-                            pointRadius: 4,
-                            pointHoverRadius: 6
+                            pointRadius: 5,
+                            pointHoverRadius: 7
                         },
                         {
                             label: 'Заявок создано на',
                             data: Object.values({!! json_encode($lastYearClaimsIncome) !!}),
                             borderColor: claimsColor,
-                            backgroundColor: claimsColor + '20', // Добавляем прозрачность 20%
+                            backgroundColor: claimsColor + '20',
                             borderWidth: 3,
                             tension: 0.2,
                             fill: false,
-                            borderDash: [4, 4], // Пунктирная линия
+                            borderDash: [4, 4],
                             pointBackgroundColor: claimsColor,
-                            pointRadius: 3,
-                            pointHoverRadius: 6
+                            pointRadius: 5,
+                            pointHoverRadius: 7
                         }
                     ]
                 },
                 options: {
                     responsive: true,
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
-                    },
                     plugins: {
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'top',
+                            formatter: function(value) {
+                                return value.toLocaleString('ru-RU', {
+                                    maximumFractionDigits: 0
+                                }) + ' ₽';
+                            },
+                            font: {
+                                weight: 'bold',
+                                size: 10
+                            },
+                            color: function(context) {
+                                return context.datasetIndex === 0 ? incomeColor : claimsColor;
+                            },
+                            padding: {
+                                top: 5
+                            },
+                            display: function(context) {
+                                return context.dataset.data[context.dataIndex] !==
+                                0; // Показывать только ненулевые значения
+                            }
+                        },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
                                     return context.dataset.label + ': ' +
-                                        context.raw.toLocaleString('ru-RU', {
-                                            style: 'currency',
-                                            currency: 'RUB',
-                                            minimumFractionDigits: 0
-                                        });
+                                        context.raw.toLocaleString('ru-RU') + ' ₽';
                                 }
                             }
                         },
@@ -386,11 +406,7 @@
                             beginAtZero: true,
                             ticks: {
                                 callback: function(value) {
-                                    return value.toLocaleString('ru-RU', {
-                                        style: 'currency',
-                                        currency: 'RUB',
-                                        minimumFractionDigits: 0
-                                    });
+                                    return value.toLocaleString('ru-RU') + ' ₽';
                                 },
                                 padding: 10
                             },
@@ -404,7 +420,8 @@
                             }
                         }
                     }
-                }
+                },
+                plugins: [ChartDataLabels] // Активируем плагин
             });
         });
     </script>
