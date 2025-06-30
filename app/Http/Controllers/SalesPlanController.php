@@ -261,7 +261,7 @@ class SalesPlanController extends Controller
             ->where('month', $planMonth)
             ->get();
 
-//        dd($multiplied);
+    //    dd($multipliedPaidClaims);
 
         return view('plan.statistics', compact('multiplied', 'salesPlan', 'multipliedPaidClaims', 'sumPlan', 'sumClaims', 'sumPaid', 'planMonth'));
     }

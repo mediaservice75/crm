@@ -162,11 +162,12 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-
+                                    {{-- Начало цикла --}}
                                     @foreach ($salesPlan as $key => $item)
                                         @php
                                             $plan = $item->plan;
                                             $fact = 0;
+                                            $displayedUsers[$item->user_id] = true;
                                         @endphp
                                         <tr>
                                             <td>
@@ -221,11 +222,19 @@
 
                                         @php
                                             unset($multiplied[$item->user_id]);
+                                            unset($multipliedPaidClaims[$item->user_id]);
                                         @endphp
                                     @endforeach
 
                                     @if (count($multiplied) != 0)
                                         @foreach ($multiplied as $idU => $value)
+                                            @php
+                                                // Пропускаем, если пользователь уже был в salesPlan
+                                                if (isset($displayedUsers[$idU])) {
+                                                    continue;
+                                                }
+                                                $displayedUsers[$idU] = true;
+                                            @endphp
                                             <tr>
                                                 <td>
                                                     <a href="{{ route('users.show', ['user' => $idU]) }}">
@@ -250,6 +259,31 @@
                                         @endforeach
                                     @endif
 
+                                    {{-- 3. Наконец, добавляем оставшихся из multipliedPaidClaims --}}
+                                    @if (count($multipliedPaidClaims) != 0)
+                                        @foreach ($multipliedPaidClaims as $userId => $amount)
+                                            @php
+                                                // Пропускаем, если пользователь уже был выведен
+                                                if (isset($displayedUsers[$userId])) {
+                                                    continue;
+                                                }
+                                            @endphp
+                                            <tr>
+                                                <td>
+                                                    <a href="{{ route('users.show', ['user' => $userId]) }}">
+                                                        {{ getUserById($userId) }}</a>
+                                                </td>
+                                                <td>{{ $salesPlan[0]->getDate() }}</td>
+                                                <td>План не установлен</td>
+                                                <td>0 ₽</td>
+                                                <td>{{ money($amount) }} ₽</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
+
+                                    {{-- Конец цикла --}}
                                 </tbody>
                             </table>
                         @endif
