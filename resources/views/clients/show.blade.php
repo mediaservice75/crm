@@ -180,6 +180,22 @@
                             <span class="text-danger">Не заполнено</span>
                         @endif
                     </p>
+                    <p class="mb-1">
+                        <b>Email:</b>
+                        @if ($client->email)
+                            {{ $client->email }}
+                        @else
+                            <span class="text-danger">Не заполнено</span>
+                        @endif
+                    </p>
+                    <p class="mb-1">
+                        <b>Комментарий:</b>
+                        @if ($client->comment)
+                            {{ $client->comment }}
+                        @else
+                            <span class="text-danger">Не заполнено</span>
+                        @endif
+                    </p>
 
                     <div class="divider divider-left">
                         <div class="divider-text">Банковские реквизиты</div>
