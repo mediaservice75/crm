@@ -191,7 +191,10 @@
                                 {{ money($totalRemaining) }}
                                 ₽
                             </p>
+
+                            {{-- Таблица задолженностей --}}
                             <table class="table table-lg table-hover table-striped" id="datatables">
+                                {{-- Заголовки таблицы --}}
                                 <thead>
                                     <tr>
                                         <th class="date-column">Дата</th>
@@ -204,17 +207,24 @@
                                         <th>Остаток</th>
                                     </tr>
                                 </thead>
+
+                                {{-- Тело таблицы --}}
                                 <tbody>
                                     @foreach ($userClaims as $key => $item)
                                         @if ($item->client == null)
                                             continue;
                                         @endif
                                         <tr>
+                                            {{-- Дата --}}
                                             <td>{{ $item->created_at->format('d.m.y') }}</td>
+
+                                            {{-- Номер заявки --}}
                                             <td>
                                                 <a
                                                     href="{{ route('claims.show', ['claim' => $item->id]) }}">{{ $item->id }}</a>
                                             </td>
+
+                                            {{-- Имя клиента --}}
                                             <td>
                                                 <a href="{{ route('clients.show', ['client' => $item->client->id]) }}"
                                                     target="_blank">{{ $item->client->name }}
@@ -227,8 +237,14 @@
                                                     @endif
                                                 </a>
                                             </td>
+
+                                            {{-- Наименование услуги --}}
                                             <td>{{ $item->service->name }}</td>
+
+                                            {{-- Сумма --}}
                                             <td>{{ money($item->amount) }}</td>
+
+                                            {{-- Статус оплаты --}}
                                             <td class="payment-status">
                                                 @if (count($item->historiesPayment) != 0)
                                                     <span
@@ -239,6 +255,8 @@
                                                     <span class="text-danger">Статус неизвестен</span>
                                                 @endif
                                             </td>
+
+                                            {{-- Частичная оплата --}}
                                             <td>
                                                 <div
                                                     style="display: flex; align-items: center; justify-content: space-between; width: 70%;">
@@ -265,6 +283,8 @@
                                                     $totalRemaining += $remaining;
                                                 }
                                             @endphp
+
+                                            {{-- Остаток --}}
                                             <td>
                                                 @if ($remaining > 0)
                                                     {{ money($remaining) }}
@@ -299,7 +319,7 @@
             <div class="card-content">
                 <div class="card-body">
                     <h4 class="card-title mb-4 ">График заявок и поступлений за предыдущий год</h4>
-                    <canvas id="incomeChart" height="50"></canvas>
+                    <canvas id="incomeChart" height="100"></canvas>
                 </div>
             </div>
         </div>
@@ -369,7 +389,7 @@
                             },
                             font: {
                                 weight: 'bold',
-                                size: 10
+                                size: 13
                             },
                             color: function(context) {
                                 return context.datasetIndex === 0 ? incomeColor : claimsColor;
@@ -379,7 +399,7 @@
                             },
                             display: function(context) {
                                 return context.dataset.data[context.dataIndex] !==
-                                0; // Показывать только ненулевые значения
+                                    0; // Показывать только ненулевые значения
                             }
                         },
                         tooltip: {
@@ -396,7 +416,7 @@
                                 usePointStyle: true,
                                 padding: 20,
                                 font: {
-                                    size: 13
+                                    size: 14
                                 }
                             }
                         }
