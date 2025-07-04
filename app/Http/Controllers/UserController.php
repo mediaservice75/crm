@@ -52,20 +52,10 @@ class UserController extends Controller
 
     public function index()
     {
+
+
         $users = UserM::orderBy('isBlocked', 'asc')->get();
-
-        $groups = Group::orderByRaw('FIELD(id, 7, 5, 6, 4, 2, 3, 1, 8)')->get();
-
-        return view('users.index', compact('users', 'groups'));
-    }
-
-    public function archive()
-    {
-        $groups = Group::orderByRaw('FIELD(id, 7, 5, 6, 4, 2, 3, 1, 8)')->get();
-
-        $blockedUsers = UserM::where('isBlocked', 1)->get();
-
-        return view('users.archive', compact('blockedUsers', 'groups'));
+        return view('users.index', compact('users'));
     }
 
     public function create()

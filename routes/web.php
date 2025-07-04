@@ -23,7 +23,6 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ZipController;
 use App\Http\Controllers\CalendarController;
-use App\Http\Controllers\ReceivableController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -66,7 +65,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('users/repeat-password/{user}', [UserController::class, 'repeatPassword'])->name('users.repeat-password');
     Route::get('users/settings', [UserController::class, 'settings'])->name('users.settings');
     Route::post('users/settings', [UserController::class, 'storeSettings'])->name('users.storeSettings');
-    Route::get('users/archive', [UserController::class, 'archive'])->name('users.archive');
     Route::resource('users', UserController::class);
 
     Route::group(['middleware' => 'access'], function () {
@@ -166,8 +164,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('active-ad/past', [ClaimController::class, 'getPastActiveAd'])->name('claim.pastActiveAd');
     Route::get('active-ad/all', [ClaimController::class, 'getActiveAdAll'])->name('claim.activeAdAll');
     Route::get('active-ad/all/past', [ClaimController::class, 'getPastActiveAdAll'])->name('claim.pastActiveAdAll');
-
-    Route::get('receivable', [ReceivableController::class, 'index'])->name('receivable.index');
 
     Route::post('/upload-filepond', [UploadController::class, 'store']);
     Route::post('/upload-files-goal', [UploadController::class, 'goalsStore']);

@@ -99,13 +99,7 @@ class UserM extends Authenticatable
         return $this->hasMany(DynamicTable::class);
     }
 
-    public function getFullName()
-    {
+    public function getFullName() {
         return $this->surname . " " . $this->name . " " . $this->patron;
-    }
-
-    public function getGroupID()
-    {
-        return $this->role->group->id;
     }
 }

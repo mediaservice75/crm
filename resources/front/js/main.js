@@ -492,13 +492,13 @@ $(document).on("click", ".block", function (event) {
     var form = $(this).closest("form");
     event.preventDefault();
     Swal.fire({
-        title: 'Вы уверены?',
-        text: "Вы сможете разблокировать/заблокировать пользователя в любой момент!",
+        title: 'Вы действительно хотите заблокировать пользователя? 🥺',
+        text: "Вы сможете разблокировать пользователя в любой момент!",
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#31ce36',
         cancelButtonColor: '#f25961',
-        confirmButtonText: 'Да',
+        confirmButtonText: 'Заблокировать',
         cancelButtonText: 'Отмена',
     }).then((result) => {
         if (result.isConfirmed) {
