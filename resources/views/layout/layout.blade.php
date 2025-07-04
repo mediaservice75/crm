@@ -231,13 +231,6 @@
                                     </a>
                                 </li>
                             @endif
-
-                            <li class="sidebar-item">
-                                <a href="{{ route('receivable.index') }}" class='sidebar-link'>
-                                    <i class="bi bi-cash-stack"></i>
-                                    <span>Дебиторская задолженность</span>
-                                </a>
-                            </li>
                         @endif
 
                         @if (auth()->user()->role->level <= 2)
@@ -264,7 +257,7 @@
                             </li>
 
                             <li class="sidebar-item has-sub">
-                                <a href="javascript:void(0)" class='sidebar-link'>
+                                <a href="#" class='sidebar-link'>
                                     <i class="bi bi-info-circle-fill"></i>
                                     <span>Статусы</span>
                                 </a>
@@ -283,7 +276,7 @@
                             </li>
 
                             <li class="sidebar-item has-sub">
-                                <a href="javascript:void(0)" class='sidebar-link'>
+                                <a href="#" class='sidebar-link'>
                                     <i class="bi bi-person-workspace"></i>
                                     <span>Структура</span>
                                 </a>
@@ -302,7 +295,7 @@
                             </li>
 
                             <li class="sidebar-item has-sub">
-                                <a href="javascript:void(0)" class='sidebar-link'>
+                                <a href="#" class='sidebar-link'>
                                     <i class="bi bi-box-seam-fill"></i>
                                     <span>Услуги</span>
                                 </a>
