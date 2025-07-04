@@ -51546,20 +51546,52 @@ if (document.getElementById('month-datepicker')) {
     }
   });
 }
-var selector = '.sidebar-menu ul.menu .sidebar-item';
-var fullUrl = window.location.href;
-var url = new URL(fullUrl);
-var currentUrl = url.pathname.split('/');
-if (url.pathname.split('/')[1] === '') {
-  url = url.origin;
-} else {
-  url = url.origin + '/' + url.pathname.split('/')[1];
-}
-$(selector).each(function () {
-  if ($(this).find('a').attr('href') === url) {
-    $(selector).removeClass('active');
-    $(this).removeClass('active').addClass('active');
-  }
+
+// let selector = '.sidebar-menu ul.menu .sidebar-item';
+// let fullUrl = window.location.href;
+// var url = new URL(fullUrl);
+
+// let currentUrl = url.pathname.split('/');
+
+// if (url.pathname.split('/')[1] === '') {
+//     url = url.origin;
+// } else {
+//     url = url.origin + '/' + url.pathname.split('/')[1];
+// }
+
+// $(selector).each(function () {
+//     if ($(this).find('a').attr('href') === url) {
+//         $(selector).removeClass('active');
+//         $(this).removeClass('active').addClass('active');
+//     }
+// });
+
+document.addEventListener('DOMContentLoaded', function () {
+  var currentPath = window.location.pathname;
+  document.querySelectorAll('.sidebar-item').forEach(function (item) {
+    item.classList.remove('active');
+  });
+  document.querySelectorAll('.submenu-item a').forEach(function (link) {
+    var linkPath = new URL(link.href).pathname;
+    if (currentPath === linkPath) {
+      link.closest('.submenu-item').classList.add('active');
+      var parentItem = link.closest('.has-sub');
+      if (parentItem) {
+        parentItem.classList.add('active');
+        parentItem.querySelector('.submenu').style.display = 'block';
+      }
+    }
+  });
+  document.querySelectorAll('.sidebar-item:not(.has-sub) a').forEach(function (link) {
+    var linkPath = new URL(link.href).pathname;
+    if (currentPath === linkPath) {
+      link.closest('.sidebar-item').classList.add('active');
+    }
+  });
+});
+console.log('Current path:', currentPath);
+document.querySelectorAll('.submenu-item a').forEach(function (link) {
+  console.log('Menu path:', new URL(link.href).pathname);
 });
 if (document.getElementById('phone')) {
   var elPhone = document.getElementById('phone');

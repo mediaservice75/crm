@@ -302,27 +302,53 @@ if (document.getElementById('month-datepicker')) {
 
 
 
-let selector = '.sidebar-menu ul.menu .sidebar-item';
-let fullUrl = window.location.href;
-var url = new URL(fullUrl);
+// let selector = '.sidebar-menu ul.menu .sidebar-item';
+// let fullUrl = window.location.href;
+// var url = new URL(fullUrl);
 
-let currentUrl = url.pathname.split('/');
-
-
-if (url.pathname.split('/')[1] === '') {
-    url = url.origin;
-} else {
-    url = url.origin + '/' + url.pathname.split('/')[1];
-}
+// let currentUrl = url.pathname.split('/');
 
 
-$(selector).each(function () {
-    if ($(this).find('a').attr('href') === url) {
-        $(selector).removeClass('active');
-        $(this).removeClass('active').addClass('active');
-    }
+// if (url.pathname.split('/')[1] === '') {
+//     url = url.origin;
+// } else {
+//     url = url.origin + '/' + url.pathname.split('/')[1];
+// }
+
+
+// $(selector).each(function () {
+//     if ($(this).find('a').attr('href') === url) {
+//         $(selector).removeClass('active');
+//         $(this).removeClass('active').addClass('active');
+//     }
+// });
+
+document.addEventListener('DOMContentLoaded', function () {
+    const currentPath = window.location.pathname;
+
+    document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.classList.remove('active');
+    });
+
+    document.querySelectorAll('.submenu-item a').forEach(link => {
+        const linkPath = new URL(link.href).pathname;
+        if (currentPath === linkPath) {
+            link.closest('.submenu-item').classList.add('active');
+            const parentItem = link.closest('.has-sub');
+            if (parentItem) {
+                parentItem.classList.add('active');
+                parentItem.querySelector('.submenu').style.display = 'block';
+            }
+        }
+    });
+
+    document.querySelectorAll('.sidebar-item:not(.has-sub) a').forEach(link => {
+        const linkPath = new URL(link.href).pathname;
+        if (currentPath === linkPath) {
+            link.closest('.sidebar-item').classList.add('active');
+        }
+    });
 });
-
 
 if (document.getElementById('phone')) {
     var elPhone = document.getElementById('phone');
