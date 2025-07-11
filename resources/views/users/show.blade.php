@@ -345,6 +345,11 @@
                 return monthNames[parseInt(parts[1]) - 1] + ' ' + parts[0];
             });
 
+            // Функция для форматирования чисел с разделителями тысяч
+            function formatNumber(value) {
+                return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+            }
+
             new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -383,9 +388,7 @@
                             anchor: 'end',
                             align: 'top',
                             formatter: function(value) {
-                                return value.toLocaleString('ru-RU', {
-                                    maximumFractionDigits: 0
-                                }) + ' ₽';
+                                return formatNumber(Math.round(value)) + ' ₽';
                             },
                             font: {
                                 weight: 'bold',
@@ -398,15 +401,14 @@
                                 top: 5
                             },
                             display: function(context) {
-                                return context.dataset.data[context.dataIndex] !==
-                                    0; // Показывать только ненулевые значения
+                                return context.dataset.data[context.dataIndex] !== 0;
                             }
                         },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
                                     return context.dataset.label + ': ' +
-                                        context.raw.toLocaleString('ru-RU') + ' ₽';
+                                        formatNumber(Math.round(context.raw)) + ' ₽';
                                 }
                             }
                         },
@@ -426,7 +428,7 @@
                             beginAtZero: true,
                             ticks: {
                                 callback: function(value) {
-                                    return value.toLocaleString('ru-RU') + ' ₽';
+                                    return formatNumber(Math.round(value));
                                 },
                                 padding: 10
                             },
@@ -441,7 +443,7 @@
                         }
                     }
                 },
-                plugins: [ChartDataLabels] // Активируем плагин
+                plugins: [ChartDataLabels]
             });
         });
     </script>
