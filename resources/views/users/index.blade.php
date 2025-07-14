@@ -102,7 +102,9 @@
             @foreach ($users->filter(fn($user) => $user->getGroupID() === $group->id && $user->isBlocked != 1) as $user)
                 {{-- Вывод данных пользователя --}}
                 @php
-                    $isFreelancer = Str::endsWith($user->getFullName(), '0');
+                    $isFreelancer =
+                        Str::endsWith($user->getFullName(), '0') ||
+                        ($user->phone && Str::endsWith($user->phone, '99-99'));
                 @endphp
 
                 <div class="col-md-4 col-sm-12 user-card @if ($isFreelancer) freelancer d-none @endif">
@@ -201,12 +203,6 @@
                         'Показать внештатных сотрудников';
                 });
             });
-        });
-    </script>
-    <script>
-        $(function() {
-            console.log('jQuery работает!');
-            console.log('Найдено внештатных:', $('.freelancer').length);
         });
     </script>
 @endsection
