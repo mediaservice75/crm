@@ -23,6 +23,7 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ZipController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\ReceivableController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 

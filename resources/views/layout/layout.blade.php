@@ -231,6 +231,13 @@
                                     </a>
                                 </li>
                             @endif
+
+                            <li class="sidebar-item">
+                                    <a href="{{ route('receivable.index') }}" class='sidebar-link'>
+                                        <i class="bi bi-piggy-bank-fill"></i>
+                                        <span>Дебиторская задолженность</span>
+                                    </a>
+                                </li>
                         @endif
 
                         @if (auth()->user()->role->level <= 2)

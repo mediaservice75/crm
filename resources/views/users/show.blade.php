@@ -443,6 +443,7 @@
                         }
                     }
                 },
+                
                 plugins: [ChartDataLabels]
             });
         });

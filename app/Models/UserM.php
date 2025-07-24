@@ -108,4 +108,9 @@ class UserM extends Authenticatable
     {
         return $this->role->group->id;
     }
+
+    public function claims()
+    {
+        return $this->hasMany(Claim::class, 'creator', 'id');
+    }
 }
