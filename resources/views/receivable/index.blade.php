@@ -118,9 +118,10 @@
                                             </td>
                                             <td>
                                                 @if ($claim->historiesPayment->isNotEmpty())
-                                                    {{-- <span class="badge bg-light text-dark border"> --}}
-                                                        {{ $claim->historiesPayment->first()->status->name ?? '-' }}
-                                                    {{-- </span> --}}
+                                                    <span
+                                                        class="badge custom-bg-{{ $claim->historiesPayment->first()->status->color }}">
+                                                        {{ $claim->historiesPayment->first()->status->name }}
+                                                    </span>
                                                 @endif
                                             </td>
                                         </tr>
