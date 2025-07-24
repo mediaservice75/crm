@@ -32,6 +32,27 @@ class ReceivableController extends Controller
                 ->whereNotIn('id', $excludedClaimIds);
         }]);
 
-        return view('receivable.index', compact('users'));
+        // Новые расчеты
+    $totalDebt = $users->sum(function($user) {
+        return $user->claims->sum(function($claim) {
+            return max(0, $claim->amount - getPaymentsClaim($claim->id));
+        });
+    });
+    
+    $clientIds = [];
+    foreach ($users as $user) {
+        foreach ($user->claims as $claim) {
+            if ($claim->client && $claim->amount > getPaymentsClaim($claim->id)) {
+                $clientIds[] = $claim->client->id;
+            }
+        }
+    }
+    $totalClientsWithDebt = count(array_unique($clientIds));
+    
+    $totalClaims = $users->sum(function($user) {
+        return $user->claims->count();
+    });
+
+        return view('receivable.index', compact('users', 'totalDebt', 'totalClientsWithDebt', 'totalClaims'));
     }
 }
