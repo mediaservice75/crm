@@ -5,9 +5,9 @@
 @endsection
 
 @section('content')
-    <div class="debt-list">
+    <div class="debt-list bg-white p-4 rounded-4">
         {{-- Блок общей статистики --}}
-        <div class="global-stats mb-4 p-3 bg-light rounded">
+        <div class="global-stats mb-4 p-3 bg-light rounded-4">
             <div class="row">
                 <div class="col-md-4">
                     <div class="stat-card text-center p-3 border-end">
@@ -87,9 +87,9 @@
         @foreach ($managersData as $managerData)
             <div class="manager-section mb-5">
                 <div class="manager-header d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
-                    <h5 class="m-0">
+                    <h4 class="m-0">
                         {{ $managerData['manager']->name }} {{ $managerData['manager']->surname }}
-                    </h5>
+                    </h4>
                     <div class="text-danger fw-medium">
                         {{ rtrim(rtrim(money($managerData['total']), '0')) }} ₽
                     </div>
@@ -99,7 +99,7 @@
                     <div class="client-section mb-4">
                         <div
                             class="client-header d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
-                            <h6 class="m-0">
+                            <h5 class="m-0">
                                 <a href="{{ route('clients.show', $clientData['client']->id) }}"
                                     class="text-decoration-none">
                                     {{ $clientData['client']->name }}
@@ -109,32 +109,34 @@
                                         ({{ $clientData['client']->requisite->fullName }})
                                     </small>
                                 @endif
-                            </h6>
+                            </h5>
                             <div class="text-danger">
                                 {{ rtrim(rtrim(money($clientData['total']), '0')) }} ₽
                             </div>
                         </div>
 
                         <div class="claims-list mt-2">
-                            <table class="table table-borderless fixed-layout">
+                            <table class="table table-borderless fixed-layout table-striped">
                                 <colgroup>
-                                    <col style="width: 90px"> <!-- Дата -->
-                                    <col style="width: 80px"> <!-- № -->
-                                    <col style="width: 200px"> <!-- Услуга -->
-                                    <col style="width: 120px"> <!-- Сумма -->
-                                    <col style="width: 120px"> <!-- Оплачено -->
-                                    <col style="width: 120px"> <!-- Остаток -->
-                                    <col style="width: 150px"> <!-- Статус -->
+                                    <col style=""> <!-- Дата заявки -->
+                                    <col style=""> <!-- Номер заявки -->
+                                    <col style=""> <!-- Услуга -->
+                                    <col style=""> <!-- Номер счёта -->
+                                    <col style=""> <!-- Сумма -->
+                                    <col style=""> <!-- Оплачено -->
+                                    <col style=""> <!-- Остаток -->
+                                    <col style=""> <!-- Статус -->
                                 </colgroup>
                                 <thead>
                                     <tr class="text-muted border-bottom">
-                                        <th class="fw-normal small">Дата</th>
-                                        <th class="fw-normal small">№</th>
+                                        <th class="fw-normal small">Дата заявки</th>
+                                        <th class="fw-normal small">Номер заявки</th>
                                         <th class="fw-normal small">Услуга</th>
-                                        <th class="fw-normal small text-end">Сумма</th>
+                                        <th class="fw-normal small">Номер счёта</th>
+                                        <th class="fw-normal small text-end">Сумма счёта</th>
                                         <th class="fw-normal small text-end">Оплачено</th>
-                                        <th class="fw-normal small text-end">Остаток</th>
                                         <th class="fw-normal small">Статус</th>
+                                        <th class="fw-normal small text-end">Остаток</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -151,17 +153,15 @@
                                             <td class="text-truncate" title="{{ $claim->service->name ?? '-' }}">
                                                 {{ $claim->service->name ?? '-' }}
                                             </td>
+                                            <td>
+                                                <a href="{{ url('/payments/paid/' . $claim->id) }}">
+                                                    {{ $claim->number_invoice }}
+                                                </a>
+                                            </td>
                                             <td class="text-end">{{ rtrim(rtrim(money($claim->amount)), '0') }} ₽</td>
                                             <td class="text-end">
                                                 @if ($claimItem['paid'] > 0)
                                                     {{ rtrim(rtrim(money($claimItem['paid'])), '0') }} ₽
-                                                @else
-                                                    -
-                                                @endif
-                                            </td>
-                                            <td class="text-end {{ $claimItem['remaining'] > 0 ? 'text-danger' : '' }}">
-                                                @if ($claimItem['remaining'] > 0)
-                                                    {{ rtrim(rtrim(money($claimItem['remaining'])), '0') }} ₽
                                                 @else
                                                     -
                                                 @endif
@@ -188,10 +188,18 @@
                                                     <span class="text-muted">-</span>
                                                 @endif
                                             </td>
+                                            <td class="text-end {{ $claimItem['remaining'] > 0 ? 'text-danger' : '' }}">
+                                                @if ($claimItem['remaining'] > 0)
+                                                    {{ rtrim(rtrim(money($claimItem['remaining'])), '0') }} ₽
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
+                            <br>
                         </div>
                     </div>
                 @endforeach
@@ -199,7 +207,7 @@
         @endforeach
     </div>
 
-    <style>
+    {{-- <style>
         .manager-section {
             padding: 1rem 0;
         }
@@ -245,5 +253,5 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-    </style>
+    </style> --}}
 @endsection

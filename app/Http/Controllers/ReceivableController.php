@@ -10,6 +10,10 @@ class ReceivableController extends Controller
 {
     public function index()
     {
+        if (!in_array(auth()->user()->role->level, [1, 2, 4, 5])) {
+            abort(403);
+        }
+
         $end = now(); // или ваша дата
 
         // Сначала получаем всех пользователей
@@ -33,25 +37,25 @@ class ReceivableController extends Controller
         }]);
 
         // Новые расчеты
-    $totalDebt = $users->sum(function($user) {
-        return $user->claims->sum(function($claim) {
-            return max(0, $claim->amount - getPaymentsClaim($claim->id));
+        $totalDebt = $users->sum(function ($user) {
+            return $user->claims->sum(function ($claim) {
+                return max(0, $claim->amount - getPaymentsClaim($claim->id));
+            });
         });
-    });
-    
-    $clientIds = [];
-    foreach ($users as $user) {
-        foreach ($user->claims as $claim) {
-            if ($claim->client && $claim->amount > getPaymentsClaim($claim->id)) {
-                $clientIds[] = $claim->client->id;
+
+        $clientIds = [];
+        foreach ($users as $user) {
+            foreach ($user->claims as $claim) {
+                if ($claim->client && $claim->amount > getPaymentsClaim($claim->id)) {
+                    $clientIds[] = $claim->client->id;
+                }
             }
         }
-    }
-    $totalClientsWithDebt = count(array_unique($clientIds));
-    
-    $totalClaims = $users->sum(function($user) {
-        return $user->claims->count();
-    });
+        $totalClientsWithDebt = count(array_unique($clientIds));
+
+        $totalClaims = $users->sum(function ($user) {
+            return $user->claims->count();
+        });
 
         return view('receivable.index', compact('users', 'totalDebt', 'totalClientsWithDebt', 'totalClaims'));
     }

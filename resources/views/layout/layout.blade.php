@@ -231,13 +231,15 @@
                                     </a>
                                 </li>
                             @endif
+                        @endif
 
-                            {{-- <li class="sidebar-item">
+                        @if (auth()->user()->role->level <= 2 || auth()->user()->role->level == 5 || auth()->user()->role->level == 4)
+                            <li class="sidebar-item">
                                 <a href="{{ route('receivable.index') }}" class='sidebar-link'>
                                     <i class="bi bi-piggy-bank-fill"></i>
                                     <span>Дебиторская задолженность</span>
                                 </a>
-                            </li> --}}
+                            </li>
                         @endif
 
                         @if (auth()->user()->role->level <= 2)
