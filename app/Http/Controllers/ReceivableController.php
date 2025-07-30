@@ -17,9 +17,11 @@ class ReceivableController extends Controller
         $end = now(); // или ваша дата
 
         // Сначала получаем всех пользователей
-        $users = UserM::whereIn('role_id', [2, 4, 13])
+        $users = UserM::whereIn('role_id', [2, 4, 13, 9])
             ->where('isBlocked', 0)
+            ->orderByRaw("FIELD(role_id, 9, 4, 13, 2)")
             ->get();
+
 
         // Получаем все исключаемые ID claims одним запросом
         $excludedClaimIds = HistoryPayment::whereHas('status', function ($q) {
