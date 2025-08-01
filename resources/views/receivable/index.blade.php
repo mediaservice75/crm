@@ -123,7 +123,7 @@
 
                             <div class="collapse" id="client-{{ $clientData['client']->id }}">
                                 <div class="claims-list mt-2">
-                                    <table class="table table-borderless fixed-layout table-striped">
+                                    <table class="table table-borderless fixed-layout table-striped table-hover">
                                         <!-- Остальное содержимое таблицы без изменений -->
                                         <colgroup>
                                             <col style="">
