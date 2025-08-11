@@ -80,25 +80,72 @@
             font-weight: 500;
             color: #808080;
         }
+
+        /* Новые стили для аккордеона */
+        .client-arrow {
+            transition: transform 0.2s;
+            font-size: 0.8em;
+            margin-right: 8px;
+        }
+
+        .client-header:hover .client-arrow {
+            transform: translateX(3px);
+        }
+
+        .client-header {
+            cursor: pointer;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+        }
+
+        .client-header h5 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
     </style>
 
     @php
+        // Группируем заявки по клиентам
+        $clientsData = [];
         $totalRemaining = 0;
-        foreach ($userClaims as $key => $item) {
-            if ($item->client == null) {
+
+        foreach ($userClaims as $claim) {
+            if ($claim->client == null) {
                 continue;
             }
 
+            $clientId = $claim->client->id;
+
+            if (!isset($clientsData[$clientId])) {
+                $clientsData[$clientId] = [
+                    'client' => $claim->client,
+                    'claims' => [],
+                    'total' => 0,
+                ];
+            }
+
             $remaining = 0;
-            if ($item->historiesPayment->first()->status->name != 'Оплачен') {
-                if (getPaymentsClaim($item->id) != 0) {
-                    $remaining = $item->amount - getPaymentsClaim($item->id);
-                } else {
-                    $remaining = $item->amount;
-                }
+            if ($claim->historiesPayment->first()->status->name != 'Оплачен') {
+                $paid = getPaymentsClaim($claim->id); // Получаем сумму оплат
+                $remaining = max(0, $claim->amount - $paid);
+
+                $clientsData[$clientId]['claims'][] = [
+                    'data' => $claim,
+                    'paid' => $paid,
+                    'remaining' => $remaining,
+                ];
+
+                $clientsData[$clientId]['total'] += $remaining;
                 $totalRemaining += $remaining;
             }
         }
+
+        // Сортируем клиентов по сумме долга (от большего к меньшему)
+        uasort($clientsData, function ($a, $b) {
+            return $b['total'] <=> $a['total'];
+        });
     @endphp
 
     <div class="row">
@@ -191,109 +238,101 @@
                                 {{ money($totalRemaining) }}
                                 ₽
                             </p>
+                            <br>
 
-                            {{-- Таблица задолженностей --}}
-                            <table class="table table-lg table-hover table-striped" id="datatables">
-                                {{-- Заголовки таблицы --}}
-                                <thead>
-                                    <tr>
-                                        <th class="date-column">Дата</th>
-                                        <th class="date-column">№</th>
-                                        <th class="client-column">Клиент</th>
-                                        <th class="name-column">Наименование услуги</th>
-                                        <th class="sum-column">Сумма</th>
-                                        <th>Статус оплаты</th>
-                                        <th class="part-payment">Частичная оплата</th>
-                                        <th>Остаток</th>
-                                    </tr>
-                                </thead>
-
-                                {{-- Тело таблицы --}}
-                                <tbody>
-                                    @foreach ($userClaims as $key => $item)
-                                        @if ($item->client == null)
-                                            continue;
-                                        @endif
-                                        <tr>
-                                            {{-- Дата --}}
-                                            <td>{{ $item->created_at->format('d.m.y') }}</td>
-
-                                            {{-- Номер заявки --}}
-                                            <td>
-                                                <a
-                                                    href="{{ route('claims.show', ['claim' => $item->id]) }}">{{ $item->id }}</a>
-                                            </td>
-
-                                            {{-- Имя клиента --}}
-                                            <td>
-                                                <a href="{{ route('clients.show', ['client' => $item->client->id]) }}"
-                                                    target="_blank">{{ $item->client->name }}
-                                                    @if ($item->client->requisite->fullName)
-                                                        <span>
-                                                            <br>
-                                                            (<b>Юр.имя: </b>
-                                                            {{ $item->client->requisite->fullName }})
-                                                        </span>
-                                                    @endif
+                            {{-- Задолженности по клиентам --}}
+                            <h4 class="card-title mb-4 d-flex justify-content-between align-items-center">
+                                <span>Задолженности по клиентам</span>
+                                <span class="text-danger fw-light">{{ money($totalRemaining) }} ₽</span>
+                            </h4>
+                            <div class="debt-list">
+                                @foreach ($clientsData as $clientData)
+                                    <div class="client-section mb-4">
+                                        <div class="client-header d-flex justify-content-between align-items-center"
+                                            data-bs-toggle="collapse" href="#client-{{ $clientData['client']->id }}"
+                                            role="button" aria-expanded="false">
+                                            <h6 class="m-0 d-flex align-items-center">
+                                                <i class="fas fa-chevron-right client-arrow"></i>
+                                                <a href="{{ route('clients.show', $clientData['client']->id) }}"
+                                                    class="text-decoration-none">
+                                                    {{ $clientData['client']->name }}
                                                 </a>
-                                            </td>
-
-                                            {{-- Наименование услуги --}}
-                                            <td>{{ $item->service->name }}</td>
-
-                                            {{-- Сумма --}}
-                                            <td>{{ money($item->amount) }}</td>
-
-                                            {{-- Статус оплаты --}}
-                                            <td class="payment-status">
-                                                @if (count($item->historiesPayment) != 0)
-                                                    <span
-                                                        class="badge custom-bg-{{ $item->historiesPayment->first()->status->color }}">
-                                                        {{ $item->historiesPayment->first()->status->name }}
-                                                    </span>
-                                                @else
-                                                    <span class="text-danger">Статус неизвестен</span>
+                                                @if ($clientData['client']->requisite && $clientData['client']->requisite->fullName)
+                                                    <small class="text-muted ms-2">
+                                                        ({{ $clientData['client']->requisite->fullName }})
+                                                    </small>
                                                 @endif
-                                            </td>
+                                            </h6>
+                                            <div class="text-danger fw-medium">
+                                                {{ money($clientData['total']) }} ₽
+                                            </div>
+                                        </div>
 
-                                            {{-- Частичная оплата --}}
-                                            <td>
-                                                <div
-                                                    style="display: flex; align-items: center; justify-content: space-between; width: 70%;">
-                                                    @if (getPaymentsClaim($item->id) != 0)
-                                                        <span>{{ money(getPaymentsClaim($item->id)) }}</span>
-                                                    @else
-                                                        <span>&nbsp;</span>
-                                                    @endif
-                                                    &nbsp;
-                                                    <a href="{{ route('payment.list-paid', ['claim' => $item->id]) }}"
-                                                        class="btn icon btn-primary" style="padding: 2px 6px;">
-                                                        <i class="bi bi-eye-fill" style="font-size: 14px;"></i>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                            @php
-                                                $remaining = 0;
-                                                if ($item->historiesPayment->first()->status->name != 'Оплачен') {
-                                                    if (getPaymentsClaim($item->id) != 0) {
-                                                        $remaining = $item->amount - getPaymentsClaim($item->id);
-                                                    } else {
-                                                        $remaining = $item->amount;
-                                                    }
-                                                    $totalRemaining += $remaining;
-                                                }
-                                            @endphp
-
-                                            {{-- Остаток --}}
-                                            <td>
-                                                @if ($remaining > 0)
-                                                    {{ money($remaining) }}
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                        <div class="collapse" id="client-{{ $clientData['client']->id }}">
+                                            <table class="table table-lg table-hover table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="date-column">Дата</th>
+                                                        <th class="date-column">№</th>
+                                                        <th class="name-column">Наименование услуги</th>
+                                                        <th class="sum-column">Сумма</th>
+                                                        <th class="payment-status">Статус оплаты</th>
+                                                        <th class="part-payment">Частичная оплата</th>
+                                                        <th>Остаток</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($clientData['claims'] as $claimItem)
+                                                        @php $claim = $claimItem['data'] @endphp
+                                                        <tr>
+                                                            <td>{{ $claim->created_at->format('d.m.y') }}</td>
+                                                            <td>
+                                                                <a
+                                                                    href="{{ route('claims.show', $claim->id) }}">{{ $claim->id }}</a>
+                                                            </td>
+                                                            <td>{{ $claim->service->name }}</td>
+                                                            <td>{{ money($claim->amount) }}</td>
+                                                            <td>
+                                                                @if (count($claim->historiesPayment) != 0)
+                                                                    <span
+                                                                        class="badge custom-bg-{{ $claim->historiesPayment->first()->status->color }}">
+                                                                        {{ $claim->historiesPayment->first()->status->name }}
+                                                                    </span>
+                                                                @else
+                                                                    <span class="text-danger">Статус неизвестен</span>
+                                                                @endif
+                                                            </td>
+                                                            <td>
+                                                                <div
+                                                                    style="display: flex; align-items: center; justify-content: space-between; width: 70%;">
+                                                                    @if ($claimItem['paid'] != 0)
+                                                                        <span>{{ money($claimItem['paid']) }}</span>
+                                                                    @else
+                                                                        <span>&nbsp;</span>
+                                                                    @endif
+                                                                    &nbsp;
+                                                                    <a href="{{ route('payment.list-paid', ['claim' => $claim->id]) }}"
+                                                                        class="btn icon btn-primary"
+                                                                        style="padding: 2px 6px;">
+                                                                        <i class="bi bi-eye-fill"
+                                                                            style="font-size: 14px;"></i>
+                                                                    </a>
+                                                                </div>
+                                                            </td>
+                                                            <td
+                                                                class="{{ $claimItem['remaining'] > 0 ? 'text-danger' : '' }}">
+                                                                @if ($claimItem['remaining'] > 0)
+                                                                    {{ money($claimItem['remaining']) }}
+                                                                @endif
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -443,8 +482,19 @@
                         }
                     }
                 },
-                
+
                 plugins: [ChartDataLabels]
+            });
+
+            // Обработка стрелок для клиентов
+            document.querySelectorAll('.client-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    const arrow = this.querySelector('.client-arrow');
+                    if (arrow) {
+                        arrow.classList.toggle('fa-chevron-right');
+                        arrow.classList.toggle('fa-chevron-down');
+                    }
+                });
             });
         });
     </script>
