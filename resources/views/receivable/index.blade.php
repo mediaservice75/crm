@@ -84,7 +84,7 @@
             }
 
             $firstSurnames = ['Махнаткин', 'Очирова'];
-            $lastSurnames = ['Шель', 'Дорожков', 'Бальжинимаева'];
+            $lastSurnames = ['Шель', 'Дорожков', 'Бальжинимаева', 'Кузнецова'];
 
             usort($managersData, function ($a, $b) use ($firstSurnames, $lastSurnames) {
                 $aInFirst = in_array($a['manager']->surname, $firstSurnames);
