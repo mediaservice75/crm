@@ -13,62 +13,81 @@
 
 @section('content')
     <style>
+        .table-fixed {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        .th-date {
+            width: 8%;
+        }
+
+        .th-claim-number {
+            width: 8%;
+        }
+
+        .th-service {
+            width: 20%;
+        }
+
+        .th-invoice {
+            width: 15%;
+        }
+
+        .th-amount {
+            width: 12%;
+            text-align: right;
+            padding-right: 1rem !important;
+        }
+
+        .th-paid {
+            width: 12%;
+            text-align: right;
+            padding-right: 1rem !important;
+        }
+
+        .th-status {
+            width: 15%;
+        }
+
+        .th-remaining {
+            width: 13%;
+            text-align: right;
+            padding-right: 1rem !important;
+        }
+
+        .table th,
+        .table td {
+            vertical-align: middle !important;
+            padding: 0.5rem !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .th-service {
+            white-space: normal !important;
+            word-wrap: break-word;
+        }
+
         table th,
         table td {
             padding: 0.3rem !important;
+            vertical-align: middle !important;
         }
 
-        .date-column {
-            width: 100px;
-            max-width: 100px;
-            overflow: hidden;
+        .text-end {
+            text-align: right !important;
+            padding-right: 1rem !important;
+        }
+
+
+        .status-column {
             white-space: nowrap;
-            text-overflow: ellipsis;
         }
 
-        .client-column {
-            width: 550px;
-            max-width: 550px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        .name-column {
-            width: 250px;
-            max-width: 250px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        .sum-column {
-            width: 150px;
-            max-width: 150px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        .payment-status {
-            width: 175px;
-            max-width: 175px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        .part-payment {
-            width: 200px;
-            max-width: 200px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        table td:last-child {
-            width: 150px;
-            max-width: 150px;
+        .remaining-column {
+            text-align: right !important;
+            padding-right: 1rem !important;
         }
 
         .percent-text {
@@ -81,7 +100,6 @@
             color: #808080;
         }
 
-        /* Новые стили для аккордеона */
         .client-arrow {
             transition: transform 0.2s;
             font-size: 0.8em;
@@ -272,13 +290,14 @@
                                             <table class="table table-lg table-hover table-striped">
                                                 <thead>
                                                     <tr>
-                                                        <th class="date-column">Дата</th>
-                                                        <th class="date-column">№</th>
-                                                        <th class="name-column">Наименование услуги</th>
-                                                        <th class="sum-column">Сумма</th>
-                                                        <th class="payment-status">Статус оплаты</th>
-                                                        <th class="part-payment">Частичная оплата</th>
-                                                        <th>Остаток</th>
+                                                        <th class="fw-normal small th-date">Дата заявки</th>
+                                                        <th class="fw-normal small th-claim-number">Номер заявки</th>
+                                                        <th class="fw-normal small th-service">Услуга</th>
+                                                        <th class="fw-normal small th-invoice">Номер счёта</th>
+                                                        <th class="fw-normal small th-amount">Сумма счёта</th>
+                                                        <th class="fw-normal small th-paid">Оплачено</th>
+                                                        <th class="fw-normal small th-status">Статус</th>
+                                                        <th class="fw-normal small th-remaining">Остаток</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -291,8 +310,22 @@
                                                                     href="{{ route('claims.show', $claim->id) }}">{{ $claim->id }}</a>
                                                             </td>
                                                             <td>{{ $claim->service->name }}</td>
-                                                            <td>{{ money($claim->amount) }}</td>
                                                             <td>
+                                                                <a href="{{ url('/payments/paid/' . $claim->id) }}">
+                                                                    {{ $claim->number_invoice }}
+                                                                </a>
+                                                            </td>
+                                                            <td class="text-end">{{ money($claim->amount) }}</td>
+                                                            <td class="text-end">
+                                                                <div class="paid-column">
+                                                                    @if ($claimItem['paid'] != 0)
+                                                                        <span>{{ money($claimItem['paid']) }}</span>
+                                                                    @else
+                                                                        <span>&nbsp;</span>
+                                                                    @endif
+                                                                </div>
+                                                            </td>
+                                                            <td class="status-column">
                                                                 @if (count($claim->historiesPayment) != 0)
                                                                     <span
                                                                         class="badge custom-bg-{{ $claim->historiesPayment->first()->status->color }}">
@@ -302,25 +335,8 @@
                                                                     <span class="text-danger">Статус неизвестен</span>
                                                                 @endif
                                                             </td>
-                                                            <td>
-                                                                <div
-                                                                    style="display: flex; align-items: center; justify-content: space-between; width: 70%;">
-                                                                    @if ($claimItem['paid'] != 0)
-                                                                        <span>{{ money($claimItem['paid']) }}</span>
-                                                                    @else
-                                                                        <span>&nbsp;</span>
-                                                                    @endif
-                                                                    &nbsp;
-                                                                    <a href="{{ route('payment.list-paid', ['claim' => $claim->id]) }}"
-                                                                        class="btn icon btn-primary"
-                                                                        style="padding: 2px 6px;">
-                                                                        <i class="bi bi-eye-fill"
-                                                                            style="font-size: 14px;"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </td>
                                                             <td
-                                                                class="{{ $claimItem['remaining'] > 0 ? 'text-danger' : '' }}">
+                                                                class="remaining-column {{ $claimItem['remaining'] > 0 ? 'text-danger' : '' }}">
                                                                 @if ($claimItem['remaining'] > 0)
                                                                     {{ money($claimItem['remaining']) }}
                                                                 @endif
