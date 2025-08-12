@@ -224,13 +224,13 @@
                                 </div>
                             </div>
 
-                            <div class="row mt-2">
+                            {{-- <div class="row mt-2">
                                 <div class="col-12 text-end">
                                     <small class="text-muted">
                                         Актуально на {{ now()->format('d.m.Y') }}
                                     </small>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                         <h4 class="card-title mb-4 ">Статистика продаж</h4>
                         @if ($userClaims->isEmpty())
