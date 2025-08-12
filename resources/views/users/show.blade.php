@@ -195,6 +195,43 @@
             <div class="card">
                 <div class="card-content">
                     <div class="card-body">
+                        {{-- Блок общей статистики --}}
+                        <div class="global-stats mb-4 p-3 bg-light rounded-4">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="stat-card text-center p-3 border-end">
+                                        <div class="stat-value display-6 fw-bold text-danger">
+                                            {{ money($totalRemaining) }} ₽
+                                        </div>
+                                        <div class="stat-label small text-muted">Общая задолженность</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-card text-center p-3 border-end">
+                                        <div class="stat-value fs-4 fw-bold">
+                                            {{ count($clientsData) }}
+                                        </div>
+                                        <div class="stat-label small text-muted">Компаний с долгами</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-card text-center p-3">
+                                        <div class="stat-value fs-4 fw-bold">
+                                            {{ count($userClaims) }}
+                                        </div>
+                                        <div class="stat-label small text-muted">Неоплаченных заявок</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col-12 text-end">
+                                    <small class="text-muted">
+                                        Актуально на {{ now()->format('d.m.Y') }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
                         <h4 class="card-title mb-4 ">Статистика продаж</h4>
                         @if ($userClaims->isEmpty())
                             <h5 class="text-gray-500">К сожалению, заявок не создано 😢</h5>
