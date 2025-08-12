@@ -82,6 +82,35 @@
                     }
                 }
             }
+
+            $firstSurnames = ['Махнаткин', 'Очирова'];
+            $lastSurnames = ['Шель', 'Дорожков', 'Бальжинимаева'];
+
+            usort($managersData, function ($a, $b) use ($firstSurnames, $lastSurnames) {
+                $aInFirst = in_array($a['manager']->surname, $firstSurnames);
+                $bInFirst = in_array($b['manager']->surname, $firstSurnames);
+                $aInLast = in_array($a['manager']->surname, $lastSurnames);
+                $bInLast = in_array($b['manager']->surname, $lastSurnames);
+
+                if ($aInFirst && !$bInFirst) {
+                    return -1;
+                }
+                if (!$aInFirst && $bInFirst) {
+                    return 1;
+                }
+
+                if ($aInLast && !$bInLast) {
+                    return 1;
+                }
+                if (!$aInLast && $bInLast) {
+                    return -1;
+                }
+
+                return strcmp(
+                    $a['manager']->surname . $a['manager']->name,
+                    $b['manager']->surname . $b['manager']->name,
+                );
+            });
         @endphp
 
         @foreach ($managersData as $managerData)
