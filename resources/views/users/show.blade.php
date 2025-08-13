@@ -13,7 +13,7 @@
 
 @section('content')
     <style>
-        .table-fixed {
+        /* .table-fixed {
             table-layout: fixed;
             width: 100%;
         }
@@ -27,7 +27,7 @@
         }
 
         .th-service {
-            width: 20%;
+            width: 15%;
         }
 
         .th-invoice {
@@ -35,25 +35,34 @@
         }
 
         .th-amount {
-            width: 12%;
-            text-align: right;
-            padding-right: 1rem !important;
+            width: 10%;
         }
 
         .th-paid {
-            width: 12%;
-            text-align: right;
-            padding-right: 1rem !important;
+            width: 15%;
         }
 
         .th-status {
             width: 15%;
         }
 
+        .th-service {
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        .text-end,
+        .th-amount,
+        .th-paid,
         .th-remaining {
-            width: 13%;
             text-align: right;
-            padding-right: 1rem !important;
+            padding-right: 1rem;
+        }
+
+        .status-column {
+            white-space: nowrap;
+            padding-left: 1rem;
+            min-width: 120px;
         }
 
         .table th,
@@ -64,31 +73,10 @@
             text-overflow: ellipsis;
         }
 
-        .th-service {
-            white-space: normal !important;
-            word-wrap: break-word;
-        }
-
-        table th,
-        table td {
-            padding: 0.3rem !important;
-            vertical-align: middle !important;
-        }
-
-        .text-end {
-            text-align: right !important;
-            padding-right: 1rem !important;
-        }
-
-
-        .status-column {
-            white-space: nowrap;
-        }
-
         .remaining-column {
             text-align: right !important;
             padding-right: 1rem !important;
-        }
+        } */
 
         .percent-text {
             font-weight: 500;
@@ -200,68 +188,53 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="stat-card text-center p-3 border-end">
-                                        <div class="stat-value display-6 fw-bold text-danger">
-                                            {{ money($totalRemaining) }} ₽
+                                        <div class="stat-value display-6 fw-bold">
+                                            {{ money($sumPlan) }} ₽
                                         </div>
-                                        <div class="stat-label small text-muted">Общая задолженность</div>
+                                        <div class="stat-label small text-muted">План на месяц</div>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="stat-card text-center p-3 border-end">
                                         <div class="stat-value fs-4 fw-bold">
-                                            {{ count($clientsData) }}
+                                            @if ($sumPaid->first()->total_amount == null)
+                                                0 ₽
+                                            @else
+                                                {{ money($sumPaid->first()->total_amount) }} ₽
+                                            @endif
+                                            <span class="percent-text">(@if ($sumPlan == 0)
+                                                    0%@else{{ round(($sumPaid->first()->total_amount / $sumPlan) * 100, 2) }}%
+                                                @endif)</span>
                                         </div>
-                                        <div class="stat-label small text-muted">Компаний с долгами</div>
+                                        <div class="stat-label small text-muted">Поступления</div>
                                     </div>
                                 </div>
+                                @php
+                                    $paidAmount = $sumPaid->first()->total_amount ?? 0;
+                                    $difference = $paidAmount - $sumPlan;
+                                    $colorClass = $difference >= 0 ? 'text-success' : 'text-warning';
+                                @endphp
                                 <div class="col-md-4">
                                     <div class="stat-card text-center p-3">
                                         <div class="stat-value fs-4 fw-bold">
-                                            {{ count($userClaims) }}
+                                            <span class="{{ $colorClass }}">
+                                                {{ money($difference) }} ₽
+                                            </span>
                                         </div>
-                                        <div class="stat-label small text-muted">Неоплаченных заявок</div>
+                                        <div class="stat-label small text-muted">Разница</div>
                                     </div>
                                 </div>
                             </div>
-
-                            {{-- <div class="row mt-2">
-                                <div class="col-12 text-end">
-                                    <small class="text-muted">
-                                        Актуально на {{ now()->format('d.m.Y') }}
-                                    </small>
-                                </div>
-                            </div> --}}
                         </div>
                         <h4 class="card-title mb-4 ">Статистика продаж</h4>
                         @if ($userClaims->isEmpty())
                             <h5 class="text-gray-500">К сожалению, заявок не создано 😢</h5>
                         @else
-                            <p class="fw-bold mb-1">
-                                <b class="text-primary">План на месяц:</b>
-                                {{ money($sumPlan) }} ₽
-                            </p>
-                            <p class="fw-bold mb-1"><b class="text-primary">Поступления:</b>
-                                @if ($sumPaid->first()->total_amount == null)
-                                    0 ₽
-                                @else
-                                    {{ money($sumPaid->first()->total_amount) }} ₽
-                                @endif
-                                <span class="percent-text">(@if ($sumPlan == 0)
-                                        0%@else{{ round(($sumPaid->first()->total_amount / $sumPlan) * 100, 2) }}%
-                                    @endif)</span>
-                            </p>
                             @php
                                 $paidAmount = $sumPaid->first()->total_amount ?? 0;
                                 $difference = $paidAmount - $sumPlan;
                                 $colorClass = $difference >= 0 ? 'text-success' : 'text-warning';
                             @endphp
-                            <p class="fw-bold mb-1">
-                                <b class="text-primary">Разница:</b>
-                                <span class="{{ $colorClass }}">
-                                    {{ money($difference) }} ₽
-                                </span>
-                            </p>
-                            <hr>
                             <p class="mb-1 fw-bold">
                                 <b class="text-primary">План на {{ \Carbon\Carbon::now()->format('d.m.Y') }}:
                                 </b>
@@ -302,6 +275,9 @@
                             </h4>
                             <div class="debt-list">
                                 @foreach ($clientsData as $clientData)
+                                    @if (money($clientData['total']) == 0)
+                                        @continue
+                                    @endif
                                     <div class="client-section mb-4">
                                         <div class="client-header d-flex justify-content-between align-items-center"
                                             data-bs-toggle="collapse" href="#client-{{ $clientData['client']->id }}"
@@ -324,17 +300,17 @@
                                         </div>
 
                                         <div class="collapse" id="client-{{ $clientData['client']->id }}">
-                                            <table class="table table-lg table-hover table-striped">
+                                            <table class="table table-borderless fixed-layout table-striped table-hover">
                                                 <thead>
                                                     <tr>
                                                         <th class="fw-normal small th-date">Дата заявки</th>
                                                         <th class="fw-normal small th-claim-number">Номер заявки</th>
                                                         <th class="fw-normal small th-service">Услуга</th>
                                                         <th class="fw-normal small th-invoice">Номер счёта</th>
-                                                        <th class="fw-normal small th-amount">Сумма счёта</th>
-                                                        <th class="fw-normal small th-paid">Оплачено</th>
+                                                        <th class="fw-normal small th-amount text-end">Сумма счёта</th>
+                                                        <th class="fw-normal small th-paid text-end">Оплачено</th>
                                                         <th class="fw-normal small th-status">Статус</th>
-                                                        <th class="fw-normal small th-remaining">Остаток</th>
+                                                        <th class="fw-normal small th-remaining text-end">Остаток</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -373,7 +349,7 @@
                                                                 @endif
                                                             </td>
                                                             <td
-                                                                class="remaining-column {{ $claimItem['remaining'] > 0 ? 'text-danger' : '' }}">
+                                                                class="text-end {{ $claimItem['remaining'] > 0 ? 'text-danger' : '' }}">
                                                                 @if ($claimItem['remaining'] > 0)
                                                                     {{ money($claimItem['remaining']) }}
                                                                 @endif
