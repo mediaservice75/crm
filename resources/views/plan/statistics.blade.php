@@ -5,7 +5,7 @@
             <h3>Управление планом продаж</h3>
         </div>
         <div class="col-12 col-md-6 text-end">
-            <a href="{{ url()->previous() }}" class="btn btn-primary">Назад</a>
+            <a href="{{ route('plan.index') }}" class="btn btn-primary">Назад</a>
         </div>
     </div>
 @endsection
@@ -50,34 +50,58 @@
             <div class="card">
                 <div class="card-content">
                     <div class="card-body">
+                        {{-- Блок общей статистики --}}
+                        <div class="global-stats mb-4 p-3 bg-light rounded-4">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="stat-card text-center p-3 border-end">
+                                        <div class="stat-value display-6 fw-bold">
+                                            {{ money($sumPlan) }} ₽
+                                        </div>
+                                        <div class="stat-label small text-muted">Общий план всех сотрудников</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-card text-center p-3 border-end">
+                                        <div class="stat-value fs-4 fw-bold">
+                                            @if ($sumPaid->first()->total_amount == null)
+                                                0 ₽
+                                            @else
+                                                {{ money($sumPaid->first()->total_amount) }} ₽
+                                            @endif
+                                            <span class="percent-text">(@if ($sumPlan == 0)
+                                                    0%@else{{ round(($sumPaid->first()->total_amount / $sumPlan) * 100, 2) }}%
+                                                @endif)</span>
+                                        </div>
+                                        <div class="stat-label small text-muted">Поступления</div>
+                                    </div>
+                                </div>
+                                @php
+                                    $paidAmount = $sumPaid->first()->total_amount ?? 0;
+                                    $difference = $paidAmount - $sumPlan;
+                                    $colorClass = $difference >= 0 ? 'text-success' : 'text-warning';
+                                @endphp
+                                <div class="col-md-4">
+                                    <div class="stat-card text-center p-3">
+                                        <div class="stat-value fs-4 fw-bold">
+                                            <span class="{{ $colorClass }}">
+                                                {{ money($difference) }} ₽
+                                            </span>
+                                        </div>
+                                        <div class="stat-label small text-muted">Разница</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <h4 class="card-title mb-4 ">Статистика продаж</h4>
                         @if ($salesPlan->isEmpty())
                             <h5 class="fw-bold">К сожалению, план не был установлен 😢</h5>
                         @else
-                            <p class="fw-bold mb-1"><b class="text-primary">Общий план всех сотрудников:</b>
-                                {{ money($sumPlan) }} ₽</p>
-                            <p class="fw-bold mb-1"><b class="text-primary">Поступления:</b>
-                                @if ($sumPaid->first()->total_amount == null)
-                                    0 ₽
-                                @else
-                                    {{ money($sumPaid->first()->total_amount) }} ₽
-                                    <span class="percent-text">
-                                        ({{ round(($sumPaid->first()->total_amount / $sumPlan) * 100, 2) }}%)
-                                    </span>
-                                @endif
-                            </p>
                             @php
                                 $paidAmount = $sumPaid->first()->total_amount ?? 0;
                                 $difference = $paidAmount - $sumPlan;
                                 $colorClass = $difference >= 0 ? 'text-success' : 'text-warning';
                             @endphp
-                            <p class="fw-bold mb-1">
-                                <b class="text-primary">Разница:</b>
-                                <span class="{{ $colorClass }}">
-                                    {{ money($difference) }} ₽
-                                </span>
-                            </p>
-                            <hr>
                             <p class="fw-bold mb-1">
                                 <b class="text-primary">Количество рабочих дней:</b>
                                 @if (count(getWorkingDays($planMonth)) == 0)
