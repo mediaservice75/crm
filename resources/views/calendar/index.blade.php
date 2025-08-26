@@ -515,6 +515,55 @@
         </div>
     </div>
 
+    <div class="modal fade" id="editGoal" tabindex="-1" aria-labelledby="editGoalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h1 class="modal-title fs-5" id="editGoalLabel">Редактирование задачи</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editGoalForm">
+                        <input type="hidden" id="edit_goal_id" name="id">
+
+                        <div class="mb-3">
+                            <label for="edit_goal_text" class="form-label">Описание задачи</label>
+                            <textarea class="form-control" id="edit_goal_text" name="text" rows="3" required></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="edit_goal_start" class="form-label">Дата начала</label>
+                                    <input type="datetime-local" class="form-control" id="edit_goal_start"
+                                        name="start_date" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="edit_goal_end" class="form-label">Дата окончания</label>
+                                    <input type="datetime-local" class="form-control" id="edit_goal_end" name="end_date"
+                                        required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="edit_goal_user" class="form-label">Ответственный</label>
+                            <input type="text" class="form-control" id="edit_goal_user" readonly>
+                            <input type="hidden" id="edit_goal_user_id" name="user_id">
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-12">
             <div class="card">
