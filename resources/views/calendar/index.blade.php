@@ -507,7 +507,9 @@
                     <div class="mt-4">
                         <a class="btn btn-success action-goal" attr-id="" id="completeGoal">Отметить как
                             выполнено</a>
-                        <a class="btn btn-primary action-goal" attr-id="editGoal">Редактировать</a>
+
+                        <a class="btn btn-primary action-goal" attr-id="" id="editGoalBtn"
+                            style="display: none">Редактировать</a>
                         <a class="btn btn-danger action-goal" attr-id="" id="deleteGoal">Удалить</a>
                     </div>
                 </div>
@@ -523,15 +525,22 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <p class="mb-1"><b class="text-primary">№ задачи: </b> <span id="edit_goal_id_display"></span></p>
+                    <p class="mb-1"><b class="text-primary">Создал задачу: </b> <span id="exposedGoalDisplay"></span>
+                    </p>
+                    <p class="mb-1"><b class="text-primary">Ответственный за задачу: </b> <span
+                            id="userGoalDisplay"></span>
+                    </p>
                     <form id="editGoalForm">
                         <input type="hidden" id="edit_goal_id" name="id">
 
                         <div class="mb-3">
-                            <label for="edit_goal_text" class="form-label">Описание задачи</label>
+                            <label for="edit_goal_text" class="form-label"><span class="text-primary"><b>Описание
+                                        задачи:</b></span></label>
                             <textarea class="form-control" id="edit_goal_text" name="text" rows="3" required></textarea>
                         </div>
 
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="edit_goal_start" class="form-label">Дата начала</label>
@@ -546,13 +555,7 @@
                                         required>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="edit_goal_user" class="form-label">Ответственный</label>
-                            <input type="text" class="form-control" id="edit_goal_user" readonly>
-                            <input type="hidden" id="edit_goal_user_id" name="user_id">
-                        </div>
+                        </div> --}}
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
@@ -616,4 +619,95 @@
             padding-right: 28px !important;
         }
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toISOString().slice(0, 16);
+        }
+
+        // открытие модального окна редактирования
+        $('#editGoalBtn').click(function() {
+            var goalId = $('#idGoal').text();
+            var goalText = $('#textGoal').text();
+            var goalExposed = $('#exposedGoal').text();
+            var goalUser = $('#userGoal').text();
+
+            $('#edit_goal_id').val(goalId);
+            $('#edit_goal_id_display').text(goalId);
+            $('#edit_goal_text').val(goalText);
+            $('#exposedGoalDisplay').text(goalExposed);
+            $('#userGoalDisplay').text(goalUser);
+
+            $('#viewGoal').modal('hide');
+            $('#editGoal').modal('show');
+        })
+
+        // проверка - показывать кнопку редактирования или нет
+        var CURRENT_USER_FULLNAME = "{{ auth()->user()->getFullName() }}";
+
+        function checkEditPermissions() {
+            var exposedGoal = $('#exposedGoal').text().trim();
+
+            console.log(CURRENT_USER_FULLNAME === exposedGoal);
+
+            if (exposedGoal === CURRENT_USER_FULLNAME) {
+                $('#editGoalBtn').show();
+            } else {
+                $('#editGoalBtn').hide();
+            }
+        }
+
+        $(document).ready(function() {
+            $('#viewGoal').on('shown.bs.modal', function() {
+                setTimeout(checkEditPermissions, 100);
+            });
+        });
+
+        $(document).on('DOMSubtreeModified', '#exposedGoal', function() {
+            checkEditPermissions();
+        });
+
+        // отправляем данные на роут для обновления задачи
+        $(document).ready(function() {
+            $('#editGoalForm').on('submit', function(e) {
+                console.log('зашли!!');
+                e.preventDefault();
+
+                var formData = {
+                    id: $('#edit_goal_id').val(),
+                    text: $('#edit_goal_text').val(),
+                };
+
+                var goalId = $('#edit_goal_id').val();
+
+                $.ajax({
+                    url: "{{ route('calendar.updateGoal', '') }}/" + goalId,
+                    type: 'PATCH',
+                    data: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    },
+                    success: function(response) {
+                        $('#editGoal').modal('hide');
+                        $('.overlay-spinner').hide();
+                        location.reload();
+                        // showNotification('Задача успешно обновлена!', 'success');
+                    },
+                    error: function(xhr) {
+                        var errorMessage = xhr.responseJSON?.error || 'Произошла ошибка';
+                        showNotification(errorMessage, 'error');
+                    }
+                });
+            });
+        });
+
+        function showNotification(message, type) {
+            alert(message);
+        }
+    </script>
 @endsection

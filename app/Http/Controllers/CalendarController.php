@@ -24,78 +24,75 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class CalendarController extends Controller
-{
-    public function index()
-    {
+class CalendarController extends Controller {
+    public function index() {
 
 
-//        dd(DB::table('users')->where('id', '=', '16')->update([
-//            'password' => Hash::make('1111'),
-//        ]));
+        //        dd(DB::table('users')->where('id', '=', '16')->update([
+        //            'password' => Hash::make('1111'),
+        //        ]));
 
 
 
-//        dd(Hash::make('1111'));
-//        $users = DB::table('users')
-//            ->join('roles', 'users.role_id', '=', 'roles.id')
-//            ->join('groups', 'roles.group_id', '=', 'groups.id')
-//            ->select('users.id')
-//            ->where('groups.id','=', 5)
-//            ->whereNull('users.deleted_at')
-//            ->get();
-//
-//        $users = $users->mapWithKeys(function ($item, $i) {
-//            return [$i => $item->id];
-//        });
-//
-//        dump($users);
-//
-//        $users = User::whereIn('id', $users)->where('userLeader', 1)->get();
-//        dd($users);
-//
-//        if ($users->count()) {
-//            event(new ClaimCreated('Привет, это массовое уведомление!', $users->first()->id));
-//        } else {
-//            $users = User::whereIn('id', $users)->get();
-//            foreach ($users as $user) {
-//                event(new ClaimCreated('Привет, это массовое уведомление!', $user->id));
-//            }
-//        }
+        //        dd(Hash::make('1111'));
+        //        $users = DB::table('users')
+        //            ->join('roles', 'users.role_id', '=', 'roles.id')
+        //            ->join('groups', 'roles.group_id', '=', 'groups.id')
+        //            ->select('users.id')
+        //            ->where('groups.id','=', 5)
+        //            ->whereNull('users.deleted_at')
+        //            ->get();
+        //
+        //        $users = $users->mapWithKeys(function ($item, $i) {
+        //            return [$i => $item->id];
+        //        });
+        //
+        //        dump($users);
+        //
+        //        $users = User::whereIn('id', $users)->where('userLeader', 1)->get();
+        //        dd($users);
+        //
+        //        if ($users->count()) {
+        //            event(new ClaimCreated('Привет, это массовое уведомление!', $users->first()->id));
+        //        } else {
+        //            $users = User::whereIn('id', $users)->get();
+        //            foreach ($users as $user) {
+        //                event(new ClaimCreated('Привет, это массовое уведомление!', $user->id));
+        //            }
+        //        }
 
 
 
 
-//        return response()->json(['status' => 'Уведомления отправлены!']);
+        //        return response()->json(['status' => 'Уведомления отправлены!']);
 
         $groups = Group::all();
         $users = Group::with('roles.users')
-//            ->where('name', 'Отдел продаж')
+            //            ->where('name', 'Отдел продаж')
             ->get();
         return view('calendar.index', compact('groups', 'users'));
     }
 
-    public function getGoals(Request $request)
-    {
+    public function getGoals(Request $request) {
 
-//    dd($request);
+        //    dd($request);
         if ($request->view == null || $request->view == 1) {
             $goals = Goal::where('user_id', $request->idU)
-//                ->orWhereNotNull('rrule')
+                //                ->orWhereNotNull('rrule')
                 ->get();
         } else {
             $goals = Goal::where('user_id', $request->idU)
                 ->where('status', 0)
-//                ->orWhereNotNull('rrule')
+                //                ->orWhereNotNull('rrule')
                 ->get();
         }
 
-//        dd($goals);
+        //        dd($goals);
 
-//        $goals = Goal::where('user_id', Auth::user()->id)
-////            ->where('status', 0)
-//            ->orWhereNotNull('rrule')
-//            ->get();
+        //        $goals = Goal::where('user_id', Auth::user()->id)
+        ////            ->where('status', 0)
+        //            ->orWhereNotNull('rrule')
+        //            ->get();
         $events = array();
 
         foreach ($goals as $goal) {
@@ -103,7 +100,7 @@ class CalendarController extends Controller
             $duration = '';
             if ($goal->exposed != Auth::user()->id) $editable = false;
             if ($goal->rrule != '' && $goal->allDay == 0) {
-//                diffInRealMilliseconds
+                //                diffInRealMilliseconds
                 $sd = Carbon::createMidnightDate($goal->start_date);
                 $ed = Carbon::createMidnightDate($goal->deadline);
                 $duration = $ed->diffInRealMilliseconds($sd);
@@ -141,8 +138,7 @@ class CalendarController extends Controller
         return json_encode($events);
     }
 
-    public function getGoalById($id)
-    {
+    public function getGoalById($id) {
         $goal = Goal::firstWhere('id', $id);
         $editable = true;
 
@@ -150,7 +146,7 @@ class CalendarController extends Controller
         if ($goal->client_id == null) {
             $client = "Клиент не найден";
         } else {
-            $client = "<a href='/clients/".$goal->client->id."' target='_blank'>".$goal->client->name."</a>";
+            $client = "<a href='/clients/" . $goal->client->id . "' target='_blank'>" . $goal->client->name . "</a>";
         }
 
         $countFiles = $goal->files->count();
@@ -176,8 +172,7 @@ class CalendarController extends Controller
         return response()->json($event);
     }
 
-    public function updateGoal($id, Request $request)
-    {
+    public function updateGoal($id, Request $request) {
 
         $goal = Goal::find($id);
         if (!$goal) {
@@ -187,15 +182,15 @@ class CalendarController extends Controller
         }
 
         $goal->update([
-            'start_date' => $request->start_date,
-            'deadline' => $request->deadline,
+            'text' => $request->text,
+            // 'start_date' => $request->start_date,
+            // 'deadline' => $request->deadline,
         ]);
 
         return response()->json('Задача обновлена');
     }
 
-    public function deleteGoal($id)
-    {
+    public function deleteGoal($id) {
         $goal = Goal::find($id);
         if (!$goal) {
             return response()->json([
@@ -229,17 +224,17 @@ class CalendarController extends Controller
 
     public function createReport(Request $request) {
 
-        $start = $request->day.' 00:00:01';
-        $end = $request->day.' 23:59:59';
+        $start = $request->day . ' 00:00:01';
+        $end = $request->day . ' 23:59:59';
 
         $user_id = $request->user_id;
         $user = UserM::firstWhere('id', $user_id);
 
         $historiesC = HistoryClient::where('user_id', $user_id)
-                    ->where('created_at', '>=', $start)
-                    ->where('created_at', '<=', $end)
-                    ->orderBy('status_id', 'asc')
-                    ->get();
+            ->where('created_at', '>=', $start)
+            ->where('created_at', '<=', $end)
+            ->orderBy('status_id', 'asc')
+            ->get();
 
         $goals = Goal::where('exposed', $user_id)
             ->where('updated_at', '>=', $start)
@@ -253,7 +248,7 @@ class CalendarController extends Controller
             <div class="card">
                 <div class="card-content">
                     <div class="card-body">
-                        <h4 class="card-title">Отчет сотрудника - ' . $user->getFullName() . ' (за '. Carbon::create($request->day)->format('d.m.Y') .')</h4>
+                        <h4 class="card-title">Отчет сотрудника - ' . $user->getFullName() . ' (за ' . Carbon::create($request->day)->format('d.m.Y') . ')</h4>
 
                         <h6 class="mt-4">Взаимодействия с клиентами</h6>
                         <table class="table mt-2 table-hover datatables">';
@@ -283,7 +278,6 @@ class CalendarController extends Controller
 
                 $i++;
             }
-
         }
         $res .= '</tbody></table>';
         $res .= '<h6 class="mt-4">Задачи сотрудника</h6>
@@ -309,7 +303,7 @@ class CalendarController extends Controller
                         <td>' . $i . '</td>';
 
                 $res .= '<td>
-                        '.Carbon::create($goal->deadline)->format('d.m.Y H:i').'
+                        ' . Carbon::create($goal->deadline)->format('d.m.Y H:i') . '
                         </td>';
 
                 if ($goal->client_id != null) {
@@ -332,10 +326,10 @@ class CalendarController extends Controller
                 $i++;
             }
 
-//            $res .= '<tr><td colspan="2"><b>Итого выполненно услуг на сумму:</b></td><td class="text-primary"><b>' . money($amount) . ' руб.</b></td></tr></tbody>';
+            //            $res .= '<tr><td colspan="2"><b>Итого выполненно услуг на сумму:</b></td><td class="text-primary"><b>' . money($amount) . ' руб.</b></td></tr></tbody>';
         }
 
-        $res .='  </table></div>
+        $res .= '  </table></div>
                 </div>
             </div>
         </div>';
