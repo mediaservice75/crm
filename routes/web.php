@@ -149,6 +149,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('calendar/getGoals', [CalendarController::class, 'getGoals'])->name('calendar.getGoals');
     Route::get('calendar/getGoal/{goal}', [CalendarController::class, 'getGoalById'])->name('calendar.getGoalById');
     Route::patch('calendar/goal-update/{goal}', [CalendarController::class, 'updateGoal'])->name('calendar.updateGoal');
+    Route::patch('calendar/goal-text-update/{goal}', [CalendarController::class, 'updateGoalText'])->name('calendar.updateGoalText');
     Route::delete('calendar/goal-delete/{goal}', [CalendarController::class, 'deleteGoal'])->name('calendar.deleteGoal');
 
     Route::get('events', [SpecialEventController::class, 'index'])->name('special-event.index');

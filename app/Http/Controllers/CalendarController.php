@@ -172,7 +172,25 @@ class CalendarController extends Controller {
         return response()->json($event);
     }
 
-    public function updateGoal($id, Request $request) {
+    public function updateGoal($id, Request $request)
+    {
+
+        $goal = Goal::find($id);
+        if (!$goal) {
+            return response()->json([
+                'error' => 'Задача не найдена'
+            ], 404);
+        }
+
+        $goal->update([
+            'start_date' => $request->start_date,
+            'deadline' => $request->deadline,
+        ]);
+
+        return response()->json('Задача обновлена');
+    }
+
+    public function updateGoalText($id, Request $request) {
 
         $goal = Goal::find($id);
         if (!$goal) {

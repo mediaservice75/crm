@@ -672,10 +672,9 @@
             checkEditPermissions();
         });
 
-        // отправляем данные на роут для обновления задачи
+        // Отправка данных на роут для обновления задачи
         $(document).ready(function() {
             $('#editGoalForm').on('submit', function(e) {
-                console.log('зашли!!');
                 e.preventDefault();
 
                 var formData = {
@@ -686,7 +685,7 @@
                 var goalId = $('#edit_goal_id').val();
 
                 $.ajax({
-                    url: "{{ route('calendar.updateGoal', '') }}/" + goalId,
+                    url: "{{ route('calendar.updateGoalText', '') }}/" + goalId,
                     type: 'PATCH',
                     data: formData,
                     headers: {
@@ -696,7 +695,6 @@
                         $('#editGoal').modal('hide');
                         $('.overlay-spinner').hide();
                         location.reload();
-                        // showNotification('Задача успешно обновлена!', 'success');
                     },
                     error: function(xhr) {
                         var errorMessage = xhr.responseJSON?.error || 'Произошла ошибка';
