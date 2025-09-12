@@ -212,7 +212,7 @@
                                                 $catImage = 'cool.png';
                                             }
 
-                                            $catImageUrl = asset("storage/images/cat/{$catImage}");
+                                            $catImageUrl = asset("images/cat/{$catImage}");
                                         @endphp
 
                                         <div class="d-flex align-items-center justify-content-between">
