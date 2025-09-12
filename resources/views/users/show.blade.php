@@ -194,7 +194,7 @@
                                         <div class="stat-value display-6 fw-bold">
                                             {{ money($sumPlan) }} ₽
                                         </div>
-                                        <div class="stat-label small text-muted">Общий план всех сотрудников</div>
+                                        <div class="stat-label small text-muted">План на месяц</div>
                                     </div>
                                 </div>
 
