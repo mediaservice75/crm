@@ -196,17 +196,43 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="stat-card text-center p-3 border-end">
-                                        <div class="stat-value fs-4 fw-bold">
-                                            @if ($sumPaid->first()->total_amount == null)
-                                                0 ₽
-                                            @else
-                                                {{ money($sumPaid->first()->total_amount) }} ₽
-                                            @endif
-                                            <span class="percent-text">(@if ($sumPlan == 0)
-                                                    0%@else{{ round(($sumPaid->first()->total_amount / $sumPlan) * 100, 2) }}%
-                                                @endif)</span>
+                                        @php
+                                            $totalAmount = $sumPaid->first()->total_amount ?? 0;
+                                            $percentage = $sumPlan == 0 ? 0 : round(($totalAmount / $sumPlan) * 100, 2);
+
+                                            if ($percentage < 25) {
+                                                $catImage = 'crying.png';
+                                            } elseif ($percentage >= 25 && $percentage < 50) {
+                                                $catImage = 'sad.png';
+                                            } elseif ($percentage >= 50 && $percentage < 75) {
+                                                $catImage = 'neutral.png';
+                                            } elseif ($percentage >= 75 && $percentage < 100) {
+                                                $catImage = 'happy.png';
+                                            } else {
+                                                $catImage = 'cool.png';
+                                            }
+
+                                            $catImageUrl = asset("storage/images/cat/{$catImage}");
+                                        @endphp
+
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="text-start">
+                                                <div class="stat-value fs-4 fw-bold">
+                                                    @if ($totalAmount == 0)
+                                                        0 ₽
+                                                    @else
+                                                        {{ money($totalAmount) }} ₽
+                                                    @endif
+                                                </div>
+                                                <div class="percent-text fs-5 fw-semibold">({{ $percentage }}%)</div>
+                                                <div class="stat-label small text-muted">Поступления</div>
+                                            </div>
+
+                                            <div class="cat-image">
+                                                <img src="{{ $catImageUrl }}" alt="Статус выполнения"
+                                                    class="img-fluid rounded" style="max-height: 100px;">
+                                            </div>
                                         </div>
-                                        <div class="stat-label small text-muted">Поступления</div>
                                     </div>
                                 </div>
                                 @php
