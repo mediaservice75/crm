@@ -50,9 +50,8 @@
             <div class="card">
                 <div class="card-content">
                     <div class="card-body">
-                        {{-- Блок общей статистики --}}
                         <div class="global-stats mb-4 p-3 bg-light rounded-4">
-                            <div class="row">
+                            <div class="row align-items-center">
                                 <div class="col-md-4">
                                     <div class="stat-card text-center p-3 border-end">
                                         <div class="stat-value display-6 fw-bold">
@@ -61,6 +60,7 @@
                                         <div class="stat-label small text-muted">Общий план всех сотрудников</div>
                                     </div>
                                 </div>
+
                                 <div class="col-md-4">
                                     <div class="stat-card text-center p-3 border-end">
                                         @php
@@ -81,40 +81,39 @@
 
                                             $catImageUrl = asset("images/cat/{$catImage}");
                                         @endphp
-
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <div class="text-start">
-                                                <div class="stat-value fs-4 fw-bold">
-                                                    @if ($totalAmount == 0)
-                                                        0 ₽
-                                                    @else
-                                                        {{ money($totalAmount) }} ₽
-                                                    @endif
-                                                </div>
-                                                <div class="percent-text fs-5 fw-semibold">({{ $percentage }}%)</div>
-                                                <div class="stat-label small text-muted">Поступления</div>
-                                            </div>
-
-                                            <div class="cat-image">
-                                                <img src="{{ $catImageUrl }}" alt="Статус выполнения"
-                                                    class="img-fluid rounded" style="max-height: 100px;">
-                                            </div>
+                                        <div class="stat-value fs-4 fw-bold">
+                                            @if ($totalAmount == 0)
+                                                0 ₽
+                                            @else
+                                                {{ money($totalAmount) }} ₽
+                                            @endif
                                         </div>
+                                        <div class="percent-text fs-5 fw-semibold">({{ $percentage }}%)</div>
+                                        <div class="stat-label small text-muted">Поступления</div>
                                     </div>
                                 </div>
+
                                 @php
                                     $paidAmount = $sumPaid->first()->total_amount ?? 0;
                                     $difference = $paidAmount - $sumPlan;
                                     $colorClass = $difference >= 0 ? 'text-success' : 'text-warning';
                                 @endphp
                                 <div class="col-md-4">
-                                    <div class="stat-card text-center p-3">
-                                        <div class="stat-value fs-4 fw-bold">
-                                            <span class="{{ $colorClass }}">
-                                                {{ money($difference) }} ₽
-                                            </span>
+                                    <div class="stat-card p-3">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="text-start me-3">
+                                                <div class="stat-value fs-4 fw-bold">
+                                                    <span class="{{ $colorClass }}">
+                                                        {{ money($difference) }} ₽
+                                                    </span>
+                                                </div>
+                                                <div class="stat-label small text-muted">Разница</div>
+                                            </div>
+                                            <div class="cat-image">
+                                                <img src="{{ $catImageUrl }}" alt="Статус выполнения"
+                                                    class="img-fluid rounded" style="max-height: 150px;">
+                                            </div>
                                         </div>
-                                        <div class="stat-label small text-muted">Разница</div>
                                     </div>
                                 </div>
                             </div>

@@ -14,69 +14,69 @@
 @section('content')
     <style>
         /* .table-fixed {
-            table-layout: fixed;
-            width: 100%;
-        }
+                table-layout: fixed;
+                width: 100%;
+            }
 
-        .th-date {
-            width: 8%;
-        }
+            .th-date {
+                width: 8%;
+            }
 
-        .th-claim-number {
-            width: 8%;
-        }
+            .th-claim-number {
+                width: 8%;
+            }
 
-        .th-service {
-            width: 15%;
-        }
+            .th-service {
+                width: 15%;
+            }
 
-        .th-invoice {
-            width: 15%;
-        }
+            .th-invoice {
+                width: 15%;
+            }
 
-        .th-amount {
-            width: 10%;
-        }
+            .th-amount {
+                width: 10%;
+            }
 
-        .th-paid {
-            width: 15%;
-        }
+            .th-paid {
+                width: 15%;
+            }
 
-        .th-status {
-            width: 15%;
-        }
+            .th-status {
+                width: 15%;
+            }
 
-        .th-service {
-            white-space: normal;
-            word-wrap: break-word;
-        }
+            .th-service {
+                white-space: normal;
+                word-wrap: break-word;
+            }
 
-        .text-end,
-        .th-amount,
-        .th-paid,
-        .th-remaining {
-            text-align: right;
-            padding-right: 1rem;
-        }
+            .text-end,
+            .th-amount,
+            .th-paid,
+            .th-remaining {
+                text-align: right;
+                padding-right: 1rem;
+            }
 
-        .status-column {
-            white-space: nowrap;
-            padding-left: 1rem;
-            min-width: 120px;
-        }
+            .status-column {
+                white-space: nowrap;
+                padding-left: 1rem;
+                min-width: 120px;
+            }
 
-        .table th,
-        .table td {
-            vertical-align: middle !important;
-            padding: 0.5rem !important;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+            .table th,
+            .table td {
+                vertical-align: middle !important;
+                padding: 0.5rem !important;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
 
-        .remaining-column {
-            text-align: right !important;
-            padding-right: 1rem !important;
-        } */
+            .remaining-column {
+                text-align: right !important;
+                padding-right: 1rem !important;
+            } */
 
         .percent-text {
             font-weight: 500;
@@ -185,17 +185,24 @@
                     <div class="card-body">
                         {{-- Блок общей статистики --}}
                         <div class="global-stats mb-4 p-3 bg-light rounded-4">
-                            <div class="row">
+                            <div class="row align-items-center"> {{-- Добавлено вертикальное выравнивание --}}
+                                {{-- Общий план - выровнено по центру --}}
                                 <div class="col-md-4">
-                                    <div class="stat-card text-center p-3 border-end">
+                                    <div
+                                        class="stat-card text-center p-3 border-end h-100 d-flex flex-column justify-content-center">
+                                        {{-- Добавлены классы для вертикального центрирования --}}
                                         <div class="stat-value display-6 fw-bold">
                                             {{ money($sumPlan) }} ₽
                                         </div>
-                                        <div class="stat-label small text-muted">План на месяц</div>
+                                        <div class="stat-label small text-muted">Общий план всех сотрудников</div>
                                     </div>
                                 </div>
+
+                                {{-- Поступления - выровнено по центру --}}
                                 <div class="col-md-4">
-                                    <div class="stat-card text-center p-3 border-end">
+                                    <div
+                                        class="stat-card text-center p-3 border-end h-100 d-flex flex-column justify-content-center">
+                                        {{-- Добавлены классы для вертикального центрирования --}}
                                         @php
                                             $totalAmount = $sumPaid->first()->total_amount ?? 0;
                                             $percentage = $sumPlan == 0 ? 0 : round(($totalAmount / $sumPlan) * 100, 2);
@@ -214,40 +221,40 @@
 
                                             $catImageUrl = asset("images/cat/{$catImage}");
                                         @endphp
-
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <div class="text-start">
-                                                <div class="stat-value fs-4 fw-bold">
-                                                    @if ($totalAmount == 0)
-                                                        0 ₽
-                                                    @else
-                                                        {{ money($totalAmount) }} ₽
-                                                    @endif
-                                                </div>
-                                                <div class="percent-text fs-5 fw-semibold">({{ $percentage }}%)</div>
-                                                <div class="stat-label small text-muted">Поступления</div>
-                                            </div>
-
-                                            <div class="cat-image">
-                                                <img src="{{ $catImageUrl }}" alt="Статус выполнения"
-                                                    class="img-fluid rounded" style="max-height: 100px;">
-                                            </div>
+                                        <div class="stat-value fs-4 fw-bold">
+                                            @if ($totalAmount == 0)
+                                                0 ₽
+                                            @else
+                                                {{ money($totalAmount) }} ₽
+                                            @endif
                                         </div>
+                                        <div class="percent-text fs-5 fw-semibold">({{ $percentage }}%)</div>
+                                        <div class="stat-label small text-muted">Поступления</div>
                                     </div>
                                 </div>
+
+                                {{-- Разница - текст прижат к левому краю --}}
                                 @php
                                     $paidAmount = $sumPaid->first()->total_amount ?? 0;
                                     $difference = $paidAmount - $sumPlan;
                                     $colorClass = $difference >= 0 ? 'text-success' : 'text-warning';
                                 @endphp
                                 <div class="col-md-4">
-                                    <div class="stat-card text-center p-3">
-                                        <div class="stat-value fs-4 fw-bold">
-                                            <span class="{{ $colorClass }}">
-                                                {{ money($difference) }} ₽
-                                            </span>
+                                    <div class="stat-card p-3 h-100 d-flex align-items-center"> {{-- Добавлены классы для вертикального центрирования --}}
+                                        <div class="d-flex align-items-center justify-content-between w-100">
+                                            <div class="text-start me-3">
+                                                <div class="stat-value fs-4 fw-bold">
+                                                    <span class="{{ $colorClass }}">
+                                                        {{ money($difference) }} ₽
+                                                    </span>
+                                                </div>
+                                                <div class="stat-label small text-muted">Разница</div>
+                                            </div>
+                                            <div class="cat-image">
+                                                <img src="{{ $catImageUrl }}" alt="Статус выполнения"
+                                                    class="img-fluid rounded" style="max-height: 150px;">
+                                            </div>
                                         </div>
-                                        <div class="stat-label small text-muted">Разница</div>
                                     </div>
                                 </div>
                             </div>
