@@ -14,69 +14,69 @@
 @section('content')
     <style>
         /* .table-fixed {
-                table-layout: fixed;
-                width: 100%;
-            }
+                    table-layout: fixed;
+                    width: 100%;
+                }
 
-            .th-date {
-                width: 8%;
-            }
+                .th-date {
+                    width: 8%;
+                }
 
-            .th-claim-number {
-                width: 8%;
-            }
+                .th-claim-number {
+                    width: 8%;
+                }
 
-            .th-service {
-                width: 15%;
-            }
+                .th-service {
+                    width: 15%;
+                }
 
-            .th-invoice {
-                width: 15%;
-            }
+                .th-invoice {
+                    width: 15%;
+                }
 
-            .th-amount {
-                width: 10%;
-            }
+                .th-amount {
+                    width: 10%;
+                }
 
-            .th-paid {
-                width: 15%;
-            }
+                .th-paid {
+                    width: 15%;
+                }
 
-            .th-status {
-                width: 15%;
-            }
+                .th-status {
+                    width: 15%;
+                }
 
-            .th-service {
-                white-space: normal;
-                word-wrap: break-word;
-            }
+                .th-service {
+                    white-space: normal;
+                    word-wrap: break-word;
+                }
 
-            .text-end,
-            .th-amount,
-            .th-paid,
-            .th-remaining {
-                text-align: right;
-                padding-right: 1rem;
-            }
+                .text-end,
+                .th-amount,
+                .th-paid,
+                .th-remaining {
+                    text-align: right;
+                    padding-right: 1rem;
+                }
 
-            .status-column {
-                white-space: nowrap;
-                padding-left: 1rem;
-                min-width: 120px;
-            }
+                .status-column {
+                    white-space: nowrap;
+                    padding-left: 1rem;
+                    min-width: 120px;
+                }
 
-            .table th,
-            .table td {
-                vertical-align: middle !important;
-                padding: 0.5rem !important;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
+                .table th,
+                .table td {
+                    vertical-align: middle !important;
+                    padding: 0.5rem !important;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
 
-            .remaining-column {
-                text-align: right !important;
-                padding-right: 1rem !important;
-            } */
+                .remaining-column {
+                    text-align: right !important;
+                    padding-right: 1rem !important;
+                } */
 
         .percent-text {
             font-weight: 500;
@@ -208,15 +208,15 @@
                                             $percentage = $sumPlan == 0 ? 0 : round(($totalAmount / $sumPlan) * 100, 2);
 
                                             if ($percentage < 25) {
-                                                $catImage = 'crying.png';
-                                            } elseif ($percentage >= 25 && $percentage < 50) {
                                                 $catImage = 'sad.png';
-                                            } elseif ($percentage >= 50 && $percentage < 75) {
+                                            } elseif ($percentage >= 25 && $percentage < 50) {
                                                 $catImage = 'neutral.png';
+                                            } elseif ($percentage >= 50 && $percentage < 75) {
+                                                $catImage = 'half.png';
                                             } elseif ($percentage >= 75 && $percentage < 100) {
-                                                $catImage = 'happy.png';
+                                                $catImage = 'almost.png';
                                             } else {
-                                                $catImage = 'cool.png';
+                                                $catImage = 'best.png';
                                             }
 
                                             $catImageUrl = asset("images/cat/{$catImage}");
