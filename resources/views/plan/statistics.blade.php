@@ -68,15 +68,15 @@
                                             $percentage = $sumPlan == 0 ? 0 : round(($totalAmount / $sumPlan) * 100, 2);
 
                                             if ($percentage < 25) {
-                                                $catImage = 'crying.png';
-                                            } elseif ($percentage >= 25 && $percentage < 50) {
                                                 $catImage = 'sad.png';
-                                            } elseif ($percentage >= 50 && $percentage < 75) {
+                                            } elseif ($percentage >= 25 && $percentage < 50) {
                                                 $catImage = 'neutral.png';
+                                            } elseif ($percentage >= 50 && $percentage < 75) {
+                                                $catImage = 'half.png';
                                             } elseif ($percentage >= 75 && $percentage < 100) {
-                                                $catImage = 'happy.png';
+                                                $catImage = 'almost.png';
                                             } else {
-                                                $catImage = 'cool.png';
+                                                $catImage = 'best.png';
                                             }
 
                                             $catImageUrl = asset("images/cat/{$catImage}");
