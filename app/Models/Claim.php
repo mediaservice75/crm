@@ -8,8 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
-class Claim extends Model
-{
+class Claim extends Model {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
@@ -27,6 +26,7 @@ class Claim extends Model
         'creator',
         'comment',
         'notInclude',
+        'isBarter',
         'number_invoice',
         'created_at',
         'close_user_id'
@@ -40,48 +40,39 @@ class Claim extends Model
         return Carbon::parse($this->created_at)->format('d.m.Y г.');
     }
 
-    public function service()
-    {
+    public function service() {
         return $this->belongsTo(Service::class);
     }
 
-    public function client()
-    {
+    public function client() {
         return $this->belongsTo(Client::class);
     }
 
-    public function creatorUser()
-    {
+    public function creatorUser() {
         return $this->belongsTo(UserM::class, 'creator');
     }
 
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo(UserM::class, 'user_id');
     }
 
-    public function histories()
-    {
+    public function histories() {
         return $this->hasMany(HistoryClaim::class)->orderBy('id', 'desc');
     }
 
-    public function historiesPayment()
-    {
+    public function historiesPayment() {
         return $this->hasMany(HistoryPayment::class)->orderBy('id', 'desc');
     }
 
-    public function files()
-    {
+    public function files() {
         return $this->hasMany(ClaimFile::class);
     }
 
-    public function claimUsers()
-    {
+    public function claimUsers() {
         return $this->hasMany(ClaimUsers::class);
     }
 
-    public function package()
-    {
+    public function package() {
         return $this->belongsTo(Package::class)->withTrashed();
     }
 
@@ -93,9 +84,7 @@ class Claim extends Model
         return Carbon::parse($this->deadline)->format('d.m.Y г.');
     }
 
-    public function pusherNotofications()
-    {
+    public function pusherNotofications() {
         return $this->hasMany(PusherNotification::class);
     }
-
 }

@@ -475,6 +475,11 @@
                                                     дату создания
                                                     <input type="hidden" name="anotherCreatedAt" id="anotherCreatedAt"
                                                         value="0">
+
+                                                    <input type="hidden" name="isBarter" value="0">
+                                                    <input class="form-check-input ms-3" name="isBarter" id="barterC"
+                                                        type="checkbox" value="1">
+                                                    <label for="barterC">Бартер</label>
                                                 </div>
                                             </div>
 
@@ -788,4 +793,16 @@
         @endif
     </section>
     <script src="{{ asset('js/filepond.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const barter = document.getElementById('barterC');
+            const notInclude = document.getElementById('notIncludeC');
+
+            barter.addEventListener('change', () => {
+                if (barter.checked) {
+                    notInclude.checked = true;
+                }
+            });
+        });
+    </script>
 @endsection

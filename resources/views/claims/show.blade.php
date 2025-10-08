@@ -66,6 +66,12 @@
                             </span>
                         @endif
 
+                        @if ($claim->isBarter)
+                            <span class="badge bg-primary me-2">
+                                Бартер
+                            </span>
+                        @endif
+
                         @if ($claim->notInclude)
                             <span class="badge bg-danger me-2">
                                 Не включена в план продаж
