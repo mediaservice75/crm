@@ -34,6 +34,10 @@
                     @if (checkAnotherUser($claim->id)) checked @endif> Внештатный сотрудник
                 <input type="hidden" name="anotherUser" id="anotherUser" value="{{ checkAnotherUser($claim->id) }}">
 
+                <input type="hidden" name="isBarter" value="0">
+                <input class="form-check-input ms-3" name="isBarter" id="barterC" type="checkbox" value="1"
+                    @if ($claim->isBarter) checked @endif>
+                <label for="barterC">Бартер</label>
             </div>
         </div>
         <div class="row mt-3 @if (!checkAnotherUser($claim->id)) d-none @endif users-form">
@@ -327,5 +331,16 @@
 
     </form>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const barter = document.getElementById('barterC');
+            const notInclude = document.getElementById('notIncludeC');
 
+            barter.addEventListener('change', () => {
+                if (barter.checked) {
+                    notInclude.checked = true;
+                }
+            });
+        });
+    </script>
 @endsection

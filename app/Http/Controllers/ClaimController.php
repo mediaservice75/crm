@@ -366,6 +366,13 @@ class ClaimController extends Controller {
         }
 
         $claim = Claim::firstWhere('id', $id);
+        if ($claim->isBarter == false) {
+            if ($request->isBarter) {
+                $request->merge([
+                    'amount' => round($request->amount * 1.05, 2),
+                ]);
+            }
+        }
 
         $validatedData = $request->validate(
             [
