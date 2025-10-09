@@ -73,11 +73,11 @@ class ClaimController extends Controller {
             ]);
         }
 
-        if ($request->isBarter) {
-            $request->merge([
-                'amount' => round($request->amount * 1.05, 2),
-            ]);
-        }
+        // if ($request->isBarter) {
+        //     $request->merge([
+        //         'amount' => round($request->amount * 1.05, 2),
+        //     ]);
+        // }
 
         //        $this->authorize('check', $client);
         //        if (Auth::user()->cannot('check', $client, Claim::class)) {
@@ -366,13 +366,13 @@ class ClaimController extends Controller {
         }
 
         $claim = Claim::firstWhere('id', $id);
-        if ($claim->isBarter == false) {
-            if ($request->isBarter) {
-                $request->merge([
-                    'amount' => round($request->amount * 1.05, 2),
-                ]);
-            }
-        }
+        // if ($claim->isBarter == false) {
+        //     if ($request->isBarter) {
+        //         $request->merge([
+        //             'amount' => round($request->amount * 1.05, 2),
+        //         ]);
+        //     }
+        // }
 
         $validatedData = $request->validate(
             [
