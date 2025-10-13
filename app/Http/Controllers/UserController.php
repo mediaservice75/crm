@@ -136,6 +136,9 @@ class UserController extends Controller
             'user_id' => $id
         ]);
 
+        // посчитать бартер можно прямо в функции getSalesByCategoryAjax
+        // потому что она отвечает за показ статы продаж на странице юзера
+
         $salesByCategory = $this->getSalesByCategoryAjax($res);
 
         $sumPlan = SalesPlan::orderBy('month', 'desc')
@@ -407,6 +410,18 @@ class UserController extends Controller
 
         $categoriesAllSum = [];
 
+        //barter
+        $barterSum = 0;
+        $barterClaims = Claim::where('creator', $request->user_id)
+            ->where('isBarter', true)
+            ->where('created_at', '>=', $start)
+            ->where('created_at', '<=', $end)
+            ->get();
+
+        foreach ($barterClaims as $claim) {
+            $barterSum += $claim->amount * 0.05;
+        }
+
         foreach ($categories as $category) {
             $categoryClaims = DB::table('categories')
                 ->join('services', 'categories.id', '=', 'services.category_id')
@@ -532,9 +547,14 @@ class UserController extends Controller
         $res .= '<td colspan="' . count($allData) . '">' . money($sum) . ' руб.</td>';
         $res .= '</tr>';
 
+        // $res .= '<tr>';
+        // $res .= '<td class="font-bold text-primary">Бартер: </td>';
+        // $res .= '<td colspan="' . count($allData) . '">' . money($barterSum) . ' руб.</td>';
+        // $res .= '</tr>';
+
         $res .= '<tr>';
         $res .= '<td class="font-bold text-primary">Общий доход: </td>';
-        $res .= '<td colspan="' . count($allData) . '">' . money($allSalary) . ' руб.</td>';
+        $res .= '<td colspan="' . count($allData) . '">' . money($allSalary + $barterSum) . ' руб.</td>';
         $res .= '</tr>';
         $res .= '  </table></div>
                 </div>
@@ -542,7 +562,6 @@ class UserController extends Controller
         </div>';
 
         foreach ($allData as $item) {
-
             $res .= '<div class="col-12 col-md-6">
             <div class="card">
                 <div class="card-content">
@@ -582,6 +601,17 @@ class UserController extends Controller
             </div>
         </div>';
         }
+
+        $res .= '<div class="col-12 col-md-6">
+    <div class="card">
+        <div class="card-content">
+            <div class="card-body">
+                <h4 class="card-title">Бартер</h4>
+                <p class="text-primary"><b>Общая сумма: </b>' . money($barterSum) . ' руб.</p>
+            </div>
+        </div>
+    </div>
+</div>';
 
         return $res;
     }
