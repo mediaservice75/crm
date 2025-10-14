@@ -24,11 +24,11 @@
                     <th class="fw-normal small">Компания</th>
                     <th class="fw-normal small">Менеджер</th>
                     <th class="fw-normal small">Услуга</th>
-                    <th class="fw-normal small">Номер счёта</th>
+                    {{-- <th class="fw-normal small">Номер счёта</th> --}}
                     <th class="fw-normal small text-end">Сумма счёта</th>
-                    <th class="fw-normal small text-end">Оплачено</th>
-                    <th class="fw-normal small">Статус</th>
-                    <th class="fw-normal small text-end">Остаток</th>
+                    {{-- <th class="fw-normal small text-end">Оплачено</th> --}}
+                    {{-- <th class="fw-normal small">Статус</th> --}}
+                    {{-- <th class="fw-normal small text-end">Остаток</th> --}}
                 </tr>
             </thead>
             <tbody>
@@ -50,21 +50,21 @@
                         <td class="text-truncate" title="{{ $claim->service->name ?? '-' }}">
                             {{ $claim->service->name ?? '-' }}
                         </td>
-                        <td>
+                        {{-- <td>
                             <a href="{{ url('/payments/paid/' . $claim->id) }}">
                                 {{ $claim->number_invoice }}
                             </a>
-                        </td>
+                        </td> --}}
                         <td class="text-end">{{ rtrim(rtrim(money($claim->amount)), '0') }} ₽
                         </td>
-                        <td class="text-end">
+                        {{-- <td class="text-end">
                             @if ($claim['paid'] > 0)
                                 {{ rtrim(rtrim(money($claim['paid'])), '0') }} ₽
                             @else
                                 -
                             @endif
-                        </td>
-                        <td>
+                        </td> --}}
+                        {{-- <td>
                             @if ($claim->historiesPayment->isNotEmpty())
                                 <span class="badge custom-bg-{{ $claim->historiesPayment->first()->status->color }}">
                                     {{ $claim->historiesPayment->first()->status->name }}
@@ -72,14 +72,14 @@
                             @else
                                 <span class="text-muted">-</span>
                             @endif
-                        </td>
-                        <td class="text-end {{ $claim['remaining'] > 0 ? 'text-danger' : '' }}">
+                        </td> --}}
+                        {{-- <td class="text-end {{ $claim['remaining'] > 0 ? 'text-danger' : '' }}">
                             @if ($claim['remaining'] > 0)
                                 {{ rtrim(rtrim(money($claim['remaining'])), '0') }} ₽
                             @else
                                 -
                             @endif
-                        </td>
+                        </td> --}}
                     </tr>
                 @endforeach
             </tbody>
