@@ -24,6 +24,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ZipController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ReceivableController;
+use App\Http\Controllers\BarterController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -169,6 +170,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('active-ad/all/past', [ClaimController::class, 'getPastActiveAdAll'])->name('claim.pastActiveAdAll');
 
     Route::get('receivable', [ReceivableController::class, 'index'])->name('receivable.index');
+
+    Route::get('barter', [BarterController::class, 'index'])->name('barter.index');
 
     Route::post('/upload-filepond', [UploadController::class, 'store']);
     Route::post('/upload-files-goal', [UploadController::class, 'goalsStore']);

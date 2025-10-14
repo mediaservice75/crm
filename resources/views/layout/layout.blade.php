@@ -242,6 +242,15 @@
                             </li>
                         @endif
 
+                        @if (auth()->user()->role->level <= 2 || auth()->user()->role->level == 5 || auth()->user()->role->level == 4)
+                            <li class="sidebar-item">
+                                <a href="{{ route('barter.index') }}" class='sidebar-link'>
+                                    <i class="bi bi-arrow-left-right"></i>
+                                    <span>Бартер</span>
+                                </a>
+                            </li>
+                        @endif
+
                         @if (auth()->user()->role->level <= 2)
                             <li class="sidebar-title">Администрирование</li>
 
