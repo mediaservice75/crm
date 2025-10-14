@@ -459,10 +459,10 @@
                                                         type="checkbox" value=""> Нужен ли счет?
                                                     <input type="hidden" name="isInvoice" value="0">
 
-                                                    <input class="form-check-input ms-3" name="notIncludeC"
-                                                        id="notIncludeC" type="checkbox" value=""> Не включать в
-                                                    план продаж
+                                                    <input class="form-check-input ms-3" name="notInclude"
+                                                        id="notIncludeC" type="checkbox" value="1">
                                                     <input type="hidden" name="notInclude" value="0">
+                                                    <label for="notIncludeC">Не включать в план продаж</label>
 
                                                     <input class="form-check-input ms-3" name="anotherUserC"
                                                         id="anotherUserC" type="checkbox" value=""> Внештатный
@@ -793,6 +793,7 @@
         @endif
     </section>
     <script src="{{ asset('js/filepond.js') }}"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const barter = document.getElementById('barterC');
@@ -801,6 +802,7 @@
             barter.addEventListener('change', () => {
                 if (barter.checked) {
                     notInclude.checked = true;
+                    notInclude.dispatchEvent(new Event('change'));
                 }
             });
         });
