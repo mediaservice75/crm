@@ -1410,7 +1410,9 @@ class ClaimController extends Controller
                 'user_id' => null,
             ]);
 
-
+            if ($request->has('isBarter') && $request->isBarter == '1') {
+                $request->merge(['notInclude' => '1']);
+            }
             $claim = Claim::create($request->all());
 
             if ($request->hasFile('brif')) {
