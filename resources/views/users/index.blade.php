@@ -152,12 +152,6 @@
                                             class="btn btn-sm icon btn-success me-2 mb-2"><i class="bi bi-arrow-repeat"></i>
                                             Повторить пароль</a>
                                     @endif
-                                    @if (session('generated_password'))
-                                        <div class="alert alert-info">
-                                            Сгенерированный пароль: <strong>{{ session('generated_password') }}</strong>
-                                            (сохраните его, он больше не будет показан)
-                                        </div>
-                                    @endif
                                     <a href="{{ route('users.show', ['user' => $user->id]) }}"
                                         class="btn btn-sm icon btn-primary me-2 mb-2"><i class="bi bi-eye-fill"></i>
                                         Открыть</a>
