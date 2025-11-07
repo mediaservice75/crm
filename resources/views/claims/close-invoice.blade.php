@@ -77,7 +77,7 @@
                                                         <span class="text-danger">(Счет не был добавлен)</span>
                                                     @endif
                                                 </label>
-                                                <p class="text-danger"><span class="text-opacity-50">Внимание, при прикплении нового файла(ов), информация о старых файлах станет недоступной</span></p>
+                                                <p class="text-danger"><span class="text-opacity-50">Внимание, при прикреплении нового файла(ов), информация о старых файлах станет недоступной</span></p>
                                                 <input type="hidden" name="number" value="{{$loop->index}}">
                                                 <input type="file" id="invoice{{$loop->index}}"
                                                        class="form-control filepond @if($errors->has('invoice'.$loop->index)) is-invalid @endif"
