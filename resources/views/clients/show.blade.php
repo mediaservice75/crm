@@ -248,11 +248,11 @@
                     </p>
 
                     <div class="divider divider-left">
-                        <div class="divider-text">Бухглатер</div>
+                        <div class="divider-text">Бухгалтер</div>
                     </div>
 
                     <p class="mb-1">
-                        <b>Бухглатер: </b>
+                        <b>Бухгалтер: </b>
                         @if ($client->requisite->buhName)
                             {{ $client->requisite->buhName }}
                         @else
