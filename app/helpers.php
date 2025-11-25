@@ -4,6 +4,7 @@ use App\Models\Claim;
 use App\Models\ClaimUsers;
 use App\Models\HistoryPayment;
 use App\Models\SalesPlanMonth;
+use App\Models\UserM;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -392,73 +393,40 @@ if (!function_exists('getPaymentsClaim')) {
 if (!function_exists('getDebtSum')) {
     function getDebtSum()
     {
+        $end = now(); // или ваша дата
 
-        $res = '';
-
-        $debtClaims = Claim::with('historiesPayment')
-            ->whereHas('historiesPayment', function ($q) {
-                $q->with('status')
-                    ->whereHas('status', function ($w) {
-                        $w->where('name', "Долг");
-                    });
-            })
-            ->where('notInclude', 0)
-            ->select(DB::raw('id'))
+        // Сначала получаем всех пользователей
+        $users = UserM::whereIn('role_id', [2, 4, 13, 9])
+            ->where('isBlocked', 0)
+            ->orderByRaw("FIELD(role_id, 9, 4, 13, 2)")
             ->get();
 
-        $paidClaims = Claim::with('historiesPayment')
-            ->whereHas('historiesPayment', function ($q) {
-                $q->with('status')
-                    ->whereHas('status', function ($w) {
-                        $w->where('name', "Оплачен");
-                    });
-            })
-            ->where('notInclude', 0)
-            ->select(DB::raw('id'))
-            ->get();
 
-        $idPaidClaims = $paidClaims->mapWithKeys(function ($item, $i) {
-            return [$i => $item->id];
+        // Получаем все исключаемые ID claims одним запросом
+        $excludedClaimIds = HistoryPayment::whereHas('status', function ($q) {
+            $q->where('name', 'Оплачен');
+        })
+            ->whereHas('claim', function ($q) {
+                $q->where('notInclude', 0);
+            })->pluck('claim_id')->toArray();
+
+        // Затем для каждого пользователя загружаем claims
+        $users->load(['claims' => function ($query) use ($end, $excludedClaimIds) {
+            $query->where('created_at', '<=', $end)
+                ->where('notInclude', 0)
+                ->whereNotIn('id', $excludedClaimIds);
+        }]);
+
+        // Новые расчеты
+        $totalDebt = $users->sum(function ($user) {
+            return $user->claims->sum(function ($claim) {
+                return max(0, $claim->amount - getPaymentsClaim($claim->id));
+            });
         });
 
-        $idDebtClaims = $debtClaims->mapWithKeys(function ($item, $i) {
-            return [$i => $item->id];
-        });
-
-        $sumDebtClaims = Claim::with('historiesPayment')
-            ->whereHas('historiesPayment', function ($q) {
-                $q->with('status')
-                    ->whereHas('status', function ($w) {
-                        $w->where('name', "Долг");
-                    });
-            })
-            ->where('notInclude', 0)
-            ->whereNotIn('id', $idPaidClaims)
-            ->select(DB::raw('SUM(amount) as total_amount'))
-            ->get();
-
-        $sumPartPaid = HistoryPayment::with('status')
-            ->whereHas('status', function ($w) {
-                $w->where('name', "Частично оплачен");
-            })
-            ->whereNotIn('claim_id', $idPaidClaims)
-            ->whereIn('claim_id', $idDebtClaims)
-            ->select(DB::raw(' SUM(amount) as total_amount'))
-            ->get();
-
-
-        $res .= '<p class="fw-bold mb-0"><b class="text-primary">Долг за прошлый период: </b>';
-        if ($sumDebtClaims->first()->total_amount == null)
-            $res .= '0 руб';
-        else {
-            // $res .= money($sumDebtClaims->first()->total_amount) . ' руб.';
-            if ($sumPartPaid->first()->total_amount != null) {
-                // $res .= ' (из них частично оплачено: ' . money($sumPartPaid->first()->total_amount) . ' руб.)';
-                $res .= money($sumDebtClaims->first()->total_amount - $sumPartPaid->first()->total_amount) . ' ₽';
-            }
-        }
-
-
+        $res = '<p class="fw-bold mb-0"><b class="text-primary">Долг за прошлый период: </b>';
+        $res .= money($totalDebt);
+        $res .= ' ₽';
         $res .= '</p>';
 
         return $res;
