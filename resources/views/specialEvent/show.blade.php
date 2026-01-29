@@ -43,7 +43,15 @@
                 <div class="card-content">
                     <div class="card-body">
                         <h2 class="">{{ $event->title }}</h2>
-                        <hr>
+                        {{-- Радиостанция --}}
+                        @if ($event->radio)
+                            <div class="mb-2">
+                                <div class="card-title mb-1">
+                                    🎧 {{ $event->radio }}
+                                </div>
+                            </div>
+                        @endif
+                        <br>
                         <div>
                             <h4 class="card-title mb-1">Период рекламной кампании</h4>
                             {{ \Carbon\Carbon::parse($event->campaign_start_date)->format('d.m.Y') }} –

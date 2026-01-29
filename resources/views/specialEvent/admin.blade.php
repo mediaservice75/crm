@@ -50,6 +50,9 @@
                         <div class="card-content">
                             <div class="card-body">
                                 <h5 class="title mb-4">{{ $event->title }}</h5>
+                                @if ($event->radio)
+                                    <p class="text-muted mb-3">🎧 {{ $event->radio }}</p>
+                                @endif
                                 <p> <b>Период:</b>
 
                                     {{ \Carbon\Carbon::parse($event->campaign_start_date)->format('d.m') }}

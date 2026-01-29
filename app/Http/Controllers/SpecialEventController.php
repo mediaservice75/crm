@@ -122,6 +122,7 @@ class SpecialEventController extends Controller
     {
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
+            'radio' => 'required|in:Русское Радио,Серебряный Дождь',
             'campaign_start_date' => 'required|date',
             'campaign_end_date' => 'required|date|after_or_equal:campaign_start_date',
             'sessions' => 'required|array|min:1',
@@ -132,6 +133,7 @@ class SpecialEventController extends Controller
 
         $event = SpecialEvent::create([
             'title' => $validatedData['title'],
+            'radio' => $validatedData['radio'],
             'campaign_start_date' => $validatedData['campaign_start_date'],
             'campaign_end_date' => $validatedData['campaign_end_date'],
         ]);
@@ -209,8 +211,14 @@ class SpecialEventController extends Controller
     {
         $event = SpecialEvent::findOrFail($id);
 
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'radio' => 'required|in:Русское Радио,Серебряный дождь',
+        ]);
+
         $event->update([
             'title' => $request->input('title', $event->title),
+            'radio' => $validatedData['radio'],
             'campaign_start_date' => $request->input('campaign_start_date', $event->campaign_start_date),
             'campaign_end_date' => $request->input('campaign_end_date', $event->campaign_end_date),
         ]);

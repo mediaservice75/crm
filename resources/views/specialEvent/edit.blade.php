@@ -29,6 +29,23 @@
                         </div>
 
                         <div class="mb-3">
+                            <h4 class="card-title mb-1">Радиостанция</h4>
+                            <select name="radio" class="form-control">
+                                <option value="">Нажмите, чтобы выбрать радио</option>
+
+                                <option value="Русское Радио"
+                                    {{ old('radio', $event->radio) == 'Русское Радио' ? 'selected' : '' }}>
+                                    Русское Радио
+                                </option>
+
+                                <option value="Серебряный дождь"
+                                    {{ old('radio', $event->radio) == 'Серебряный дождь' ? 'selected' : '' }}>
+                                    Серебряный дождь
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
                             <br>
                             <h4 class="card-title mb-1">Период рекламной кампании</h4>
                             <div class="d-flex">

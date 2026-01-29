@@ -13,6 +13,7 @@ class SpecialEvent extends Model
 
     protected $fillable = [
         'title',
+        'radio',
         'campaign_start_date',
         'campaign_end_date',
         'is_archived',

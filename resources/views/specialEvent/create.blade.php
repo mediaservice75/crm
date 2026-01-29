@@ -30,6 +30,20 @@
                                                 placeholder="Введите название" value="{{ old('title') }}">
                                         </div>
                                         <div class="form-group">
+                                            <label>Радиостанция:</label>
+                                            <select id="radio" class="form-control" name="radio">
+                                                <option value="">Нажмите, чтобы выбрать радио</option>
+                                                <option value="Русское Радио"
+                                                    {{ old('radio') == 'Русское Радио' ? 'selected' : '' }}>
+                                                    Русское Радио
+                                                </option>
+                                                <option value="Серебряный дождь"
+                                                    {{ old('radio') == 'Серебряный Дождь' ? 'selected' : '' }}>
+                                                    Серебряный дождь
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
                                             <label>Старт рекламной кампании:</label>
                                             <input type="date" id="campaign_start_date" class="form-control"
                                                 name="campaign_start_date"
