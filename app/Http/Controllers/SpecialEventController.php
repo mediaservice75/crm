@@ -213,12 +213,12 @@ class SpecialEventController extends Controller
 
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
-            'radio' => 'required|in:Русское Радио,Серебряный дождь',
+            'radio' => 'nullable|in:Русское Радио,Серебряный дождь',
         ]);
 
         $event->update([
             'title' => $request->input('title', $event->title),
-            'radio' => $validatedData['radio'],
+            'radio' => $validatedData['radio'] ?? $event->radio,
             'campaign_start_date' => $request->input('campaign_start_date', $event->campaign_start_date),
             'campaign_end_date' => $request->input('campaign_end_date', $event->campaign_end_date),
         ]);
