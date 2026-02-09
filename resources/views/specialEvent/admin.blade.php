@@ -50,9 +50,35 @@
                         <div class="card-content">
                             <div class="card-body">
                                 <h5 class="title mb-4">{{ $event->title }}</h5>
+                                @php
+                                    $radioImages = [
+                                        'Русское Радио' => 'rr_logo.png',
+                                        'Серебряный дождь' => 'sd_logo.png',
+                                    ];
+                                @endphp
+
                                 @if ($event->radio)
-                                    <p class="text-muted mb-3">🎧 {{ $event->radio }}</p>
+                                    <div class="d-flex align-items-center gap-2 mb-3">
+                                        @php
+                                            $radioName = trim($event->radio);
+                                            $imageFile = $radioImages[$radioName] ?? null;
+
+                                            if ($imageFile && file_exists(public_path('images/radio/' . $imageFile))) {
+                                                $radioImage = asset('images/radio/' . $imageFile);
+                                            } else {
+                                                $radioImage = asset('images/radio/default.png');
+                                            }
+                                        @endphp
+
+                                        <img src="{{ $radioImage }}" alt="{{ $event->radio }}"
+                                            style="width: 50px; height: 50px; 
+            object-fit: contain;"
+                                            class="me-2"
+                                            onerror="this.onerror=null; this.src='{{ asset('images/radio/default.png') }}'">
+                                        <span class="text-muted">{{ $event->radio }}</span>
+                                    </div>
                                 @endif
+
                                 <p> <b>Период:</b>
 
                                     {{ \Carbon\Carbon::parse($event->campaign_start_date)->format('d.m') }}
