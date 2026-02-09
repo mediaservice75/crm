@@ -16,50 +16,28 @@
 
 @section('content')
     <style>
-        .card-body {
-            font-size: 14px;
-            padding: 10px !important;
-            /* Минимальные отступы */
-        }
-
         .table-container {
             width: 100%;
-            /* Таблица на всю ширину */
-            margin: 0;
-            padding: 0;
+            overflow-x: auto;
         }
 
-        .card-body table {
+        table {
             width: 100%;
-            max-width: 100%;
-            table-layout: auto;
-            /* Автоматическая ширина колонок */
+            table-layout: fixed;
             border-collapse: collapse;
-            font-size: 12px;
+            font-size: 10px;
         }
 
-        .card-body th,
-        .card-body td {
+        th,
+        td {
             padding: 8px;
-            /* Уменьшенные отступы */
             text-align: left;
             border: 1px solid #ddd;
         }
 
-        .card-body th {
-            background-color: #f8f9fa;
+        th {
+            background-color: #f4f4f4;
             font-weight: bold;
-        }
-
-        .card {
-            padding: 0 !important;
-            /* Убираем padding у карточки */
-            margin: 0 !important;
-            /* Минимальные внешние отступы */
-        }
-
-        .free {
-            color: red;
         }
     </style>
 
@@ -71,6 +49,34 @@
                         <div class="card-content">
                             <div class="card-body">
                                 <h5 class="title mb-4">{{ $event->title }}</h5>
+                                @php
+                                    $radioImages = [
+                                        'Русское Радио' => 'rr_logo.png',
+                                        'Серебряный дождь' => 'sd_logo.png',
+                                    ];
+                                @endphp
+
+                                @if ($event->radio)
+                                    <div class="d-flex align-items-center gap-2 mb-3">
+                                        @php
+                                            $radioName = trim($event->radio);
+                                            $imageFile = $radioImages[$radioName] ?? null;
+
+                                            if ($imageFile && file_exists(public_path('images/radio/' . $imageFile))) {
+                                                $radioImage = asset('images/radio/' . $imageFile);
+                                            } else {
+                                                $radioImage = asset('images/radio/default.png');
+                                            }
+                                        @endphp
+
+                                        <img src="{{ $radioImage }}" alt="{{ $event->radio }}"
+                                            style="width: 50px; height: 50px; 
+            object-fit: contain;"
+                                            class="me-2"
+                                            onerror="this.onerror=null; this.src='{{ asset('images/radio/default.png') }}'">
+                                        <span class="text-muted">{{ $event->radio }}</span>
+                                    </div>
+                                @endif
                                 <p> <b>Период:</b>
 
                                     {{ \Carbon\Carbon::parse($event->campaign_start_date)->format('d.m') }}
