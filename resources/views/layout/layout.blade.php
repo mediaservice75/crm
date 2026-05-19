@@ -39,9 +39,9 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="logo">
                             <a href="{{ route('calendar.index') }}">
-                                <img class="logo-black" src="{{ asset('images/logo/logo-black.png') }}"
+                                <img class="logo-black" src="{{ asset('images/logo/new_logo_black.png') }}"
                                     alt="Logo MediaService" srcset="">
-                                <img class="logo-white" src="{{ asset('images/logo/logo.png') }}"
+                                <img class="logo-white" src="{{ asset('images/logo/new_logo_white.png') }}"
                                     alt="Logo MediaService" srcset="">
                             </a>
                         </div>
