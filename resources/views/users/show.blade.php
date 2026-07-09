@@ -466,28 +466,29 @@
 
         // Функция расчета линейного тренда (метод наименьших квадратов)
         function calculateLinearTrend(data) {
-            let n = data.length;
-            if (n === 0) return [];
-            
-            let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
-            for (let i = 0; i < n; i++) {
-                let valY = parseFloat(data[i]);
-                
-                sumX += i;
-                sumY += data[i];
-                sumXY += i * data[i];
-                sumXX += i * i;
-            }
-            
-            let slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
-            let intercept = (sumY - slope * sumX) / n;
-            
-            let trendValues = [];
-            for (let i = 0; i < n; i++) {
-                trendValues.push(slope * i + intercept);
-            }
-            return trendValues;
-        }
+    let n = data.length;
+    if (n === 0) return [];
+    
+    let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+    for (let i = 0; i < n; i++) {
+        // Гарантируем, что работаем с числом
+        let valY = parseFloat(data[i]) || 0; 
+        
+        sumX += i;
+        sumY += valY;        // Используем очищенное число
+        sumXY += i * valY;   // Используем очищенное число
+        sumXX += i * i;
+    }
+    
+    let slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+    let intercept = (sumY - slope * sumX) / n;
+    
+    let trendValues = [];
+    for (let i = 0; i < n; i++) {
+        trendValues.push(slope * i + intercept);
+    }
+    return trendValues;
+}
 
         // Расчет трендов
         var trendIncomeData = calculateLinearTrend(incomeData);
