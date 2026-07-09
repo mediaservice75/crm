@@ -415,149 +415,226 @@
         {!! $salesByCategory !!}
     </div>
 
-    <div class=" col-lg-12 col-md-12">
-        <div class="card">
-            <div class="card-content">
-                <div class="card-body">
-                    <h4 class="card-title mb-4 ">График заявок и поступлений за предыдущий год</h4>
-                    <canvas id="incomeChart" height="100"></canvas>
-                </div>
+    <div class="col-lg-12 col-md-12">
+    <div class="card">
+        <div class="card-content">
+            <div class="card-body">
+                <h4 class="card-title mb-4">График заявок и поступлений за предыдущий год</h4>
+                <canvas id="incomeChart" height="100"></canvas>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<div class="col-lg-12 col-md-12 mt-4">
+    <div class="card">
+        <div class="card-content">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Глобальный тренд продаж</h4>
+                <canvas id="trendChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Регистрируем плагин для подписей данных
-            Chart.register(ChartDataLabels);
+    document.addEventListener('DOMContentLoaded', function() {
+        // Регистрируем плагин для подписей данных
+        Chart.register(ChartDataLabels);
 
-            var ctx = document.getElementById('incomeChart').getContext('2d');
+        // Цвета
+        const incomeColor = '#28a745'; // Зеленый
+        const claimsColor = '#343a40'; // Темный серый/черный
 
-            // Цвета
-            const incomeColor = '#28a745'; // Зеленый
-            const claimsColor = '#343a40'; // Темный серый/черный
+        // Исходные данные
+        var incomeData = Object.values({!! json_encode($lastYearRealIncome) !!});
+        var claimsData = Object.values({!! json_encode($lastYearClaimsIncome) !!});
 
-            var monthNames = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
-            var labels = Object.keys({!! json_encode($lastYearRealIncome) !!}).map(function(month) {
-                var parts = month.split('-');
-                return monthNames[parseInt(parts[1]) - 1] + ' ' + parts[0];
-            });
+        var monthNames = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+        var labels = Object.keys({!! json_encode($lastYearRealIncome) !!}).map(function(month) {
+            var parts = month.split('-');
+            return monthNames[parseInt(parts[1]) - 1] + ' ' + parts[0];
+        });
 
-            // Функция для форматирования чисел с разделителями тысяч
-            function formatNumber(value) {
-                return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        // Функция для форматирования чисел с разделителями тысяч
+        function formatNumber(value) {
+            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
+
+        // Функция расчета линейного тренда (метод наименьших квадратов)
+        function calculateLinearTrend(data) {
+            let n = data.length;
+            if (n === 0) return [];
+            
+            let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+            for (let i = 0; i < n; i++) {
+                sumX += i;
+                sumY += data[i];
+                sumXY += i * data[i];
+                sumXX += i * i;
             }
+            
+            let slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+            let intercept = (sumY - slope * sumX) / n;
+            
+            let trendValues = [];
+            for (let i = 0; i < n; i++) {
+                trendValues.push(slope * i + intercept);
+            }
+            return trendValues;
+        }
 
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                            label: 'Поступления',
-                            data: Object.values({!! json_encode($lastYearRealIncome) !!}),
-                            borderColor: incomeColor,
-                            backgroundColor: incomeColor + '20',
-                            borderWidth: 3,
-                            tension: 0.2,
-                            fill: false,
-                            pointBackgroundColor: incomeColor,
-                            pointRadius: 5,
-                            pointHoverRadius: 7
+        // Расчет трендов
+        var trendIncomeData = calculateLinearTrend(incomeData);
+        var trendClaimsData = calculateLinearTrend(claimsData);
+
+
+        // ==========================================
+        // ГРАФИК 1: Исходная динамика
+        // ==========================================
+        var ctxIncome = document.getElementById('incomeChart').getContext('2d');
+        new Chart(ctxIncome, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Поступления',
+                        data: incomeData,
+                        borderColor: incomeColor,
+                        backgroundColor: incomeColor + '20',
+                        borderWidth: 3,
+                        tension: 0.2,
+                        fill: false,
+                        pointBackgroundColor: incomeColor,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    },
+                    {
+                        label: 'Заявок создано на',
+                        data: claimsData,
+                        borderColor: claimsColor,
+                        backgroundColor: claimsColor + '20',
+                        borderWidth: 3,
+                        tension: 0.2,
+                        fill: false,
+                        borderDash: [4, 4],
+                        pointBackgroundColor: claimsColor,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        formatter: function(value) {
+                            return formatNumber(Math.round(value)) + ' ₽';
                         },
-                        {
-                            label: 'Заявок создано на',
-                            data: Object.values({!! json_encode($lastYearClaimsIncome) !!}),
-                            borderColor: claimsColor,
-                            backgroundColor: claimsColor + '20',
-                            borderWidth: 3,
-                            tension: 0.2,
-                            fill: false,
-                            borderDash: [4, 4],
-                            pointBackgroundColor: claimsColor,
-                            pointRadius: 5,
-                            pointHoverRadius: 7
+                        font: { weight: 'bold', size: 13 },
+                        color: function(context) {
+                            return context.datasetIndex === 0 ? incomeColor : claimsColor;
+                        },
+                        display: function(context) {
+                            return context.dataset.data[context.dataIndex] !== 0;
                         }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        datalabels: {
-                            anchor: 'end',
-                            align: 'top',
-                            formatter: function(value) {
-                                return formatNumber(Math.round(value)) + ' ₽';
-                            },
-                            font: {
-                                weight: 'bold',
-                                size: 13
-                            },
-                            color: function(context) {
-                                return context.datasetIndex === 0 ? incomeColor : claimsColor;
-                            },
-                            padding: {
-                                top: 5
-                            },
-                            display: function(context) {
-                                return context.dataset.data[context.dataIndex] !== 0;
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return context.dataset.label + ': ' +
-                                        formatNumber(Math.round(context.raw)) + ' ₽';
-                                }
-                            }
-                        },
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                usePointStyle: true,
-                                padding: 20,
-                                font: {
-                                    size: 14
-                                }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + formatNumber(Math.round(context.raw)) + ' ₽';
                             }
                         }
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return formatNumber(Math.round(value));
-                                },
-                                padding: 10
-                            },
-                            grid: {
-                                drawBorder: false
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
+                    legend: { position: 'top', labels: { usePointStyle: true, padding: 20, font: { size: 14 } } }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { callback: function(value) { return formatNumber(Math.round(value)); }, padding: 10 },
+                        grid: { drawBorder: false }
+                    },
+                    x: { grid: { display: false } }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+
+
+        // ==========================================
+        // ГРАФИК 2: Линии тренда
+        // ==========================================
+        var ctxTrend = document.getElementById('trendChart').getContext('2d');
+        new Chart(ctxTrend, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Тренд: Поступления',
+                        data: trendIncomeData,
+                        borderColor: incomeColor,
+                        borderWidth: 4, // Сделаем чуть толще для солидности
+                        tension: 0,     // Строго прямая линия
+                        pointRadius: 0, // Убираем точки, важен только вектор
+                        pointHoverRadius: 0,
+                        fill: false
+                    },
+                    {
+                        label: 'Тренд: Заявки',
+                        data: trendClaimsData,
+                        borderColor: claimsColor,
+                        borderWidth: 4,
+                        borderDash: [6, 6],
+                        tension: 0,
+                        pointRadius: 0,
+                        pointHoverRadius: 0,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    datalabels: {
+                        display: false // Полностью отключаем цифры над точками, чтобы они не слипались на прямой линии
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ~' + formatNumber(Math.round(context.raw)) + ' ₽';
                             }
                         }
-                    }
+                    },
+                    legend: { position: 'top', labels: { usePointStyle: true, padding: 20, font: { size: 14 } } }
                 },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { callback: function(value) { return formatNumber(Math.round(value)); }, padding: 10 },
+                        grid: { drawBorder: false }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
 
-                plugins: [ChartDataLabels]
-            });
-
-            // Обработка стрелок для клиентов
-            document.querySelectorAll('.client-header').forEach(header => {
-                header.addEventListener('click', function() {
-                    const arrow = this.querySelector('.client-arrow');
-                    if (arrow) {
-                        arrow.classList.toggle('fa-chevron-right');
-                        arrow.classList.toggle('fa-chevron-down');
-                    }
-                });
+        // Обработка стрелок для клиентов
+        document.querySelectorAll('.client-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const arrow = this.querySelector('.client-arrow');
+                if (arrow) {
+                    arrow.classList.toggle('fa-chevron-right');
+                    arrow.classList.toggle('fa-chevron-down');
+                }
             });
         });
-    </script>
+    });
+</script>
 @endsection
