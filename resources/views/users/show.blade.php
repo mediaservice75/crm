@@ -471,6 +471,8 @@
             
             let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
             for (let i = 0; i < n; i++) {
+                let valY = parseFloat(data[i]);
+                
                 sumX += i;
                 sumY += data[i];
                 sumXY += i * data[i];
