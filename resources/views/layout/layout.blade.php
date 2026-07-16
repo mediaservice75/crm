@@ -180,7 +180,7 @@
                             </li>
                         @endif
 
-                        @if (getCountClaimsResponsible() != 0)
+                        {{-- @if (getCountClaimsResponsible() != 0) --}}
                             <li class="sidebar-item  ">
                                 <a href="{{ route('claim.distribution') }}" class='sidebar-link'>
                                     <i class="bi bi-clipboard-plus-fill"></i>
@@ -192,7 +192,7 @@
                                     </span>
                                 </a>
                             </li>
-                        @endif
+                        {{-- @endif --}}
 
                         @if (getCountClaimsWithoutUser() != 0)
                             <li class="sidebar-item  ">
