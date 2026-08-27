@@ -480,9 +480,10 @@
                                                     <input class="form-check-input ms-3" name="isBarter" id="barterC"
                                                         type="checkbox" value="1">
                                                     <label for="barterC">Бартер</label>
-                                                    
+
                                                     <input type="hidden" name="isInstallment" value="0">
-                                                    <input class="form-check-input ms-3" name="isInstallment" id="installmentC" type="checkbox" value="1">
+                                                    <input class="form-check-input ms-3" name="isInstallment"
+                                                        id="installmentC" type="checkbox" value="1">
                                                     <label for="installmentC">Рассрочка</label>
                                                 </div>
                                             </div>
@@ -661,14 +662,9 @@
                                             <div class="col-md-12 mt-3">
                                                 <div class="form-group">
                                                     <label>Комментарий к заявке: </label>
-                                                    <textarea class="form-control @if ($errors->has('comment')) is-invalid @endif"
-                                                    id="comment"
-                                                    name="comment"
-                                                    rows="3"
-                                                    placeholder="Введите дополнительный комментарий..."
-                                                    style="overflow:hidden; resize:none"
-                                                    oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"
-                                                    >{{ old('comment') }}</textarea>
+                                                    <textarea class="form-control @if ($errors->has('comment')) is-invalid @endif" id="comment" name="comment"
+                                                        rows="3" placeholder="Введите дополнительный комментарий..." style="overflow:hidden; resize:none"
+                                                        oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">{{ old('comment') }}</textarea>
                                                     @if ($errors->has('comment'))
                                                         <div class="invalid-feedback">
                                                             <i class="bx bx-radio-circle"></i>
@@ -752,27 +748,28 @@
                                             </div>
 
                                             <!-- Блок дат рассрочки (скрыт по умолчанию) -->
-<div class="row mt-3 installment-block d-none" id="installment-block">
-    <div class="col-12">
-        <div class="form-group">
-            <label>Даты рассрочки:</label>
-            <div id="installment-dates-container">
-                <!-- Сюда будут динамически добавляться поля дат -->
-            </div>
-            <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="add-installment-date">
-                Добавить дату
-            </button>
-            @if ($errors->has('installment_dates'))
-                <div class="invalid-feedback d-block">
-                    <i class="bx bx-radio-circle"></i>
-                    @foreach ($errors->get('installment_dates') as $message)
-                        {{ $message }}<br>
-                    @endforeach
-                </div>
-            @endif
-        </div>
-    </div>
-</div>
+                                            <div class="row mt-3 installment-block d-none" id="installment-block">
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label>Даты рассрочки:</label>
+                                                        <div id="installment-dates-container">
+                                                            <!-- Сюда будут динамически добавляться поля дат -->
+                                                        </div>
+                                                        <button type="button" class="btn btn-sm btn-outline-primary mt-2"
+                                                            id="add-installment-date">
+                                                            Добавить дату
+                                                        </button>
+                                                        @if ($errors->has('installment_dates'))
+                                                            <div class="invalid-feedback d-block">
+                                                                <i class="bx bx-radio-circle"></i>
+                                                                @foreach ($errors->get('installment_dates') as $message)
+                                                                    {{ $message }}<br>
+                                                                @endforeach
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
 
                                             <div class="row mt-4">
                                                 <div class="col-12">
@@ -841,65 +838,65 @@
     </script>
 
     <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const installmentCheckbox = document.getElementById('installmentC');
-    const installmentBlock = document.getElementById('installment-block');
-    const datesContainer = document.getElementById('installment-dates-container');
-    const addDateBtn = document.getElementById('add-installment-date');
+        document.addEventListener('DOMContentLoaded', function() {
+            const installmentCheckbox = document.getElementById('installmentC');
+            const installmentBlock = document.getElementById('installment-block');
+            const datesContainer = document.getElementById('installment-dates-container');
+            const addDateBtn = document.getElementById('add-installment-date');
 
-    // Функция показа/скрытия блока
-    function toggleInstallmentBlock() {
-        if (installmentCheckbox.checked) {
-            installmentBlock.classList.remove('d-none');
-        } else {
-            installmentBlock.classList.add('d-none');
-        }
-    }
+            // Функция показа/скрытия блока
+            function toggleInstallmentBlock() {
+                if (installmentCheckbox.checked) {
+                    installmentBlock.classList.remove('d-none');
+                } else {
+                    installmentBlock.classList.add('d-none');
+                }
+            }
 
-    // Обработчик изменения чекбокса
-    installmentCheckbox.addEventListener('change', toggleInstallmentBlock);
+            // Обработчик изменения чекбокса
+            installmentCheckbox.addEventListener('change', toggleInstallmentBlock);
 
-    // Показываем блок при загрузке, если чекбокс отмечен (например, после валидации)
-    toggleInstallmentBlock();
+            // Показываем блок при загрузке, если чекбокс отмечен (например, после валидации)
+            toggleInstallmentBlock();
 
-    // Функция добавления новой даты
-    function addDateInput(value = '') {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'input-group mb-2 installment-date-item';
+            // Функция добавления новой даты
+            function addDateInput(value = '') {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'input-group mb-2 installment-date-item';
 
-        const input = document.createElement('input');
-        input.type = 'date';
-        input.name = 'installment_dates[]';
-        input.className = 'form-control';
-        input.required = true; // Можно убрать, если даты необязательны
-        if (value) {
-            input.value = value;
-        }
+                const input = document.createElement('input');
+                input.type = 'date';
+                input.name = 'installment_dates[]';
+                input.className = 'form-control';
+                input.required = true; // Можно убрать, если даты необязательны
+                if (value) {
+                    input.value = value;
+                }
 
-        const removeBtn = document.createElement('button');
-        removeBtn.type = 'button';
-        removeBtn.className = 'btn btn-danger';
-        removeBtn.innerHTML = '&times;';
-        removeBtn.addEventListener('click', function() {
-            wrapper.remove();
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'btn btn-danger';
+                removeBtn.innerHTML = '&times;';
+                removeBtn.addEventListener('click', function() {
+                    wrapper.remove();
+                });
+
+                wrapper.appendChild(input);
+                wrapper.appendChild(removeBtn);
+                datesContainer.appendChild(wrapper);
+            }
+
+            // Обработчик кнопки "Добавить дату"
+            addDateBtn.addEventListener('click', function() {
+                addDateInput();
+            });
+
+            // Если после валидации есть старые значения, добавляем их
+            @if (old('installment_dates'))
+                @foreach (old('installment_dates') as $date)
+                    addDateInput('{{ $date }}');
+                @endforeach
+            @endif
         });
-
-        wrapper.appendChild(input);
-        wrapper.appendChild(removeBtn);
-        datesContainer.appendChild(wrapper);
-    }
-
-    // Обработчик кнопки "Добавить дату"
-    addDateBtn.addEventListener('click', function() {
-        addDateInput();
-    });
-
-    // Если после валидации есть старые значения, добавляем их
-    @if(old('installment_dates'))
-        @foreach(old('installment_dates') as $date)
-            addDateInput('{{ $date }}');
-        @endforeach
-    @endif
-});
-</script>
+    </script>
 @endsection
