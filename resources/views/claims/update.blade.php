@@ -207,25 +207,24 @@
         </style>
 
         <div class="col-md-12 mt-3">
-            <div class="form-group">
-                <label>Комментарий к заявке: </label>
-                <textarea class="form-control @if ($errors->has('comment')) is-invalid @endif"
-                id="comment"
-                name="comment"
-                rows="3"
-                style="overflow:hidden; resize:none"
-                oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"
-                placeholder="Введите дополнительный комментарий...">{{ $claim->comment }}</textarea>
-                @if ($errors->has('comment'))
-                    <div class="invalid-feedback">
-                        <i class="bx bx-radio-circle"></i>
-                        @foreach ($errors->get('comment') as $message)
-                            {{ $message }}<br>
-                        @endforeach
-                    </div>
-                @endif
+    <div class="form-group">
+        <label>Комментарий к заявке: </label>
+        <textarea class="form-control @if ($errors->has('comment')) is-invalid @endif"
+            id="comment"
+            name="comment"
+            rows="3"
+            style="field-sizing: content; min-height: 100px; resize: vertical;"
+            placeholder="Введите дополнительный комментарий...">{{ $claim->comment }}</textarea>
+        @if ($errors->has('comment'))
+            <div class="invalid-feedback">
+                <i class="bx bx-radio-circle"></i>
+                @foreach ($errors->get('comment') as $message)
+                    {{ $message }}<br>
+                @endforeach
             </div>
-        </div>
+        @endif
+    </div>
+</div>
 
 
 
