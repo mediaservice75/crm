@@ -72,6 +72,12 @@
                             </span>
                         @endif
 
+                        @if ($claim->isInstallment)
+                            <span class="badge bg-primary me-2">
+                                Рассрочка
+                            </span>
+                        @endif
+
                         @if ($claim->notInclude)
                             <span class="badge bg-danger me-2">
                                 Не включена в план продаж
@@ -108,6 +114,19 @@
                     <p class="mt-1 mb-0"><b class="text-primary">Дата:</b> {{ $claim->getCreateDate() }}</p>
                     <p class="mt-1 mb-0"><b class="text-primary">Клиент:</b> {{ $claim->client->name }}</p>
                     <p class="mt-1 mb-0"><b class="text-primary">Стоимость:</b> {{ money($claim->amount) }} р.</p>
+                    @if ($claim->isInstallment)
+                        <p class="mt-1 mb-0"><b class="text-primary">Рассрочка:</b></p>
+                        @if ($claim->installmentDates->isNotEmpty())
+                            <ul class="mb-0">
+                                @foreach ($claim->installmentDates as $installmentDate)
+                                    <li>{{ \Carbon\Carbon::parse($installmentDate->installment_date)->format('d.m.Y') }}
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <p class="mb-0">Даты не указаны</p>
+                        @endif
+                    @endif
                     <p class="mt-1 mb-0"><b class="text-primary">Выполнить до:</b> {{ $claim->getDeadline() }}</p>
                     @if ($claim->comment)
                         <p class="mt-1"><b class="text-primary">Комментарий:</b><br> {!! nl2br($claim->comment) !!}</p>
