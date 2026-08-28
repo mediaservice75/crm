@@ -143,6 +143,16 @@ class ClaimController extends Controller
 
             $claim = Claim::create($request->all());
 
+            if ($request->has('installment_dates') && is_array($request->installment_dates)){
+                foreach ($request->installment_dates as $date){
+                    if ($date) {
+                        $claim->installmentDates()->create([
+                            'installment_date' => $date,
+                        ]);
+                    }
+                }
+            }
+
             if ($request->hasFile('brif')) {
                 $folder = date("Y-m-d");
                 $brifFilepath = $request->file('brif')->store("images/{$folder}");

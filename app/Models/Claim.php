@@ -27,6 +27,7 @@ class Claim extends Model {
         'comment',
         'notInclude',
         'isBarter',
+        'isInstallment',
         'number_invoice',
         'created_at',
         'close_user_id'
@@ -86,5 +87,9 @@ class Claim extends Model {
 
     public function pusherNotofications() {
         return $this->hasMany(PusherNotification::class);
+    }
+
+    public function installmentDates() {
+        return $this->hasMany(InstallmentDate::class);
     }
 }
