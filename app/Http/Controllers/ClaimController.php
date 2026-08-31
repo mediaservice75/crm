@@ -35,15 +35,13 @@ use Illuminate\Support\Facades\URL;
 use mysql_xdevapi\Exception;
 use function Symfony\Component\VarDumper\Dumper\esc;
 
-class ClaimController extends Controller
-{
+class ClaimController extends Controller {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
         abort(404);
     }
 
@@ -52,8 +50,7 @@ class ClaimController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         abort(404);
     }
 
@@ -63,8 +60,7 @@ class ClaimController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $client = Client::find($request->client_id);
         if ($request->amount == null || trim($request->amount) == '' || $request->amount == '') {
             $request->merge([
@@ -143,8 +139,8 @@ class ClaimController extends Controller
 
             $claim = Claim::create($request->all());
 
-            if ($request->has('installment_dates') && is_array($request->installment_dates)){
-                foreach ($request->installment_dates as $date){
+            if ($request->has('installment_dates') && is_array($request->installment_dates)) {
+                foreach ($request->installment_dates as $date) {
                     if ($date) {
                         $claim->installmentDates()->create([
                             'installment_date' => $date,
@@ -300,8 +296,7 @@ class ClaimController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
+    public function show($id) {
 
         $claim = Claim::find($id);
         $countAdds = claimsAdds($claim);
@@ -343,8 +338,7 @@ class ClaimController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         $claim = Claim::findOrFail($id);
         $groups = Group::all();
         $services = Service::where('group_id', $claim->service->group->id)->get();
@@ -371,8 +365,7 @@ class ClaimController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
 
         if ($request->amount == null || trim($request->amount) == '' || $request->amount == '') {
             $request->merge([
@@ -525,21 +518,18 @@ class ClaimController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         $claim = Claim::find($id);
         HistoryPayment::where('claim_id', $id)->delete();
         $claim->delete();
         return redirect()->route('claim.claimsMy')->with('success', 'Данные успешно удалены 👍');
     }
 
-    public function claimInputs()
-    {
+    public function claimInputs() {
         abort(404);
     }
 
-    public function claimDistribution()
-    {
+    public function claimDistribution() {
         $claims = Claim::whereNull('user_id')
             ->where('isClose', 0)
             ->with('service')
@@ -556,8 +546,7 @@ class ClaimController extends Controller
         return view('claims.distribution', compact('claims', 'users'));
     }
 
-    public function claimDistributionComplete()
-    {
+    public function claimDistributionComplete() {
         $claims = Claim::whereNotNull('user_id')
             ->where('isClose', 0)
             ->with('service')
@@ -572,8 +561,7 @@ class ClaimController extends Controller
         return view('claims.distribution-complete', compact('claims', 'users'));
     }
 
-    public function claimUserUpdate($cliam, Request $request)
-    {
+    public function claimUserUpdate($cliam, Request $request) {
         $validatedData = $request->validate(
             [
                 'user_id' => 'required|integer',
@@ -631,8 +619,7 @@ class ClaimController extends Controller
         }
     }
 
-    public function claimAccept($cliam, Request $request)
-    {
+    public function claimAccept($cliam, Request $request) {
 
         DB::beginTransaction();
 
@@ -680,8 +667,7 @@ class ClaimController extends Controller
     }
 
 
-    public function storeHistory($id, Request $request)
-    {
+    public function storeHistory($id, Request $request) {
         $validatedData = $request->validate(
             [
                 'status_id' => 'required|integer',
@@ -716,8 +702,7 @@ class ClaimController extends Controller
         }
     }
 
-    public function claimGroups()
-    {
+    public function claimGroups() {
 
         $claims = Claim::whereNull('user_id')
             ->where('isClose', 0)
@@ -734,8 +719,7 @@ class ClaimController extends Controller
         return view('claims.claim-group', compact('claims', 'users'));
     }
 
-    public function claimsMy()
-    {
+    public function claimsMy() {
 
         $claimUsers = ClaimUsers::where('user_id', Auth::user()->id)
             ->get();
@@ -767,8 +751,7 @@ class ClaimController extends Controller
         return view('claims.claims-my', compact('claims', 'users'));
     }
 
-    public function claimsClosed($id, Request $request)
-    {
+    public function claimsClosed($id, Request $request) {
         $validatedData = $request->validate(
             [
                 'commentClose' => 'required',
@@ -813,8 +796,7 @@ class ClaimController extends Controller
         }
     }
 
-    public function createdClaims()
-    {
+    public function createdClaims() {
 
         $claims = Claim::where('creator', Auth::user()->id)
             ->where('isClose', 0)
@@ -830,8 +812,7 @@ class ClaimController extends Controller
     }
 
 
-    public function getClaimsClosed()
-    {
+    public function getClaimsClosed() {
 
         $claims = Claim::where('user_id', Auth::user()->id)
             ->orWhere('creator', Auth::user()->id)
@@ -848,8 +829,7 @@ class ClaimController extends Controller
     }
 
 
-    public function createInvoice()
-    {
+    public function createInvoice() {
 
         if (Auth::user()->role->level <= 2 || auth()->user()->userInvoice != 0) {
             $claims = Claim::where('isInvoice', 1)
@@ -866,8 +846,7 @@ class ClaimController extends Controller
         }
     }
 
-    public function storeInvoice($id, Request $request)
-    {
+    public function storeInvoice($id, Request $request) {
         $name = 'invoice' . $request->number;
         //        $validatedData = $request->validate(
         //            [
@@ -937,8 +916,7 @@ class ClaimController extends Controller
     }
 
 
-    public function closedInvoice()
-    {
+    public function closedInvoice() {
         $claims = Claim::where('isInvoice', 1)
             ->whereNotNull('invoice')
             ->with('service')
@@ -948,8 +926,7 @@ class ClaimController extends Controller
         return view('claims.close-invoice', compact('claims'));
     }
 
-    public function updateInvoice($id, Request $request)
-    {
+    public function updateInvoice($id, Request $request) {
         $name = 'invoice' . $request->number;
         //        $validatedData = $request->validate(
         //            [
@@ -1020,8 +997,7 @@ class ClaimController extends Controller
     }
 
 
-    public function storeAd($id, Request $request)
-    {
+    public function storeAd($id, Request $request) {
         $validatedData = $request->validate(
             [
                 'range_date_hidden' => 'required',
@@ -1064,15 +1040,13 @@ class ClaimController extends Controller
         }
     }
 
-    public function deleteAd(Request $request, $id)
-    {
+    public function deleteAd(Request $request, $id) {
         $ad = ActiveAd::find($id);
         $ad->delete();
         return redirect()->back()->with('success', 'Рекламная кампания успешно удалена 👍')->withInput($request->all());
     }
 
-    public function getActiveAd()
-    {
+    public function getActiveAd() {
 
         if (Auth::user()->role->level == 4) {
 
@@ -1089,8 +1063,7 @@ class ClaimController extends Controller
         return view('activeAd.index', compact('activeAds'));
     }
 
-    public function getPastActiveAd()
-    {
+    public function getPastActiveAd() {
 
         if (Auth::user()->role->level == 4) {
 
@@ -1108,16 +1081,14 @@ class ClaimController extends Controller
         return view('activeAd.past', compact('activeAds'));
     }
 
-    public function getActiveAdAll()
-    {
+    public function getActiveAdAll() {
         $activeAds = Claim::whereHas('activeAd', function ($q) {
             $q->where('end_date', '>=', now()->second(0)->minute(0)->hour(0));
         })->get();
         return view('activeAd.all', compact('activeAds'));
     }
 
-    public function getPastActiveAdAll()
-    {
+    public function getPastActiveAdAll() {
 
         $activeAds = Claim::whereHas('activeAd', function ($q) {
             $q->where('end_date', '<=', now()->second(0)->minute(0)->hour(0));
@@ -1126,8 +1097,7 @@ class ClaimController extends Controller
         return view('activeAd.all-past', compact('activeAds'));
     }
 
-    public function deleteFile($id)
-    {
+    public function deleteFile($id) {
         $file = ClaimFile::find($id);
         if (!$file) {
             return response()->json([
@@ -1142,21 +1112,18 @@ class ClaimController extends Controller
     }
 
 
-    public function complete()
-    {
+    public function complete() {
         $groups = Group::all();
         return view('claims.complete', compact('groups'));
     }
 
-    public function myComplete()
-    {
+    public function myComplete() {
         //        $groups = Group::all();
         return view('claims.my-complete');
     }
 
 
-    public function getCompleteClaims(Request $request)
-    {
+    public function getCompleteClaims(Request $request) {
 
 
         $start = $request->month . '-01 00:00:00';
@@ -1267,8 +1234,7 @@ class ClaimController extends Controller
     }
 
 
-    public function completeInvoice(Request $request)
-    {
+    public function completeInvoice(Request $request) {
 
         $id = $request->id;
         $number_invoice = $request->number_invoice;
@@ -1308,8 +1274,7 @@ class ClaimController extends Controller
         }
     }
 
-    public function storeUsers($id, Request $request)
-    {
+    public function storeUsers($id, Request $request) {
         if (!isset($request->user_id)) {
             $request->session()->flash('error', 'Вы не выбрали ни однго сотрудника 😢');
             return back();
@@ -1338,15 +1303,13 @@ class ClaimController extends Controller
         //        dd($id, $request);
     }
 
-    public function deleteUser(Request $request, $id)
-    {
+    public function deleteUser(Request $request, $id) {
         $claimUser = ClaimUsers::find($id);
         $claimUser->delete();
         return redirect()->back()->with('success', 'Данные успешно удалены 👍')->withInput($request->all());
     }
 
-    public function repeatClaim($id)
-    {
+    public function repeatClaim($id) {
         $claim = Claim::findOrFail($id);
         $groups = Group::all();
         $services = Service::where('group_id', $claim->service->group->id)->get();
@@ -1365,8 +1328,7 @@ class ClaimController extends Controller
         return view('claims.repeat', compact('groups', 'claim', 'services', 'packages', 'claimFiles', 'users'));
     }
 
-    public function repeatClaimStore($id, Request $request)
-    {
+    public function repeatClaimStore($id, Request $request) {
 
         $client = Client::find($request->client_id);
         if ($request->amount == null || trim($request->amount) == '' || $request->amount == '') {
@@ -1392,6 +1354,10 @@ class ClaimController extends Controller
                 'deadlineClaim.required' => 'Поле срок выполнения не может быть пустым',
                 'deadlineClaim.date' => 'Поле срок выполения должен быть в формате даты',
                 'amount.numeric' => 'Поле стоимость должно быть формате числа',
+            ],
+            [
+                'installment_dates' => 'nullable|array',
+                'installment_dates.*' => 'date',
             ]
         );
 
@@ -1424,6 +1390,16 @@ class ClaimController extends Controller
                 $request->merge(['notInclude' => '1']);
             }
             $claim = Claim::create($request->all());
+
+            if ($request->has('installment_dates') && is_array($request->installment_dates)) {
+                foreach ($request->installment_dates as $date) {
+                    if ($date) {
+                        $claim->installmentDates()->create([
+                            'installment_date' => $date,
+                        ]);
+                    }
+                }
+            }
 
             if ($request->hasFile('brif')) {
                 $folder = date("Y-m-d");
