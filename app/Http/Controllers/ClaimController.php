@@ -392,6 +392,8 @@ class ClaimController extends Controller {
                 'service_id' => 'required|integer',
                 'deadlineClaim' => 'required|date',
                 'amount' => 'numeric',
+                'installment_dates' => 'nullable|array',
+                'installment_dates.*' => 'date',
             ],
             [
                 'service_id.integer' => 'Выберите значение из списка',
@@ -428,6 +430,18 @@ class ClaimController extends Controller {
             ]);
 
             $claim->fill($request->all())->save();
+
+            $claim->installmentDates()->delete();
+
+            if ($request->has('installment_dates') && is_array($request->installment_dates)) {
+                foreach ($request->installment_dates as $date) {
+                    if ($date) {
+                        $claim->installmentDates()->create([
+                            'installment_date' => $date,
+                        ]);
+                    }
+                }
+            }
 
 
             if ($request->hasFile('brif')) {
