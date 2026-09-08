@@ -860,29 +860,45 @@
             toggleInstallmentBlock();
 
             // Функция добавления новой даты
-            function addDateInput(value = '') {
+            function addDateInput(dateValue = '', amountValue = '') {
                 const wrapper = document.createElement('div');
-                wrapper.className = 'input-group mb-2 installment-date-item';
+                wrapper.className = 'row mb-2 installment-date-item';
 
-                const input = document.createElement('input');
-                input.type = 'date';
-                input.name = 'installment_dates[]';
-                input.className = 'form-control';
-                input.required = true; // Можно убрать, если даты необязательны
-                if (value) {
-                    input.value = value;
-                }
+                // Дата
+                const dateCol = document.createElement('div');
+                dateCol.className = 'col-6';
+                const dateInput = document.createElement('input');
+                dateInput.type = 'date';
+                dateInput.name = 'installment_dates[]';
+                dateInput.className = 'form-control';
+                dateInput.placeholder = 'Дата';
+                if (dateValue) dateInput.value = dateValue;
+                dateCol.appendChild(dateInput);
 
+                // Сумма
+                const amountCol = document.createElement('div');
+                amountCol.className = 'col-5';
+                const amountInput = document.createElement('input');
+                amountInput.type = 'text';
+                amountInput.name = 'installment_amounts[]';
+                amountInput.className = 'form-control';
+                amountInput.placeholder = 'Сумма';
+                if (amountValue) amountInput.value = amountValue;
+                amountCol.appendChild(amountInput);
+
+                // Кнопка удаления
+                const removeCol = document.createElement('div');
+                removeCol.className = 'col-1';
                 const removeBtn = document.createElement('button');
                 removeBtn.type = 'button';
                 removeBtn.className = 'btn btn-danger';
                 removeBtn.innerHTML = '&times;';
-                removeBtn.addEventListener('click', function() {
-                    wrapper.remove();
-                });
+                removeBtn.addEventListener('click', () => wrapper.remove());
+                removeCol.appendChild(removeBtn);
 
-                wrapper.appendChild(input);
-                wrapper.appendChild(removeBtn);
+                wrapper.appendChild(dateCol);
+                wrapper.appendChild(amountCol);
+                wrapper.appendChild(removeCol);
                 datesContainer.appendChild(wrapper);
             }
 

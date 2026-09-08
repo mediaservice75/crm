@@ -117,12 +117,15 @@
                     @if ($claim->isInstallment)
                         <p class="mt-1 mb-0"><b class="text-primary">Рассрочка:</b></p>
                         @if ($claim->installmentDates->isNotEmpty())
-                            <ul class="mb-0">
+                            <div class="mt-1">
                                 @foreach ($claim->installmentDates as $installmentDate)
-                                    <li>{{ \Carbon\Carbon::parse($installmentDate->installment_date)->format('d.m.Y') }}
-                                    </li>
+                                    <span class="badge me-1 mb-1"
+                                        style="background-color: #f1f3f5; color: #495057; border: 1px solid #ced4da;">
+                                        {{ $installmentDate->installment_date->format('d.m.Y') }} -
+                                        <b>{{ number_format($installmentDate->amount, 0, ',', ' ') }} ₽</b>
+                                    </span>
                                 @endforeach
-                            </ul>
+                            </div>
                         @else
                             <p class="mb-0">Даты не указаны</p>
                         @endif

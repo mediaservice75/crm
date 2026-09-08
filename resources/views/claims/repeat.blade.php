@@ -350,18 +350,42 @@
                 }
             }
 
-            // Функция добавления поля даты
-            function addDateInput(value = '') {
+            // Функция добавления новой даты с суммой
+            function addDateInput(dateValue = '', amountValue = '') {
                 const wrapper = document.createElement('div');
-                wrapper.className = 'input-group mb-2 installment-date-item';
+                wrapper.className = 'row mb-2 installment-date-item';
 
-                const input = document.createElement('input');
-                input.type = 'date';
-                input.name = 'installment_dates[]';
-                input.className = 'form-control';
-                if (value) {
-                    input.value = value;
+                // Колонка с датой
+                const dateCol = document.createElement('div');
+                dateCol.className = 'col-6';
+
+                const dateInput = document.createElement('input');
+                dateInput.type = 'date';
+                dateInput.name = 'installment_dates[]';
+                dateInput.className = 'form-control';
+                dateInput.placeholder = 'Дата';
+                if (dateValue) {
+                    dateInput.value = dateValue;
                 }
+                dateCol.appendChild(dateInput);
+
+                // Колонка с суммой
+                const amountCol = document.createElement('div');
+                amountCol.className = 'col-5';
+
+                const amountInput = document.createElement('input');
+                amountInput.type = 'text';
+                amountInput.name = 'installment_amounts[]';
+                amountInput.className = 'form-control';
+                amountInput.placeholder = 'Сумма';
+                if (amountValue) {
+                    amountInput.value = amountValue;
+                }
+                amountCol.appendChild(amountInput);
+
+                // Кнопка удаления
+                const removeCol = document.createElement('div');
+                removeCol.className = 'col-1';
 
                 const removeBtn = document.createElement('button');
                 removeBtn.type = 'button';
@@ -370,9 +394,12 @@
                 removeBtn.addEventListener('click', function() {
                     wrapper.remove();
                 });
+                removeCol.appendChild(removeBtn);
 
-                wrapper.appendChild(input);
-                wrapper.appendChild(removeBtn);
+                wrapper.appendChild(dateCol);
+                wrapper.appendChild(amountCol);
+                wrapper.appendChild(removeCol);
+
                 datesContainer.appendChild(wrapper);
             }
 
@@ -385,14 +412,15 @@
             // Предзаполнение существующими датами рассрочки
             @if ($claim->isInstallment && $claim->installmentDates)
                 @foreach ($claim->installmentDates as $installmentDate)
-                    addDateInput('{{ $installmentDate->installment_date }}');
+                    addDateInput('{{ $installmentDate->installment_date->format('Y-m-d') }}',
+                        '{{ $installmentDate->amount }}');
                 @endforeach
             @endif
 
             // Если после валидации были старые значения
             @if (old('installment_dates'))
-                @foreach (old('installment_dates') as $date)
-                    addDateInput('{{ $date }}');
+                @foreach (old('installment_dates') as $key => $date)
+                    addDateInput('{{ $date }}', '{{ old('installment_amounts')[$key] ?? '' }}');
                 @endforeach
             @endif
 

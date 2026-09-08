@@ -140,10 +140,11 @@ class ClaimController extends Controller {
             $claim = Claim::create($request->all());
 
             if ($request->has('installment_dates') && is_array($request->installment_dates)) {
-                foreach ($request->installment_dates as $date) {
+                foreach ($request->installment_dates as $key => $date) {
                     if ($date) {
                         $claim->installmentDates()->create([
                             'installment_date' => $date,
+                            'amount' => $request->installment_amounts[$key] ?? 0,
                         ]);
                     }
                 }
@@ -434,10 +435,11 @@ class ClaimController extends Controller {
             $claim->installmentDates()->delete();
 
             if ($request->has('installment_dates') && is_array($request->installment_dates)) {
-                foreach ($request->installment_dates as $date) {
+                foreach ($request->installment_dates as $key => $date) {
                     if ($date) {
                         $claim->installmentDates()->create([
                             'installment_date' => $date,
+                            'amount' => $request->installment_amounts[$key] ?? 0,
                         ]);
                     }
                 }
@@ -1361,17 +1363,17 @@ class ClaimController extends Controller {
             [
                 'service_id' => 'required|integer',
                 'deadlineClaim' => 'required|date',
-                'amount' => 'numeric',
+                // 'amount' => 'numeric',
             ],
             [
                 'service_id.integer' => 'Выберите значение из списка',
                 'deadlineClaim.required' => 'Поле срок выполнения не может быть пустым',
                 'deadlineClaim.date' => 'Поле срок выполения должен быть в формате даты',
-                'amount.numeric' => 'Поле стоимость должно быть формате числа',
+                // 'amount.numeric' => 'Поле стоимость должно быть формате числа',
             ],
             [
-                'installment_dates' => 'nullable|array',
-                'installment_dates.*' => 'date',
+                // 'installment_dates' => 'nullable|array',
+                // 'installment_dates.*' => 'date',
             ]
         );
 
@@ -1406,10 +1408,11 @@ class ClaimController extends Controller {
             $claim = Claim::create($request->all());
 
             if ($request->has('installment_dates') && is_array($request->installment_dates)) {
-                foreach ($request->installment_dates as $date) {
+                foreach ($request->installment_dates as $key => $date) {
                     if ($date) {
                         $claim->installmentDates()->create([
                             'installment_date' => $date,
+                            'amount' => $request->installment_amounts[$key] ?? 0,
                         ]);
                     }
                 }

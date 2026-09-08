@@ -11,6 +11,11 @@ class InstallmentDate extends Model {
     protected $fillable = [
         'claim_id',
         'installment_date',
+        'amount',
+    ];
+
+    protected $casts = [
+        'installment_date' => 'date',
     ];
 
     public function claim() {
