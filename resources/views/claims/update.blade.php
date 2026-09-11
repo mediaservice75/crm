@@ -215,7 +215,7 @@
             <div class="form-group">
                 <label>Комментарий к заявке: </label>
                 <textarea class="form-control @if ($errors->has('comment')) is-invalid @endif" id="comment" name="comment"
-                    rows="3" style="field-sizing: content; min-height: 100px; resize: vertical;"
+                    rows="12" style="field-sizing: content; min-height: 16em; resize: vertical;"
                     placeholder="Введите дополнительный комментарий...">{{ $claim->comment }}</textarea>
                 @if ($errors->has('comment'))
                     <div class="invalid-feedback">

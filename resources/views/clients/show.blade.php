@@ -663,7 +663,7 @@
                                                 <div class="form-group">
                                                     <label>Комментарий к заявке: </label>
                                                     <textarea class="form-control @if ($errors->has('comment')) is-invalid @endif" id="comment" name="comment"
-                                                        rows="3" placeholder="Введите дополнительный комментарий..." style="overflow:hidden; resize:none"
+                                                        rows="12" placeholder="Введите дополнительный комментарий..." style="overflow:hidden; resize:none"
                                                         oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">{{ old('comment') }}</textarea>
                                                     @if ($errors->has('comment'))
                                                         <div class="invalid-feedback">
