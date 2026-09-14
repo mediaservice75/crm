@@ -15,18 +15,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
 
-class SalesPlanController extends Controller
-{
+class SalesPlanController extends Controller {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
         $salesPlan = SalesPlan::orderBy('month', 'desc')->get();
-//        where('month', date('Y-m-01'))
-//            ->get();
+        //        where('month', date('Y-m-01'))
+        //            ->get();
 
         return view('plan.index', compact('salesPlan'));
     }
@@ -36,16 +34,14 @@ class SalesPlanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         $groups = Group::all();
         $users = Group::with('roles.users')
             ->where('name', 'Отдел продаж')
             ->get();
 
-//        dd($users);
+        //        dd($users);
         return view('plan.create', compact('groups', 'users'));
-
     }
 
     /**
@@ -54,8 +50,7 @@ class SalesPlanController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
 
         $amount = str_replace(' ', '', $request->plan);
 
@@ -96,7 +91,7 @@ class SalesPlanController extends Controller
         } catch (\Exception $exception) {
             DB::rollback();
 
-            $request->session()->flash('error', 'При добавлении данных произошла ошибка 😢' );
+            $request->session()->flash('error', 'При добавлении данных произошла ошибка 😢');
             return back();
         }
     }
@@ -107,8 +102,7 @@ class SalesPlanController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
+    public function show($id) {
         abort(404);
     }
 
@@ -118,8 +112,7 @@ class SalesPlanController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         $plan = SalesPlan::firstWhere('id', $id);
         $groups = Group::all();
         $users = UserM::where('isBlocked', 0)->get();
@@ -133,8 +126,7 @@ class SalesPlanController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         $validatedData = $request->validate(
             [
                 'user_id' => 'required|integer',
@@ -170,24 +162,22 @@ class SalesPlanController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         $salesPlan = SalesPlan::find($id);
         $salesPlan->delete();
         return redirect()->back()->with('success', 'Данные успешно удалены 👍');
     }
 
-    public function statistics(Request $request)
-    {
+    public function statistics(Request $request) {
 
         $start = date('Y-m-01') . ' 00:00:00';
         $end = date('Y-m-31') . ' 23:59:59';
         $planMonth = date('Y-m-01');
 
         if ($request->input('month')) {
-            $start = $request->input('month').'-01 00:00:00';
-            $end = $request->input('month').'-31 23:59:59';
-            $planMonth = $request->input('month').'-01';
+            $start = $request->input('month') . '-01 00:00:00';
+            $end = $request->input('month') . '-31 23:59:59';
+            $planMonth = $request->input('month') . '-01';
         }
 
         $sumPlan = SalesPlan::orderBy('month', 'desc')
@@ -197,20 +187,32 @@ class SalesPlanController extends Controller
         $sumClaims = DB::table('claims')
             ->select(DB::raw('SUM(amount) as total_amount'))
             ->whereNotNull('creator')
-            ->where('notInclude', '=',0)
+            ->where('notInclude', '=', 0)
             ->where('created_at', '>=', $start)
             ->where('created_at', '<=', $end)
             ->whereNull('deleted_at')
             ->get();
 
+        $sumClaimsByLegalForm = DB::table('claims')
+            ->select(DB::raw('
+        SUM(CASE WHEN legal_form = "ip" THEN amount ELSE 0 END) as total_ip,
+        SUM(CASE WHEN legal_form = "ooo" THEN amount ELSE 0 END) as total_ooo
+    '))
+            ->whereNotNull('creator')
+            ->where('isInvoice', 1)
+            ->where('notInclude', '=', 0)
+            ->where('created_at', '>=', $start)
+            ->where('created_at', '<=', $end)
+            ->whereNull('deleted_at')
+            ->first();
 
         $sumPaid = HistoryPayment::where('created_at', '>=', $start)
-                    ->where('created_at', '<=', $end)
-                    ->with('status')
-                    ->whereHas('status', function ($w) {
-                        $w->where('name', "Частично оплачен")
-                            ->orWhere('name', "Оплачен");
-                    })
+            ->where('created_at', '<=', $end)
+            ->with('status')
+            ->whereHas('status', function ($w) {
+                $w->where('name', "Частично оплачен")
+                    ->orWhere('name', "Оплачен");
+            })
             ->select(DB::raw(' SUM(amount) as total_amount'))
             ->get();
 
@@ -238,13 +240,12 @@ class SalesPlanController extends Controller
                 } else {
                     $multipliedPaidClaims[$part->claim->creator] = $part->total_amount;
                 }
-
             }
         }
 
         $usersClaims = DB::table('claims')
             ->select('creator', DB::raw('SUM(amount) as total_amount'))
-            ->where('notInclude',0)
+            ->where('notInclude', 0)
             ->whereNotNull('creator')
             ->where('created_at', '>=', $start)
             ->where('created_at', '<=', $end)
@@ -261,37 +262,36 @@ class SalesPlanController extends Controller
             ->where('month', $planMonth)
             ->get();
 
-    //    dd($multipliedPaidClaims);
+        //    dd($multipliedPaidClaims);
 
-        return view('plan.statistics', compact('multiplied', 'salesPlan', 'multipliedPaidClaims', 'sumPlan', 'sumClaims', 'sumPaid', 'planMonth'));
+        return view('plan.statistics', compact('multiplied', 'salesPlan', 'multipliedPaidClaims', 'sumPlan', 'sumClaims', 'sumPaid', 'planMonth', 'sumClaimsByLegalForm'));
     }
 
 
-    public function remoteData(Request $request)
-    {
+    public function remoteData(Request $request) {
         $start = date('Y-m-01') . ' 00:00:00';
         $end = date('Y-m-31') . ' 23:59:59';
 
         if ($request->input('month')) {
-            $start = $request->input('month').'-01 00:00:00';
-            $end = $request->input('month').'-31 23:59:59';
+            $start = $request->input('month') . '-01 00:00:00';
+            $end = $request->input('month') . '-31 23:59:59';
         }
 
 
-//        $paidClaims = Claim::with('historiesPayment')
-//            ->whereHas('historiesPayment', function ($q) use ($start, $end) {
-//                $q->where('created_at', '>=', $start)
-//                    ->where('created_at', '<=', $end)
-//                    ->with('status')
-//                    ->whereHas('status', function ($w) {
-//                        $w->where('name', "Частично оплачен")
-//                            ->where('name', "Оплачен");
-//                    });
-//            })
-//            ->where('notInclude',0)
-//            ->select('creator', DB::raw('SUM(amount) as total_amount'))
-//            ->groupBy('creator')
-//            ->get();
+        //        $paidClaims = Claim::with('historiesPayment')
+        //            ->whereHas('historiesPayment', function ($q) use ($start, $end) {
+        //                $q->where('created_at', '>=', $start)
+        //                    ->where('created_at', '<=', $end)
+        //                    ->with('status')
+        //                    ->whereHas('status', function ($w) {
+        //                        $w->where('name', "Частично оплачен")
+        //                            ->where('name', "Оплачен");
+        //                    });
+        //            })
+        //            ->where('notInclude',0)
+        //            ->select('creator', DB::raw('SUM(amount) as total_amount'))
+        //            ->groupBy('creator')
+        //            ->get();
 
         $paidClaims = HistoryPayment::where('created_at', '>=', $start)
             ->where('created_at', '<=', $end)
@@ -319,13 +319,13 @@ class SalesPlanController extends Controller
         }
 
 
-//        $fio = $paidClaims->mapWithKeys(function ($item, $key) {
-//            return [$key => $item->creatorUser->getFullName()];
-//        });
-//
-//        $multipliedPaidClaims = $paidClaims->mapWithKeys(function ($item, $key) {
-//            return [$key => $item->total_amount];
-//        });
+        //        $fio = $paidClaims->mapWithKeys(function ($item, $key) {
+        //            return [$key => $item->creatorUser->getFullName()];
+        //        });
+        //
+        //        $multipliedPaidClaims = $paidClaims->mapWithKeys(function ($item, $key) {
+        //            return [$key => $item->total_amount];
+        //        });
 
         $res = array(
             'labels' => $fio,
@@ -335,37 +335,36 @@ class SalesPlanController extends Controller
         return json_encode($res);
     }
 
-    public function services(Request $request)
-    {
+    public function services(Request $request) {
 
         $start = date('Y-m-01') . ' 00:00:00';
         $end = date('Y-m-31') . ' 23:59:59';
 
         if ($request->input('month')) {
-            $start = $request->input('month').'-01 00:00:00';
-            $end = $request->input('month').'-31 23:59:59';
+            $start = $request->input('month') . '-01 00:00:00';
+            $end = $request->input('month') . '-31 23:59:59';
         }
         $categories = Category::all();
 
-//        $categoriesAllSum = DB::table('categories')
-//            ->leftJoin('services', 'categories.id', '=', 'services.category_id')
-//            ->leftJoin('claims', 'services.id', '=', 'claims.service_id')
-//            ->leftJoin('history_payments', 'claims.id', '=', 'history_payments.claim_id')
-//            ->leftJoin('status_payments', 'history_payments.status_id', '=', 'status_payments.id')
-//            ->select('categories.id',
-//                'categories.name',
-//                DB::raw('sum(history_payments.amount) as claims_amount'))
-//            ->whereNull('categories.deleted_at')
-////            ->where('claims.created_at', '>=', $start)
-////            ->where('claims.created_at', '<=', $end)
-//            ->where('claims.notInclude',0)
-////            ->where('history_payments.status_id', '=', 4)
-//            ->where('status_payments.name', '=', 'Оплачен')
-//            ->orWhere('status_payments.name', '=', 'Частично оплачен')
-//            ->where('history_payments.created_at', '>=', $start)
-//            ->where('history_payments.created_at', '<=', $end)
-//            ->groupBy('categories.id', 'categories.name')
-//            ->get();
+        //        $categoriesAllSum = DB::table('categories')
+        //            ->leftJoin('services', 'categories.id', '=', 'services.category_id')
+        //            ->leftJoin('claims', 'services.id', '=', 'claims.service_id')
+        //            ->leftJoin('history_payments', 'claims.id', '=', 'history_payments.claim_id')
+        //            ->leftJoin('status_payments', 'history_payments.status_id', '=', 'status_payments.id')
+        //            ->select('categories.id',
+        //                'categories.name',
+        //                DB::raw('sum(history_payments.amount) as claims_amount'))
+        //            ->whereNull('categories.deleted_at')
+        ////            ->where('claims.created_at', '>=', $start)
+        ////            ->where('claims.created_at', '<=', $end)
+        //            ->where('claims.notInclude',0)
+        ////            ->where('history_payments.status_id', '=', 4)
+        //            ->where('status_payments.name', '=', 'Оплачен')
+        //            ->orWhere('status_payments.name', '=', 'Частично оплачен')
+        //            ->where('history_payments.created_at', '>=', $start)
+        //            ->where('history_payments.created_at', '<=', $end)
+        //            ->groupBy('categories.id', 'categories.name')
+        //            ->get();
 
         $categoriesAllSum = [];
         foreach ($categories as $category) {
@@ -382,15 +381,15 @@ class SalesPlanController extends Controller
             });
 
             $paid = HistoryPayment::where('created_at', '>=', $start)
-            ->where('created_at', '<=', $end)
-            ->whereIn('claim_id', $claims)
-            ->with('status')
-            ->whereHas('status', function ($w) {
-                $w->where('name', "Частично оплачен")
-                    ->orWhere('name', "Оплачен");
-            })
-            ->select(DB::raw('SUM(amount) as total_amount'))
-            ->get();
+                ->where('created_at', '<=', $end)
+                ->whereIn('claim_id', $claims)
+                ->with('status')
+                ->whereHas('status', function ($w) {
+                    $w->where('name', "Частично оплачен")
+                        ->orWhere('name', "Оплачен");
+                })
+                ->select(DB::raw('SUM(amount) as total_amount'))
+                ->get();
 
             if ($paid->first()->total_amount != null) {
                 $categoriesAllSum[$category->id] = [
@@ -399,13 +398,12 @@ class SalesPlanController extends Controller
                     'claims_amount' => $paid->first()->total_amount,
                 ];
             }
-
         }
 
 
-//        $categoriesAllSum = $categoriesAllSum->mapWithKeys(function ($item, $key) {
-//            return [$item->id => $item];
-//        });
+        //        $categoriesAllSum = $categoriesAllSum->mapWithKeys(function ($item, $key) {
+        //            return [$item->id => $item];
+        //        });
 
         $usersSum = array();
         $allData = array();
@@ -451,7 +449,7 @@ class SalesPlanController extends Controller
             if (count($paid) != 0) {
                 foreach ($paid as $part) {
 
-                    if($part->claim == null || $part->claim->creator == null) continue;
+                    if ($part->claim == null || $part->claim->creator == null) continue;
                     if (isset($user[$part->claim->creator])) {
                         $user[$part->claim->creator] = [
                             'creator' => $part->claim->creatorUser->id,
@@ -469,7 +467,7 @@ class SalesPlanController extends Controller
 
             $allData[$key]['users'] = $user;
         }
-//        dd($allData);
+        //        dd($allData);
 
 
         return view('plan.services', compact('categories', 'allData'));
@@ -477,8 +475,8 @@ class SalesPlanController extends Controller
 
     public function getStatisticsByYear($year) {
 
-        $paid = HistoryPayment::where('created_at', '>=', $year.'-01-01')
-            ->where('created_at', '<=', $year.'-12-31')
+        $paid = HistoryPayment::where('created_at', '>=', $year . '-01-01')
+            ->where('created_at', '<=', $year . '-12-31')
             ->with('status')
             ->whereHas('status', function ($w) {
                 $w->where('name', "Частично оплачен")
@@ -492,9 +490,9 @@ class SalesPlanController extends Controller
         $sumClaims = DB::table('claims')
             ->select(DB::raw('SUM(amount) as total_amount'), DB::raw('DATE_FORMAT(created_at, "%Y-%m") AS new_date'))
             ->whereNotNull('creator')
-            ->where('notInclude',0)
-            ->where('created_at', '>=', $year.'-01-01 00:00:00')
-            ->where('created_at', '<=', $year.'-12-31 23:59:59')
+            ->where('notInclude', 0)
+            ->where('created_at', '>=', $year . '-01-01 00:00:00')
+            ->where('created_at', '<=', $year . '-12-31 23:59:59')
             ->whereNull('deleted_at')
             ->groupBy('new_date')
             ->orderBy('new_date')
@@ -582,7 +580,6 @@ class SalesPlanController extends Controller
             $request->session()->flash('error', 'При добавлении данных произошла ошибка 😢');
             return back();
         }
-
     }
 
     public function getWorkingDays($month) {
@@ -598,8 +595,5 @@ class SalesPlanController extends Controller
         }
 
         return json_encode($res);
-
-
     }
-
 }

@@ -162,7 +162,13 @@
                                     {{ money($sumClaims->first()->total_amount) }} ₽
                                 @endif
                             </p>
-                            <hr>
+                            <p class="fw-bold mb-1 ms-3"><b class="text-primary">— на ИП:</b>
+                                {{ money($sumClaimsByLegalForm->total_ip ?? 0) }} ₽
+                            </p>
+                            <p class="fw-bold mb-1 ms-3"><b class="text-primary">— на ООО:</b>
+                                {{ money($sumClaimsByLegalForm->total_ooo ?? 0) }} ₽
+                                <hr>
+                            </p>
 
                             {{-- Разница (план на сегодня - заявок создано) --}}
                             <p class="fw-bold mb-1">
