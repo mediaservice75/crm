@@ -114,6 +114,10 @@
                     <p class="mt-1 mb-0"><b class="text-primary">Дата:</b> {{ $claim->getCreateDate() }}</p>
                     <p class="mt-1 mb-0"><b class="text-primary">Клиент:</b> {{ $claim->client->name }}</p>
                     <p class="mt-1 mb-0"><b class="text-primary">Стоимость:</b> {{ money($claim->amount) }} р.</p>
+                    @if ($claim->isInvoice && $claim->legal_form)
+                        <p class="mt-1 mb-0"><b class="text-primary">Выставлен на:</b> {{ $claim->legal_form_label }}
+                        </p>
+                    @endif
                     @if ($claim->isInstallment)
                         <p class="mt-1 mb-0"><b class="text-primary">Рассрочка:</b></p>
                         @if ($claim->installmentDates->isNotEmpty())

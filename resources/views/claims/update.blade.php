@@ -45,6 +45,22 @@
                 <label for="installmentC">Рассрочка</label>
             </div>
         </div>
+
+        <div class="row mt-3 legal-form-block @if (!$claim->isInvoice) d-none @endif" id="legal-form-block">
+            <div class="col-12">
+                <label>Форма организации:</label>
+                <div class="btn-group" role="group">
+                    <input type="radio" class="btn-check" name="legal_form" id="legalFormIP" value="ip"
+                        @if ($claim->legal_form === 'ip') checked @endif>
+                    <label class="btn btn-outline-primary" for="legalFormIP">ИП</label>
+
+                    <input type="radio" class="btn-check" name="legal_form" id="legalFormOOO" value="ooo"
+                        @if ($claim->legal_form === 'ooo') checked @endif>
+                    <label class="btn btn-outline-primary" for="legalFormOOO">ООО</label>
+                </div>
+            </div>
+        </div>
+
         <div class="row mt-3 @if (!checkAnotherUser($claim->id)) d-none @endif users-form">
             <div class="col-lg-12">
                 <input type="hidden" name="url" value="{{ $url ?? (old('url') ?? url()->previous()) }}">
@@ -465,6 +481,48 @@
             addDateBtn.addEventListener('click', function() {
                 addDateInput();
             });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const isInvoiceCheckbox = document.getElementById('isInvoiceC');
+            const legalFormBlock = document.getElementById('legal-form-block');
+            const legalFormRadios = document.querySelectorAll('input[name="legal_form"]');
+            const hiddenIsInvoice = document.querySelector('input[name="isInvoice"]');
+
+            function toggleLegalFormBlock() {
+                if (isInvoiceCheckbox.checked) {
+                    legalFormBlock.classList.remove('d-none');
+                } else {
+                    legalFormBlock.classList.add('d-none');
+                    legalFormRadios.forEach(radio => {
+                        radio.checked = false;
+                    });
+                }
+
+                if (hiddenIsInvoice) {
+                    hiddenIsInvoice.value = isInvoiceCheckbox.checked ? 1 : 0;
+                }
+            }
+
+            isInvoiceCheckbox.addEventListener('change', toggleLegalFormBlock);
+            toggleLegalFormBlock();
+
+            // Восстановление после ошибок валидации
+            @if (old('legal_form'))
+                const oldLegalForm = '{{ old('legal_form') }}';
+                legalFormRadios.forEach(radio => {
+                    if (radio.value === oldLegalForm) {
+                        radio.checked = true;
+                    }
+                });
+            @endif
+
+            @if (old('isInvoice') !== null)
+                isInvoiceCheckbox.checked = {{ old('isInvoice') ? 'true' : 'false' }};
+                toggleLegalFormBlock();
+            @endif
         });
     </script>
 @endsection

@@ -95,6 +95,7 @@ class ClaimController extends Controller {
                 'service_id' => 'required|integer',
                 'deadlineClaim' => 'required|date',
                 'amount' => 'numeric',
+                'legal_form' => 'nullable|in:ip,ooo',
             ],
             [
                 'service_id.integer' => 'Выберите значение из списка',
@@ -137,6 +138,9 @@ class ClaimController extends Controller {
                 $request->merge(['notInclude' => '1']);
             }
 
+            if (!$request->isInvoice) {
+                $request->merge(['legal_form' => null]);
+            }
             $claim = Claim::create($request->all());
 
             if ($request->has('installment_dates') && is_array($request->installment_dates)) {
@@ -395,6 +399,7 @@ class ClaimController extends Controller {
                 'amount' => 'numeric',
                 'installment_dates' => 'nullable|array',
                 'installment_dates.*' => 'date',
+                'legal_form' => 'nullable|in:ip,ooo',
             ],
             [
                 'service_id.integer' => 'Выберите значение из списка',
@@ -429,6 +434,10 @@ class ClaimController extends Controller {
                 'deadline' => $request->deadlineClaim,
                 //                'user_id' => null,
             ]);
+
+            if (!$request->isInvoice) {
+                $request->merge(['legal_form' => null]);
+            }
 
             $claim->fill($request->all())->save();
 
@@ -1364,6 +1373,7 @@ class ClaimController extends Controller {
                 'service_id' => 'required|integer',
                 'deadlineClaim' => 'required|date',
                 // 'amount' => 'numeric',
+                'legal_form' => 'nullable|in:ip,ooo',
             ],
             [
                 'service_id.integer' => 'Выберите значение из списка',
@@ -1405,6 +1415,11 @@ class ClaimController extends Controller {
             if ($request->has('isBarter') && $request->isBarter == '1') {
                 $request->merge(['notInclude' => '1']);
             }
+
+            if (!$request->isInvoice) {
+                $request->merge(['legal_form' => null]);
+            }
+
             $claim = Claim::create($request->all());
 
             if ($request->has('installment_dates') && is_array($request->installment_dates)) {

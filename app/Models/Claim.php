@@ -18,6 +18,7 @@ class Claim extends Model {
         'amount',
         'deadline',
         'isInvoice',
+        'legal_form',
         'invoice',
         'period',
         'brif',
@@ -32,6 +33,9 @@ class Claim extends Model {
         'created_at',
         'close_user_id'
     ];
+
+    const LEGAL_FORM_IP = 'ip';
+    const LEGAL_FORM_OOO = 'ooo';
 
     public function getDate() {
         return Str::title(Carbon::parse($this->created_at)->translatedFormat('F')) . " " . Carbon::parse($this->created_at)->format('Y');
@@ -91,5 +95,13 @@ class Claim extends Model {
 
     public function installmentDates() {
         return $this->hasMany(InstallmentDate::class);
+    }
+
+    public function getLegalFormLabelAttribute(): ?string {
+        return match ($this->legal_form) {
+            self::LEGAL_FORM_IP => 'ИП',
+            self::LEGAL_FORM_OOO => 'ООО',
+            default => null,
+        };
     }
 }

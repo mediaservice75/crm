@@ -488,6 +488,23 @@
                                                 </div>
                                             </div>
 
+                                            <div class="row mt-3 legal-form-block d-none" id="legal-form-block">
+                                                <div class="col-12">
+                                                    <label>Форма организации:</label>
+                                                    <div class="btn-group" role="group">
+                                                        <input type="radio" class="btn-check" name="legal_form"
+                                                            id="legalFormIP" value="ip">
+                                                        <label class="btn btn-outline-primary"
+                                                            for="legalFormIP">ИП</label>
+
+                                                        <input type="radio" class="btn-check" name="legal_form"
+                                                            id="legalFormOOO" value="ooo">
+                                                        <label class="btn btn-outline-primary"
+                                                            for="legalFormOOO">ООО</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <div class="row mt-3 d-none users-form">
                                                 <div class="col-lg-12">
                                                     <div
@@ -912,6 +929,49 @@
                 @foreach (old('installment_dates') as $date)
                     addDateInput('{{ $date }}');
                 @endforeach
+            @endif
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const isInvoiceCheckbox = document.getElementById('isInvoiceC');
+            const legalFormBlock = document.getElementById('legal-form-block');
+            const legalFormRadios = document.querySelectorAll('input[name="legal_form"]');
+            const hiddenIsInvoice = document.querySelector('input[name="isInvoice"]');
+
+            // Показ/скрытие блока + синхронизация скрытого поля isInvoice
+            function toggleLegalFormBlock() {
+                if (isInvoiceCheckbox.checked) {
+                    legalFormBlock.classList.remove('d-none');
+                } else {
+                    legalFormBlock.classList.add('d-none');
+                    legalFormRadios.forEach(radio => {
+                        radio.checked = false;
+                    });
+                }
+
+                if (hiddenIsInvoice) {
+                    hiddenIsInvoice.value = isInvoiceCheckbox.checked ? 1 : 0;
+                }
+            }
+
+            isInvoiceCheckbox.addEventListener('change', toggleLegalFormBlock);
+            toggleLegalFormBlock();
+
+            // Восстановление после ошибок валидации
+            @if (old('legal_form'))
+                const oldLegalForm = '{{ old('legal_form') }}';
+                legalFormRadios.forEach(radio => {
+                    if (radio.value === oldLegalForm) {
+                        radio.checked = true;
+                    }
+                });
+            @endif
+
+            @if (old('isInvoice'))
+                isInvoiceCheckbox.checked = true;
+                toggleLegalFormBlock();
             @endif
         });
     </script>
