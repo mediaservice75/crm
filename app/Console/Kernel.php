@@ -28,6 +28,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('goals:active_ad')->daily();
         $schedule->command('client:interaction')->daily();
         $schedule->command('claims:debt')->daily();
+        $schedule->command('check:installment-reminders')->daily();
+
     }
 
     /**
