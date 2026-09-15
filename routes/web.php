@@ -25,6 +25,7 @@ use App\Http\Controllers\ZipController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ReceivableController;
 use App\Http\Controllers\BarterController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -172,6 +173,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('receivable', [ReceivableController::class, 'index'])->name('receivable.index');
 
     Route::get('barter', [BarterController::class, 'index'])->name('barter.index');
+
+    Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])
+        ->middleware('auth')
+        ->name('notifications.read');
 
     Route::post('/upload-filepond', [UploadController::class, 'store']);
     Route::post('/upload-files-goal', [UploadController::class, 'goalsStore']);

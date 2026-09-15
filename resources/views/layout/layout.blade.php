@@ -345,6 +345,67 @@
                             </a>
                         </div>
                         <div class="col-6 d-flex justify-content-end">
+                            <div class="header-top-right text-end me-3">
+                                <div class="dropdown">
+                                    <a href="#" id="notificationDropdown"
+                                        class="d-flex align-items-center position-relative dropdown-toggle"
+                                        data-bs-toggle="dropdown" aria-expanded="false"
+                                        style="text-decoration: none;">
+                                        <i class="bi bi-bell-fill fs-4 text-primary"></i>
+                                        @php
+                                            $unreadCount = \App\Models\InstallmentReminder::where(
+                                                'user_id',
+                                                auth()->id(),
+                                            )
+                                                ->where('is_read', false)
+                                                ->count();
+                                        @endphp
+                                        @if ($unreadCount > 0)
+                                            <span
+                                                class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle"
+                                                style="font-size: 0.65rem;">
+                                                {{ $unreadCount }}
+                                            </span>
+                                        @endif
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-lg"
+                                        aria-labelledby="notificationDropdown"
+                                        style="min-width: 350px; max-height: 400px; overflow-y: auto;">
+                                        <li class="px-3 py-2 border-bottom">
+                                            <h6 class="mb-0">Уведомления</h6>
+                                        </li>
+                                        @php
+                                            $reminders = \App\Models\InstallmentReminder::where('user_id', auth()->id())
+                                                ->orderBy('is_read')
+                                                ->orderByDesc('created_at')
+                                                ->limit(10)
+                                                ->get();
+                                        @endphp
+                                        @forelse ($reminders as $reminder)
+                                            <li>
+                                                <a href="{{ route('claims.show', ['claim' => $reminder->claim_id]) }}"
+                                                    class="dropdown-item py-2 notification-item {{ $reminder->is_read ? 'text-muted' : 'fw-bold' }}"
+                                                    data-id="{{ $reminder->id }}">
+                                                    <div class="d-flex justify-content-between align-items-start">
+                                                        <div>
+                                                            <div>Платёж по заявке №{{ $reminder->claim_id }}</div>
+                                                            <small class="text-muted">
+                                                                {{ $reminder->installment_date->format('d.m.Y') }} —
+                                                                {{ number_format($reminder->amount, 0, ',', ' ') }} ₽
+                                                            </small>
+                                                        </div>
+                                                        @if (!$reminder->is_read)
+                                                            <span class="badge bg-primary ms-2">new</span>
+                                                        @endif
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        @empty
+                                            <li class="px-3 py-3 text-muted text-center">Нет уведомлений</li>
+                                        @endforelse
+                                    </ul>
+                                </div>
+                            </div>
                             <div class="header-top-right text-end">
                                 <div class="dropdown">
                                     <a href="#" id="topbarUserDropdown"
@@ -424,6 +485,28 @@
     <script src="{{ asset('js/rrule-gui.js') }}?v2"></script>
     <script src="{{ asset('js/custom-calendar.js') }}?v6"></script>
     <script src="{{ asset('js/events-table.js') }}?v2"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const notificationItems = document.querySelectorAll('.notification-item');
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            notificationItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    const id = this.dataset.id;
+                    // Не блокируем переход, но отправляем запрос на отметку
+                    fetch(`/notifications/${id}/read`, {
+                        method: 'PATCH',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                        },
+                    }).catch(() => {});
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
