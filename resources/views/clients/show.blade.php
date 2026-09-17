@@ -490,7 +490,7 @@
 
                                             <div class="row mt-3 legal-form-block d-none" id="legal-form-block">
                                                 <div class="col-12">
-                                                    <label>Форма организации:</label>
+                                                    <label>Счет от:</label>
                                                     <div class="btn-group" role="group">
                                                         <input type="radio" class="btn-check" name="legal_form"
                                                             id="legalFormIP" value="ip">
