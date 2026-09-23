@@ -5,7 +5,7 @@
             <h3>Просмотр заявки</h3>
         </div>
         <div class="col-12 col-md-6 text-end">
-            @if (auth()->user()->role->level <= 2 || auth()->user()->role->level == 5 || auth()->user()->id == $claim->creator)
+            @if (auth()->user()->role->level <= 2 || auth()->user()->role->level == 5 || auth()->user()->id == $claim->creator || auth()->user()->role->level == 4)
                 <a href="{{ route('claims.edit', ['claim' => $claim->id]) }}" class="btn btn-sm icon btn-warning"><i
                         class="bi bi-pencil-fill"></i></a>
                 <form action="{{ route('claims.destroy', ['claim' => $claim->id]) }}" method="POST" class="d-inline">
