@@ -940,7 +940,6 @@
             const legalFormRadios = document.querySelectorAll('input[name="legal_form"]');
             const hiddenIsInvoice = document.querySelector('input[name="isInvoice"]');
 
-            // Показ/скрытие блока + синхронизация скрытого поля isInvoice
             function toggleLegalFormBlock() {
                 if (isInvoiceCheckbox.checked) {
                     legalFormBlock.classList.remove('d-none');

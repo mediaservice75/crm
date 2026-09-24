@@ -407,7 +407,6 @@ $(document).on("click", ".create-claim", function (event) {
 
     let submit = true;
 
-
     if ($(".service-group").val() == 0) {
         $(".service-group").parents('.form-group').addClass('is-invalid');
         submit = false;
@@ -423,8 +422,6 @@ $(document).on("click", ".create-claim", function (event) {
             $("#creator").parents('.form-group').removeClass('is-invalid');
         }
     }
-
-
 
     if ($("#anotherCreatedAt").prop('checked')) {
         if ($("#created_at").val() == 0) {
@@ -442,23 +439,24 @@ $(document).on("click", ".create-claim", function (event) {
         $("#deadlineClaim-datepicker").removeClass('is-invalid');
     }
 
-    // if ($("#amount").val() == '') {
-    //     $("#amount").addClass('is-invalid');
-    //     submit = false;
-    // } else {
-    //     $("#amount").removeClass('is-invalid');
-    // }
-
-
+    // === НАША ПРОВЕРКА ===
+    if ($("#isInvoiceC").prop('checked')) {
+        if (!$('input[name="legal_form"]:checked').length) {
+            $("#legal-form-block").find('.btn-group').addClass('is-invalid');
+            submit = false;
+        } else {
+            $("#legal-form-block").find('.btn-group').removeClass('is-invalid');
+        }
+    } else {
+        $("#legal-form-block").find('.btn-group').removeClass('is-invalid');
+    }
+    // === КОНЕЦ НАШЕЙ ПРОВЕРКИ ===
 
     if (submit) {
         form.submit();
     } else {
         showToast("Заполните обязательные поля!", "linear-gradient(to right, #ED213A, #93291E)");
     }
-
-
-
 });
 
 

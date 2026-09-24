@@ -51638,50 +51638,61 @@ $(document).on('select2:open', function () {
   document.querySelector('.select2-search__field').focus();
 });
 $(document).on("click", ".create-claim", function (event) {
-  var form = $(this).closest("form");
-  event.preventDefault();
-  var submit = true;
-  if ($(".service-group").val() == 0) {
-    $(".service-group").parents('.form-group').addClass('is-invalid');
-    submit = false;
-  } else {
-    $(".service-group").parents('.form-group').removeClass('is-invalid');
-  }
-  if ($("#anotherUserC").prop('checked')) {
-    if ($("#creator").val() == 0) {
-      $("#creator").parents('.form-group').addClass('is-invalid');
-      submit = false;
-    } else {
-      $("#creator").parents('.form-group').removeClass('is-invalid');
-    }
-  }
-  if ($("#anotherCreatedAt").prop('checked')) {
-    if ($("#created_at").val() == 0) {
-      $("#created_at").parents('.form-group').addClass('is-invalid');
-      submit = false;
-    } else {
-      $("#created_at").parents('.form-group').removeClass('is-invalid');
-    }
-  }
-  if ($("#deadlineClaim").val() == '') {
-    $("#deadlineClaim-datepicker").addClass('is-invalid');
-    submit = false;
-  } else {
-    $("#deadlineClaim-datepicker").removeClass('is-invalid');
-  }
+    var form = $(this).closest("form");
+    event.preventDefault();
 
-  // if ($("#amount").val() == '') {
-  //     $("#amount").addClass('is-invalid');
-  //     submit = false;
-  // } else {
-  //     $("#amount").removeClass('is-invalid');
-  // }
+    let submit = true;
 
-  if (submit) {
-    form.submit();
-  } else {
-    showToast("Заполните обязательные поля!", "linear-gradient(to right, #ED213A, #93291E)");
-  }
+    if ($(".service-group").val() == 0) {
+        $(".service-group").parents('.form-group').addClass('is-invalid');
+        submit = false;
+    } else {
+        $(".service-group").parents('.form-group').removeClass('is-invalid');
+    }
+
+    if ($("#anotherUserC").prop('checked')) {
+        if ($("#creator").val() == 0) {
+            $("#creator").parents('.form-group').addClass('is-invalid');
+            submit = false;
+        } else {
+            $("#creator").parents('.form-group').removeClass('is-invalid');
+        }
+    }
+
+    if ($("#anotherCreatedAt").prop('checked')) {
+        if ($("#created_at").val() == 0) {
+            $("#created_at").parents('.form-group').addClass('is-invalid');
+            submit = false;
+        } else {
+            $("#created_at").parents('.form-group').removeClass('is-invalid');
+        }
+    }
+
+    if ($("#deadlineClaim").val() == '') {
+        $("#deadlineClaim-datepicker").addClass('is-invalid');
+        submit = false;
+    } else {
+        $("#deadlineClaim-datepicker").removeClass('is-invalid');
+    }
+
+    // === НАША ПРОВЕРКА ===
+    if ($("#isInvoiceC").prop('checked')) {
+        if (!$('input[name="legal_form"]:checked').length) {
+            $("#legal-form-block").find('.btn-group').addClass('is-invalid');
+            submit = false;
+        } else {
+            $("#legal-form-block").find('.btn-group').removeClass('is-invalid');
+        }
+    } else {
+        $("#legal-form-block").find('.btn-group').removeClass('is-invalid');
+    }
+    // === КОНЕЦ НАШЕЙ ПРОВЕРКИ ===
+
+    if (submit) {
+        form.submit();
+    } else {
+        showToast("Заполните обязательные поля!", "linear-gradient(to right, #ED213A, #93291E)");
+    }
 });
 $(document).on("click", ".block", function (event) {
   var form = $(this).closest("form");

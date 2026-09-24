@@ -494,10 +494,12 @@
             function toggleLegalFormBlock() {
                 if (isInvoiceCheckbox.checked) {
                     legalFormBlock.classList.remove('d-none');
+                    legalFormRadios.forEach(radio => radio.required = true); // ← добавили
                 } else {
                     legalFormBlock.classList.add('d-none');
                     legalFormRadios.forEach(radio => {
                         radio.checked = false;
+                        radio.required = false; // ← добавили
                     });
                 }
 
