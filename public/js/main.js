@@ -52153,7 +52153,7 @@ $(document).on("click", ".changeStatus", function (event) {
   $('#claim_id').val(id);
   $('#max-val').html(amount + ' руб.');
   amountMask.updateOptions({
-    min: 1,
+    min: 0,
     max: amount
   });
   $("#amount").val('');
