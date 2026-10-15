@@ -6,15 +6,13 @@ use App\Http\Requests\StoreRequisitesClients;
 use App\Models\RequisiteClient;
 use Illuminate\Http\Request;
 
-class RequisitesClient extends Controller
-{
+class RequisitesClient extends Controller {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
         //
     }
 
@@ -23,8 +21,7 @@ class RequisitesClient extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         //
     }
 
@@ -34,8 +31,7 @@ class RequisitesClient extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         //
     }
 
@@ -45,8 +41,7 @@ class RequisitesClient extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
+    public function show($id) {
         //
     }
 
@@ -56,8 +51,7 @@ class RequisitesClient extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         $requisites = RequisiteClient::firstWhere('id', $id);
         return view('requisites.index', compact('requisites'));
     }
@@ -69,8 +63,7 @@ class RequisitesClient extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(StoreRequisitesClients $request, $id)
-    {
+    public function update(StoreRequisitesClients $request, $id) {
 
         if ($request->input('INN') != null) {
             $inn = $request->input('INN');
@@ -87,6 +80,13 @@ class RequisitesClient extends Controller
 
         $requisites = RequisiteClient::firstWhere('id', $id);
         $requisites->update($request->all());
+
+        // Если у реквизитов есть связанный клиент, обновляем ему email
+        if ($requisites->client) {
+            $requisites->client->update([
+                'email' => $request->input('email')
+            ]);
+        }
         return redirect()->back()->with('success', 'Данные успешно обновлены 👍');
     }
 
@@ -96,8 +96,7 @@ class RequisitesClient extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         //
     }
 }
