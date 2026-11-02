@@ -668,7 +668,7 @@ class UserController extends Controller
         $password = Str::random(8);
 
         // Сохраняем пароль в сессии только для текущего запроса
-        $request->session()->flash('generated_password', $password);
+        // $request->session()->flash('generated_password', $password);
         $params = [
             'email' => $email,
             'password' => $password,
